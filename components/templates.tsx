@@ -31,7 +31,7 @@ export default function Templates() {
   return (
     <section className="min-h-screen bg-neutral-900 text-white p-8 flex flex-col justify-center">
       <h2 className="text-4xl font-bold text-center mb-8">
-        Encuentra el template perfecto para tu negocio
+        encuentra el template perfecto para tu negocio
       </h2>
       <div className=" max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
         <FeatureCard

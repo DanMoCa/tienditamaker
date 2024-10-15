@@ -53,14 +53,17 @@ export default function Header() {
               </Button>
             </Link>
           </div>
-          <Sheet>
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
                 <Menu className="h-6 w-6 text-white" />
-                <span className="sr-only">Toggle menu</span>
+                <span className="sr-only">toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+            <SheetContent
+              side="right"
+              className="w-[300px] sm:w-[400px] bg-neutral-900"
+            >
               <nav className="flex flex-col gap-4">
                 <Link
                   href="/"
@@ -71,7 +74,10 @@ export default function Header() {
                 <NavItem text="proveedores" hasDropdown />
                 <NavItem text="plantillas" />
                 <NavItem text="precios" />
-                <Link href="/login" className="text-foreground font-semibold">
+                <Link
+                  href="/login"
+                  className="text-foreground font-semibold text-white"
+                >
                   ingresar
                 </Link>
                 <Link href="/">
@@ -130,7 +136,7 @@ function NavItem({
 }) {
   return (
     <div className="relative group">
-      <button className="text-foreground flex items-center">
+      <button className="text-foreground flex items-center text-white">
         {text}
         {hasDropdown && <ChevronDown className="ml-1 h-4 w-4" />}
       </button>
