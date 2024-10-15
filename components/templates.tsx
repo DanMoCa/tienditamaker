@@ -17,21 +17,21 @@ export default function Templates() {
     {
       imageUrl:
         "https://res.cloudinary.com/do3k4ocu4/image/upload/v1728778795/g4gbivsxb6o88v0lvh08.png",
-      title: "Tienda de ropa",
-      description: "Una tienda de ropa con un estilo moderno y minimalista.",
+      title: "tienda de ropa",
+      description: "una tienda de ropa con un estilo moderno y minimalista.",
     },
     {
       imageUrl:
         "https://res.cloudinary.com/do3k4ocu4/image/upload/v1728778795/iztqj4cujouhrkb1wqhj.png",
-      title: "Tienda de tecnologia",
+      title: "tienda de tecnologia",
       description:
-        "Una tienda de tecnologia con un estilo moderno y minimalista.",
+        "una tienda de tecnologia con un estilo moderno y minimalista.",
     },
   ];
   return (
     <section className="min-h-screen bg-neutral-900 text-white p-8 flex flex-col justify-center">
       <h2 className="text-4xl font-bold text-center mb-8">
-        encuentra el template perfecto para tu negocio
+        encuentra la plantilla perfecta para tu negocio
       </h2>
       <div className=" max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
         <FeatureCard
@@ -84,7 +84,7 @@ function FeatureCard({
           variant="link"
           className="text-teal-300 hover:text-teal-100 p-0"
         >
-          Learn more <ArrowRight className="ml-2 h-4 w-4" />
+          ver plantilla <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </CardFooter>
     </Card>

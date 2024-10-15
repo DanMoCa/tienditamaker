@@ -49,40 +49,40 @@ const DummyContent = () => {
 
 const data = [
   {
-    category: "Artificial Intelligence",
-    title: "You can do more with AI.",
-    src: "https://images.unsplash.com/photo-1593508512255-86ab42a8e620?q=80&w=3556&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    category: "prendas de vestir",
+    title: "tienda de ropa y accesorios",
+    src: "https://plus.unsplash.com/premium_photo-1673125510222-1a51e3a8ccb0?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     content: <DummyContent />,
   },
   {
-    category: "Productivity",
-    title: "Enhance your productivity.",
-    src: "https://images.unsplash.com/photo-1531554694128-c4c6665f59c2?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    category: "mundo tech",
+    title: "tienda de tecnologia",
+    src: "https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     content: <DummyContent />,
   },
   {
-    category: "Product",
-    title: "Launching the new Apple Vision Pro.",
-    src: "https://images.unsplash.com/photo-1713869791518-a770879e60dc?q=80&w=2333&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    category: "hogar",
+    title: "tienda de muebles y decoracion",
+    src: "https://images.unsplash.com/photo-1662254666007-3fc1a93e6a19?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     content: <DummyContent />,
   },
 
   {
-    category: "Product",
-    title: "Maps for your iPhone 15 Pro Max.",
-    src: "https://images.unsplash.com/photo-1599202860130-f600f4948364?q=80&w=2515&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    category: "juguetes",
+    title: "tienda de juguetes",
+    src: "https://images.unsplash.com/photo-1623939012339-5b3dc8eca7c6?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     content: <DummyContent />,
   },
   {
-    category: "iOS",
-    title: "Photography just got better.",
-    src: "https://images.unsplash.com/photo-1602081957921-9137a5d6eaee?q=80&w=2793&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    category: "arte y manualidades",
+    title: "tienda de arte y manualidades",
+    src: "https://images.unsplash.com/photo-1579541814924-49fef17c5be5?q=80&w=1870&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     content: <DummyContent />,
   },
   {
-    category: "Hiring",
-    title: "Hiring for a Staff Software Engineer",
-    src: "https://images.unsplash.com/photo-1511984804822-e16ba72f5848?q=80&w=2048&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    category: "salud y belleza",
+    title: "tienda de salud y belleza",
+    src: "https://plus.unsplash.com/premium_photo-1678377959909-3542d8096fa5?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     content: <DummyContent />,
   },
 ];
