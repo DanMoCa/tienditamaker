@@ -41,7 +41,7 @@ export default function Header() {
             <NavItem text="precios" />
           </div>
           <div className="hidden md:flex items-center space-x-4 text-base sm:text-xl font-semibold">
-            <Link href="/login" className="text-white">
+            <Link href="/api/auth/signin" className="text-white">
               ingresar
             </Link>
             <Link href="/">
