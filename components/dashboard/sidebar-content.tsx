@@ -9,11 +9,11 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const sidebarItems = [
-  { icon: LayoutDashboard, label: "General", href: "#" },
-  { icon: Package, label: "Products", href: "#" },
-  { icon: ShoppingCart, label: "Orders", href: "#" },
-  { icon: BarChart, label: "Analysis", href: "#" },
-  { icon: HelpCircle, label: "Help", href: "#" },
+  { icon: LayoutDashboard, label: "General", href: "/dashboard" },
+  { icon: Package, label: "Products", href: "/dashboard/products" },
+  { icon: ShoppingCart, label: "Orders", href: "/dashboard/orders" },
+  { icon: BarChart, label: "Analysis", href: "/dashboard/analysis" },
+  { icon: HelpCircle, label: "Help", href: "/dashboard/help" },
 ];
 
 export function SidebarContent({
