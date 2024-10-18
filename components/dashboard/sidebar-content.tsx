@@ -12,10 +12,10 @@ import { useRouter } from "next/navigation";
 
 const sidebarItems = [
   { icon: LayoutDashboard, label: "general", href: "/dashboard" },
-  { icon: Package, label: "products", href: "/dashboard/products" },
-  { icon: ShoppingCart, label: "orders", href: "/dashboard/orders" },
-  { icon: BarChart, label: "analysis", href: "/dashboard/analysis" },
-  { icon: HelpCircle, label: "help", href: "/dashboard/help" },
+  { icon: Package, label: "productos", href: "/dashboard/products" },
+  { icon: ShoppingCart, label: "pedidos", href: "/dashboard/orders" },
+  { icon: BarChart, label: "analisis", href: "/dashboard/analysis" },
+  { icon: HelpCircle, label: "ayuda", href: "/dashboard/help" },
 ];
 
 export function SidebarContent({
