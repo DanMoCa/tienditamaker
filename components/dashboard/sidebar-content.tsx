@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   Package,
   ShoppingCart,
+  Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -14,8 +15,8 @@ const sidebarItems = [
   { icon: LayoutDashboard, label: "general", href: "/dashboard" },
   { icon: Package, label: "productos", href: "/dashboard/products" },
   { icon: ShoppingCart, label: "pedidos", href: "/dashboard/orders" },
-  { icon: BarChart, label: "analisis", href: "/dashboard/analysis" },
   { icon: HelpCircle, label: "ayuda", href: "/dashboard/help" },
+  { icon: Settings, label: "configuracion", href: "/dashboard/config" },
 ];
 
 export function SidebarContent({

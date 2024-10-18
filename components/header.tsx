@@ -47,7 +47,7 @@ export default function Header() {
             <Link href="/">
               <Button
                 variant="outline"
-                className="text-sm sm:text-lg font-bold bg-[#a3eef5] hover:bg-[#a3eef5]/80"
+                className="text-sm sm:text-lg font-bold bg-[#a3eef5] hover:bg-[#a3eef5]/80 text-black"
               >
                 prueba gratuita
               </Button>
@@ -83,7 +83,7 @@ export default function Header() {
                 <Link href="/">
                   <Button
                     variant="outline"
-                    className="w-full text-lg font-bold bg-[#a3eef5] hover:bg-[#a3eef5]/80"
+                    className="w-full text-lg font-bold bg-[#a3eef5] hover:bg-[#a3eef5]/80 text-black"
                   >
                     prueba gratuita
                   </Button>
@@ -115,7 +115,7 @@ export default function Header() {
             <Link href="/">
               <Button
                 variant="secondary"
-                className="text-lg sm:text-xl p-4 sm:p-6 bg-[#a3eef5] font-extrabold hover:bg-[#a3eef5]/80 w-full sm:w-auto"
+                className="text-black text-lg sm:text-xl p-4 sm:p-6 bg-[#a3eef5] font-extrabold hover:bg-[#a3eef5]/80 w-full sm:w-auto"
               >
                 iniciar prueba gratuita
               </Button>

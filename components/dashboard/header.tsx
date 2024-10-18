@@ -4,10 +4,12 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LogOut, User } from "lucide-react";
 import { MobileHeader } from "./mobile-header";
+import { signOut, useSession } from "next-auth/react";
 
 export function Header({
   activeItem,
@@ -16,6 +18,7 @@ export function Header({
   activeItem: any;
   setActiveItem: any;
 }) {
+  const { data: session } = useSession();
   return (
     <header className="border-b px-4 py-3 flex items-center justify-between ">
       <MobileHeader activeItem={activeItem} setActiveItem={setActiveItem} />
@@ -26,7 +29,10 @@ export function Header({
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
             <Avatar className="h-8 w-8">
-              <AvatarImage src="/placeholder-user.jpg" alt="User profile" />
+              <AvatarImage
+                src={session?.user?.image as string}
+                alt="User profile"
+              />
               <AvatarFallback>
                 <User className="h-4 w-4" />
               </AvatarFallback>
@@ -34,7 +40,10 @@ export function Header({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem>
+          <DropdownMenuLabel>
+            <span>hola {session?.user?.name?.toLowerCase()}</span>
+          </DropdownMenuLabel>
+          <DropdownMenuItem onClick={() => signOut()}>
             <LogOut className="mr-2 h-4 w-4" />
             <span>cerrar sesión</span>
           </DropdownMenuItem>

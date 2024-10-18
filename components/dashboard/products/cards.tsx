@@ -15,14 +15,16 @@ const productos = [
     id: 1,
     nombre: "iphone 13",
     precio: 999.99,
-    imagen: "/iphone-13.jpg",
+    imagen:
+      "https://images.pexels.com/photos/3756879/pexels-photo-3756879.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     descripcion: "el nuevo iPhone 13 con 5G.",
   },
   {
     id: 2,
     nombre: "macbook pro",
     precio: 1999.99,
-    imagen: "/macbook-pro.jpg",
+    imagen:
+      "https://images.pexels.com/photos/249538/pexels-photo-249538.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     descripcion: "la nueva MacBook Pro con chip M1.",
   },
 ];

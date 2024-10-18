@@ -10,7 +10,7 @@ export default function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [activeItem, setActiveItem] = useState("General");
+  const [activeItem, setActiveItem] = useState("general");
 
   return (
     <div className="flex flex-col h-screen border-b border-neutral-700">
