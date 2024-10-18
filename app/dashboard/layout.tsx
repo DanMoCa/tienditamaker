@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Sidebar } from "@/components/dashboard/sidebar";
-import { MobileHeader } from "@/components/dashboard/mobile-header";
 import { Header } from "@/components/dashboard/header";
 
 export default function DashboardLayout({
