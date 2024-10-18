@@ -1,5 +1,6 @@
 import {
   BarChart,
+  ChevronLeft,
   HelpCircle,
   LayoutDashboard,
   Package,
@@ -7,22 +8,27 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 const sidebarItems = [
-  { icon: LayoutDashboard, label: "General", href: "/dashboard" },
-  { icon: Package, label: "Products", href: "/dashboard/products" },
-  { icon: ShoppingCart, label: "Orders", href: "/dashboard/orders" },
-  { icon: BarChart, label: "Analysis", href: "/dashboard/analysis" },
-  { icon: HelpCircle, label: "Help", href: "/dashboard/help" },
+  { icon: LayoutDashboard, label: "general", href: "/dashboard" },
+  { icon: Package, label: "products", href: "/dashboard/products" },
+  { icon: ShoppingCart, label: "orders", href: "/dashboard/orders" },
+  { icon: BarChart, label: "analysis", href: "/dashboard/analysis" },
+  { icon: HelpCircle, label: "help", href: "/dashboard/help" },
 ];
 
 export function SidebarContent({
   activeItem,
   setActiveItem,
+  isCollapsed,
 }: {
   activeItem: any;
   setActiveItem: any;
+  isCollapsed?: boolean;
 }) {
+  const router = useRouter();
+
   return (
     <nav>
       <ul className="space-y-2">
@@ -32,12 +38,17 @@ export function SidebarContent({
               variant="ghost"
               className={cn(
                 "w-full justify-start",
-                activeItem === item.label && "bg-gray-100 font-semibold"
+                activeItem === item.label && "bg-neutral-900 font-semibold"
               )}
-              onClick={() => setActiveItem(item.label)}
+              onClick={() => {
+                setActiveItem(item.label);
+                router.push(item.href);
+              }}
             >
-              <item.icon className="mr-2 h-5 w-5" />
-              {item.label}
+              <item.icon
+                className={cn("h-5 w-5 ", isCollapsed ? "mr-0" : "mr-2")}
+              />
+              {!isCollapsed && <span>{item.label}</span>}
             </Button>
           </li>
         ))}

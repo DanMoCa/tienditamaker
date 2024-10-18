@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={manrope.className}>
+    <html lang="es" className={`${manrope.className} dark`}>
       <body>
         <SessionWrapper>{children}</SessionWrapper>
       </body>

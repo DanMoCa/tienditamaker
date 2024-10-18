@@ -1,5 +1,12 @@
-import React from "react";
+"use client";
+import ProductsDialog from "@/components/dashboard/products/dialog";
+import ProductsCards from "@/components/dashboard/products/cards";
 
 export default function Products() {
-  return <div>Products</div>;
+  return (
+    <div>
+      <ProductsDialog />
+      <ProductsCards />
+    </div>
+  );
 }

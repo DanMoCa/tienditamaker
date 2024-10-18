@@ -11,13 +11,12 @@ export function MobileHeader({
   setActiveItem: any;
 }) {
   return (
-    <div className="mb-4 flex items-center justify-between md:hidden">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
+    <div className="flex items-center justify-center md:hidden">
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon">
             <LayoutDashboard className="h-5 w-5" />
-            <span className="sr-only">Toggle menu</span>
+            <span className="sr-only">toggle menu</span>
           </Button>
         </SheetTrigger>
         <SheetContent side="left">
