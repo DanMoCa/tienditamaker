@@ -37,7 +37,7 @@ export default function Templates() {
     },
   ];
 
-  const [openStep, setOpenStep] = useState<number | null>(3);
+  const [openStep, setOpenStep] = useState<number | null>(0);
 
   const steps = [
     {
@@ -68,7 +68,8 @@ export default function Templates() {
       id="plantillas"
     >
       <h1 className="text-4xl text-center font-bold mb-8">
-        encuentra la plantilla perfecta para tu negocio
+        encuentra la plantilla <span className="text-[#a3eef5]">perfecta</span>{" "}
+        para tu negocio
       </h1>
       <div className="grid md:grid-cols-2 gap-8 md:px-40 items-center justify-center">
         <div className="space-y-4">

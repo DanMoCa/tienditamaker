@@ -48,7 +48,8 @@ export default function PricingSection() {
     <section className="py-16" id="precios">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-12">
-          sencillo, transparente y accesible
+          sencillo, transparente y{" "}
+          <span className="text-[#a3eef5]">accesible</span>
         </h2>
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {plans.map((plan) => (
@@ -62,7 +63,13 @@ export default function PricingSection() {
               </CardHeader>
               <CardContent>
                 <div className="mb-4">
-                  <span className="text-4xl font-bold">{plan.price}</span>
+                  <span
+                    className={`text-4xl font-extrabold ${
+                      plan.popular ? "text-[#a3eef5]" : ""
+                    }`}
+                  >
+                    {plan.price}
+                  </span>
                   <span className="text-muted-foreground"> {plan.billing}</span>
                 </div>
                 <ul className="space-y-2">
@@ -76,7 +83,11 @@ export default function PricingSection() {
               </CardContent>
               <CardFooter>
                 <Button
-                  className="w-full"
+                  className={`w-full ${
+                    plan.popular
+                      ? "bg-[#a3eef5] hover:bg-[#a3eef5]/80 text-black"
+                      : ""
+                  }`}
                   variant={plan.popular ? "default" : "outline"}
                 >
                   {plan.cta}
