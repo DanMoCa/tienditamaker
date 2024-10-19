@@ -44,7 +44,7 @@ export default function Header() {
             <Link href="/api/auth/signin" className="text-white">
               ingresar
             </Link>
-            <Link href="/">
+            <Link href="/api/auth/signin">
               <Button
                 variant="outline"
                 className="text-sm sm:text-lg font-bold bg-[#a3eef5] hover:bg-[#a3eef5]/80 text-black"
@@ -75,12 +75,12 @@ export default function Header() {
                 <NavItem text="plantillas" />
                 <NavItem text="precios" />
                 <Link
-                  href="/login"
+                  href="/api/auth/signin"
                   className="text-foreground font-semibold text-white"
                 >
                   ingresar
                 </Link>
-                <Link href="/">
+                <Link href="/api/auth/signin">
                   <Button
                     variant="outline"
                     className="w-full text-lg font-bold bg-[#a3eef5] hover:bg-[#a3eef5]/80 text-black"
@@ -96,7 +96,7 @@ export default function Header() {
       <div className="relative h-screen bg-gray-900 text-white">
         <div className="absolute inset-0 bg-black opacity-50"></div>
         <Image
-          src="https://images.unsplash.com/photo-1528278235776-5abe0b52b5a3?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          src="https://res.cloudinary.com/do3k4ocu4/image/upload/v1729372881/nkdzhx4e3rizdsrddyzw.jpg"
           alt="Background"
           className="w-full h-screen object-cover"
           width={2160}
