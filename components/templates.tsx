@@ -67,7 +67,7 @@ export default function Templates() {
       <h1 className="text-4xl text-center font-bold mb-8">
         encuentra la plantilla perfecta para tu negocio
       </h1>
-      <div className="grid md:grid-cols-2 gap-8 md:px-40">
+      <div className="grid md:grid-cols-2 gap-8 md:px-40 items-center justify-center">
         <div className="space-y-4">
           <Accordion type="single" collapsible defaultValue="item-2">
             {steps.map((step, index) => (
@@ -90,7 +90,7 @@ export default function Templates() {
         </div>
         <Card>
           <Image
-            src="https://res.cloudinary.com/do3k4ocu4/image/upload/v1728778795/iztqj4cujouhrkb1wqhj.png"
+            src="https://res.cloudinary.com/do3k4ocu4/image/upload/v1729375314/mzabytoowu49x1og9xix.png"
             alt="Invoice preview"
             width={1920}
             height={1080}

@@ -2,6 +2,7 @@ import Header from "@/components/header";
 import Features from "@/components/features";
 import Sell from "@/components/sell";
 import Templates from "@/components/templates";
+import PricingSection from "@/components/pricing";
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
         <Features />
         <Sell />
         <Templates />
+        <PricingSection />
       </main>
     </div>
   );
