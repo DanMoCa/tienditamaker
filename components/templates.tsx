@@ -63,7 +63,10 @@ export default function Templates() {
   ];
 
   return (
-    <section className="min-h-screen bg-neutral-900 text-white p-8 flex flex-col justify-center">
+    <section
+      className="min-h-screen bg-neutral-900 text-white p-8 flex flex-col justify-center"
+      id="plantillas"
+    >
       <h1 className="text-4xl text-center font-bold mb-8">
         encuentra la plantilla perfecta para tu negocio
       </h1>

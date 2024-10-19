@@ -4,7 +4,7 @@ import FeaturesCards from "@/components/features-cards";
 
 export default function Features() {
   return (
-    <div className="bg-neutral-900 min-h-screen">
+    <section className="bg-neutral-900 min-h-screen" id="proveedores">
       <div className="container mx-auto flex flex-col h-full py-8 sm:py-12 md:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 gap-6 sm:gap-8 md:gap-10">
         <h2 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
           la plataforma para hacer{" "}
@@ -16,6 +16,6 @@ export default function Features() {
         </h3>
         <FeaturesCards />
       </div>
-    </div>
+    </section>
   );
 }

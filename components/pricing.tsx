@@ -45,7 +45,7 @@ const plans = [
 
 export default function PricingSection() {
   return (
-    <section className="py-16">
+    <section className="py-16" id="precios">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-12">
           sencillo, transparente y accesible

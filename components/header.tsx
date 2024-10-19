@@ -36,9 +36,9 @@ export default function Header() {
             tienditamaker
           </Link>
           <div className="hidden md:flex space-x-6 flex-1 justify-center">
-            <NavItem text="proveedores" hasDropdown />
-            <NavItem text="plantillas" />
-            <NavItem text="precios" />
+            <NavItem text="proveedores" hasDropdown href="#proveedores" />
+            <NavItem text="plantillas" href="#plantillas" />
+            <NavItem text="precios" href="#precios" />
           </div>
           <div className="hidden md:flex items-center space-x-4 text-base sm:text-xl font-semibold">
             <Link href="/api/auth/signin" className="text-white">
@@ -112,7 +112,7 @@ export default function Header() {
             crea, administra y escala tu tienda en tienditamaker.
           </p>
           <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
-            <Link href="/">
+            <Link href="/api/auth/signin">
               <Button
                 variant="secondary"
                 className="text-black text-lg sm:text-xl p-4 sm:p-6 bg-[#a3eef5] font-extrabold hover:bg-[#a3eef5]/80 w-full sm:w-auto"
@@ -130,16 +130,20 @@ export default function Header() {
 function NavItem({
   text,
   hasDropdown = false,
+  href,
 }: {
   text: string;
   hasDropdown?: boolean;
+  href?: string;
 }) {
   return (
     <div className="relative group">
-      <button className="text-foreground flex items-center text-white">
-        {text}
-        {hasDropdown && <ChevronDown className="ml-1 h-4 w-4" />}
-      </button>
+      <Link href={href!}>
+        <button className="text-foreground flex items-center text-white">
+          {text}
+          {hasDropdown && <ChevronDown className="ml-1 h-4 w-4" />}
+        </button>
+      </Link>
     </div>
   );
 }
