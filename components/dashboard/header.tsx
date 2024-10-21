@@ -5,9 +5,25 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, User } from "lucide-react";
+import {
+  Cloud,
+  CreditCard,
+  Github,
+  Keyboard,
+  LifeBuoy,
+  LogOut,
+  Mail,
+  MessageSquare,
+  Plus,
+  PlusCircle,
+  Settings,
+  User,
+  UserPlus,
+  Users,
+} from "lucide-react";
 import { MobileHeader } from "./mobile-header";
 import { signOut, useSession } from "next-auth/react";
 
@@ -43,6 +59,12 @@ export function Header({
           <DropdownMenuLabel>
             <span>hola {session?.user?.name?.toLowerCase()}</span>
           </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem>
+            <LifeBuoy className="mr-2 h-4 w-4" />
+            <span>ayuda</span>
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => signOut()}>
             <LogOut className="mr-2 h-4 w-4" />
             <span>cerrar sesión</span>

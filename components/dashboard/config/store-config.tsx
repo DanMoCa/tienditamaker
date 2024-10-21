@@ -141,8 +141,8 @@ export default function StoreConfigDashboard() {
           </div>
         </form>
       </div>
-      <div>
-        <Button type="submit" onClick={handleSubmit} className="w-full">
+      <div className="py-4">
+        <Button type="submit" onClick={handleSubmit}>
           guardar cambios
         </Button>
       </div>
