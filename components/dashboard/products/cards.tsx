@@ -51,7 +51,7 @@ export default function Component() {
           </CardContent>
           <CardFooter>
             <Button className="w-full">
-              <ShoppingBag className="mr-2 h-4 w-4" /> agregar al carrito
+              <ShoppingBag className="mr-2 h-4 w-4" /> agregar a mi tienda
             </Button>
           </CardFooter>
         </Card>

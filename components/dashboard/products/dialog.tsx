@@ -49,7 +49,7 @@ export default function Component() {
 
   return (
     <div className="flex justify-between items-center mb-6">
-      <h1 className="text-3xl font-bold">gestión de productos</h1>
+      <h1 className="text-3xl font-bold"></h1>
       <Dialog open={dialogoAbierto} onOpenChange={setDialogoAbierto}>
         <DialogTrigger asChild>
           <Button>
