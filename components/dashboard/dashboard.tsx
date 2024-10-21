@@ -38,9 +38,7 @@ const productosMasVendidos = [
 
 export default function Analisis() {
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Análisis de Ventas</h1>
-
+    <div className="container">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

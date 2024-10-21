@@ -6,8 +6,8 @@ export default function Component() {
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title="pedidos"
-          description="revisa y gestiona los pedidos de tu tienda"
+          title="dashboard"
+          description="análisis y estadísticas de tu tienda"
         />
       </div>
       <Separator />
