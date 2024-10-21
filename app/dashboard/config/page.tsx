@@ -5,7 +5,7 @@ import HeadingConfig from "@/components/dashboard/config/heading-config";
 export default function Page() {
   const breadcrumbItems = [
     { title: "dashboard", link: "/dashboard" },
-    { title: "config", link: "/dashboard/config" },
+    { title: "configuración", link: "/dashboard/config" },
   ];
   return (
     <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">

@@ -1,6 +1,4 @@
 import {
-  BarChart,
-  ChevronLeft,
   HelpCircle,
   LayoutDashboard,
   Package,
@@ -15,7 +13,6 @@ const sidebarItems = [
   { icon: LayoutDashboard, label: "general", href: "/dashboard" },
   { icon: Package, label: "productos", href: "/dashboard/products" },
   { icon: ShoppingCart, label: "pedidos", href: "/dashboard/orders" },
-  { icon: HelpCircle, label: "ayuda", href: "/dashboard/help" },
   { icon: Settings, label: "configuracion", href: "/dashboard/config" },
 ];
 

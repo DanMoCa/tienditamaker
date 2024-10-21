@@ -1,5 +1,4 @@
 "use client";
-import ProductsDialog from "@/components/dashboard/products/dialog";
 import ProductsCards from "@/components/dashboard/products/cards";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import HeadingProducts from "@/components/dashboard/products/heading-products";
@@ -13,7 +12,6 @@ export default function Products() {
     <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
       <Breadcrumbs items={breadcrumbItems} />
       <HeadingProducts />
-      <ProductsDialog />
       <ProductsCards />
     </div>
   );

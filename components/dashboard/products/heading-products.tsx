@@ -1,6 +1,6 @@
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
-import React from "react";
+import ProductsDialog from "@/components/dashboard/products/dialog";
 
 export default function Component() {
   return (
@@ -10,6 +10,7 @@ export default function Component() {
           title="productos"
           description="administra los productos de tu tienda"
         />
+        <ProductsDialog />
       </div>
       <Separator />
     </>

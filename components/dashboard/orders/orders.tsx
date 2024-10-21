@@ -92,7 +92,6 @@ export default function GestionPedidos() {
 
   return (
     <div className="container">
-      <h1 className="text-3xl font-bold mb-6">Gestión de Pedidos</h1>
       <div className="space-y-4">
         {pedidos.map((pedido) => (
           <Card key={pedido.id}>
