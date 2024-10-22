@@ -1,15 +1,36 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ChevronDown, LogOut, Menu, User, X } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { signOut, useSession } from "next-auth/react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
+import {
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "./ui/dropdown-menu";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<string | null>(null);
+
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    if (session) {
+      setUser(session.user?.name || null);
+    }
+  }, [session]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,17 +62,41 @@ export default function Header() {
             <NavItem text="precios" href="#precios" />
           </div>
           <div className="hidden md:flex items-center space-x-4 text-base sm:text-xl font-semibold">
-            <Link href="/api/auth/signin" className="text-white">
-              ingresar
-            </Link>
-            <Link href="/api/auth/signin">
-              <Button
-                variant="outline"
-                className="text-sm sm:text-lg font-bold bg-[#a3eef5] hover:bg-[#a3eef5]/80 text-black"
-              >
-                prueba gratuita
-              </Button>
-            </Link>
+            {user ? (
+              <>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <span className="text-white cursor-pointer">
+                      hola, {user.toLowerCase()}
+                    </span>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56">
+                    <DropdownMenuItem>
+                      <User />
+                      <span>dashboard</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => signOut()}>
+                      <LogOut />
+                      <span>cerrar sesión</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              <>
+                <Link href="/api/auth/signin" className="text-white">
+                  ingresar
+                </Link>
+                <Link href="/api/auth/signin">
+                  <Button
+                    variant="outline"
+                    className="text-sm sm:text-lg font-bold bg-[#a3eef5] hover:bg-[#a3eef5]/80 text-black"
+                  >
+                    prueba gratuita
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
