@@ -36,33 +36,30 @@ export default function Component({
       <Dialog open={dialogoAbierto} onOpenChange={setDialogoAbierto}>
         <DialogTrigger asChild>{children}</DialogTrigger>
         <DialogContent className="">
-          {
-            // Si no hay sesión, mostrar un mensaje de error
-            !session ? (
-              <LoginToPay />
-            ) : (
-              // Mostrar el contenido normal del diálogo si hay sesión
-              <div className="space-y-6">
-                <DialogHeader>
-                  <DialogTitle>bienvenido al plan {planType}</DialogTitle>
-                </DialogHeader>
-                <Elements
-                  stripe={stripePromise}
-                  options={{
-                    mode: "payment",
-                    currency: "mxn",
-                    amount: convertToSubCurrency(planPrice),
-                    appearance: {
-                      theme: "night",
-                      labels: "floating",
-                    },
-                  }}
-                >
-                  <CheckoutPage amount={planPrice} />
-                </Elements>
-              </div>
-            )
-          }
+          {!session ? (
+            <LoginToPay />
+          ) : (
+            <div className="space-y-6">
+              <DialogHeader>
+                <DialogTitle>bienvenido al plan {planType}</DialogTitle>
+              </DialogHeader>
+              <Elements
+                stripe={stripePromise}
+                options={{
+                  mode: "payment",
+                  currency: "mxn",
+                  locale: "es",
+                  amount: convertToSubCurrency(planPrice),
+                  appearance: {
+                    theme: "night",
+                    labels: "floating",
+                  },
+                }}
+              >
+                <CheckoutPage amount={planPrice} />
+              </Elements>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>

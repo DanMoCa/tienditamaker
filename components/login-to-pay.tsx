@@ -15,7 +15,7 @@ export default function Component() {
       <div className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">
-            Inicia sesión para pagar
+            inicia sesión para pagar
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -23,19 +23,19 @@ export default function Component() {
             <LogIn className="w-16 h-16 text-blue-500" />
           </div>
           <p className="text-center text-gray-600">
-            Para continuar con el pago de tu plan, necesitas iniciar sesión en
+            para continuar con el pago de tu plan, necesitas iniciar sesión en
             tu cuenta.
           </p>
           <div className="p-4 rounded-lg">
-            <h3 className="font-semibold text-lg mb-2">Detalles del plan:</h3>
+            <h3 className="font-semibold text-lg mb-2">detalles del plan:</h3>
             <ul className="space-y-2">
               <li className="flex items-center">
                 <Zap className="w-5 h-5 mr-2 text-yellow-500" />
-                Acceso premium a todas las funciones
+                acceso premium a todas las funciones
               </li>
               <li className="flex items-center">
                 <ShieldCheck className="w-5 h-5 mr-2 text-green-500" />
-                Soporte prioritario 24/7
+                soporte prioritario 24/7
               </li>
             </ul>
           </div>
@@ -43,15 +43,12 @@ export default function Component() {
         <CardFooter className="flex justify-center">
           <Button
             className="w-full max-w-xs"
-            onClick={
-              // Redirigir a la página de inicio de sesión
-              () => {
-                window.location.href = "/api/auth/signin";
-              }
-            }
+            onClick={() => {
+              window.location.href = "/api/auth/signin";
+            }}
           >
             <LogIn className="w-4 h-4 mr-2" />
-            Iniciar sesión
+            iniciar sesión
           </Button>
         </CardFooter>
       </div>

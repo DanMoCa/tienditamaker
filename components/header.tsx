@@ -11,13 +11,7 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
-import {
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-} from "./ui/dropdown-menu";
+import { DropdownMenuContent, DropdownMenuItem } from "./ui/dropdown-menu";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -84,15 +78,12 @@ export default function Header() {
               </>
             ) : (
               <>
-                <Link href="/api/auth/signin" className="text-white">
-                  ingresar
-                </Link>
                 <Link href="/api/auth/signin">
                   <Button
                     variant="outline"
                     className="text-sm sm:text-lg font-bold bg-[#a3eef5] hover:bg-[#a3eef5]/80 text-black"
                   >
-                    prueba gratuita
+                    ingresar
                   </Button>
                 </Link>
               </>
@@ -116,23 +107,37 @@ export default function Header() {
                 >
                   tienditamaker
                 </Link>
-                <NavItem text="proveedores" hasDropdown />
-                <NavItem text="plantillas" />
-                <NavItem text="precios" />
-                <Link
-                  href="/api/auth/signin"
-                  className="text-foreground font-semibold text-white"
-                >
-                  ingresar
-                </Link>
-                <Link href="/api/auth/signin">
-                  <Button
-                    variant="outline"
-                    className="w-full text-lg font-bold bg-[#a3eef5] hover:bg-[#a3eef5]/80 text-black"
-                  >
-                    prueba gratuita
-                  </Button>
-                </Link>
+                <NavItem text="proveedores" hasDropdown href="#proveedores" />
+                <NavItem text="plantillas" href="#plantillas" />
+                <NavItem text="precios" href="#precios" />
+                {user ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <span className="text-white cursor-pointer">
+                        hola, {user.toLowerCase()}
+                      </span>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56">
+                      <DropdownMenuItem>
+                        <User />
+                        <span>dashboard</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => signOut()}>
+                        <LogOut />
+                        <span>cerrar sesión</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : (
+                  <Link href="/api/auth/signin">
+                    <Button
+                      variant="outline"
+                      className="w-full text-lg font-bold bg-[#a3eef5] hover:bg-[#a3eef5]/80 text-black"
+                    >
+                      ingresar
+                    </Button>
+                  </Link>
+                )}
               </nav>
             </SheetContent>
           </Sheet>
