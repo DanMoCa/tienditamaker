@@ -1,6 +1,5 @@
-import * as React from "react";
+"use client";
 import { Check } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import DialogStripe from "@/components/dialog-stripe";
 
 const plans = [
   {
@@ -82,16 +82,18 @@ export default function PricingSection() {
                 </ul>
               </CardContent>
               <CardFooter>
-                <Button
-                  className={`w-full ${
-                    plan.popular
-                      ? "bg-[#a3eef5] hover:bg-[#a3eef5]/80 text-black"
-                      : ""
-                  }`}
-                  variant={plan.popular ? "default" : "outline"}
-                >
-                  {plan.cta}
-                </Button>
+                <DialogStripe plan={plan.popular!}>
+                  <Button
+                    className={`w-full ${
+                      plan.popular
+                        ? "bg-[#a3eef5] hover:bg-[#a3eef5]/80 text-black"
+                        : ""
+                    }`}
+                    variant={plan.popular ? "default" : "outline"}
+                  >
+                    {plan.cta}
+                  </Button>
+                </DialogStripe>
               </CardFooter>
             </Card>
           ))}
