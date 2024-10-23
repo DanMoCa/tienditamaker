@@ -1,8 +1,17 @@
-import mongoose, { Schema, model } from "mongoose";
+import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
-  email: String,
-  isPaidUser: { type: Boolean, default: false }, // Nuevo campo para indicar si es de pago
-  stripeCustomerId: String, // ID del cliente de Stripe para enlazar con sus pagos
-  subscriptionStatus: { type: String, default: "inactive" }, // Puede ser 'active' o 'inactive'
-});
+const userSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    image: { type: String },
+    isPaidUser: {
+      type: String,
+      enum: ["free", "initial", "lifetime"],
+      default: "free",
+    },
+  },
+  { timestamps: true }
+);
+
+export default mongoose.models.User || mongoose.model("User", userSchema);

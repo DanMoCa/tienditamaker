@@ -8,8 +8,11 @@ import {
 } from "@stripe/react-stripe-js";
 import convertToSubCurrency from "@/lib/converToSubcurrency";
 import { Button } from "./ui/button";
+import { useSession } from "next-auth/react";
 
 export const CheckoutPage = ({ amount }: { amount: number }) => {
+  const { data: session } = useSession();
+
   const stripe = useStripe();
   const elements = useElements();
 
@@ -23,7 +26,10 @@ export const CheckoutPage = ({ amount }: { amount: number }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ amount: convertToSubCurrency(amount) }),
+      body: JSON.stringify({
+        amount: convertToSubCurrency(amount),
+        email: session?.user?.email,
+      }),
     })
       .then((res) => res.json())
       .then((data) => {
