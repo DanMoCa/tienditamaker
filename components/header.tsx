@@ -65,10 +65,12 @@ export default function Header() {
                     </span>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56">
-                    <DropdownMenuItem>
-                      <User />
-                      <span>dashboard</span>
-                    </DropdownMenuItem>
+                    <Link href="/dashboard">
+                      <DropdownMenuItem>
+                        <User />
+                        <span>dashboard</span>
+                      </DropdownMenuItem>
+                    </Link>
                     <DropdownMenuItem onClick={() => signOut()}>
                       <LogOut />
                       <span>cerrar sesión</span>
@@ -118,10 +120,12 @@ export default function Header() {
                       </span>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">
-                      <DropdownMenuItem>
-                        <User />
-                        <span>dashboard</span>
-                      </DropdownMenuItem>
+                      <Link href="/dashboard">
+                        <DropdownMenuItem>
+                          <User />
+                          <span>dashboard</span>
+                        </DropdownMenuItem>
+                      </Link>
                       <DropdownMenuItem onClick={() => signOut()}>
                         <LogOut />
                         <span>cerrar sesión</span>

@@ -18,6 +18,8 @@ import {
   ShoppingCart,
   Users,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import StoreInfoDialog from "./dialog-first";
 
 const ventasPorMes = [
   { name: "Ene", ventas: 4000 },
@@ -37,8 +39,21 @@ const productosMasVendidos = [
 ];
 
 export default function Analisis() {
+  const [isFirstVisit, setIsFirstVisit] = useState(true); // Estado para verificar la primera visita
+
+  useEffect(() => {
+    const hasVisited = localStorage.getItem("hasVisited");
+    if (hasVisited) {
+      setIsFirstVisit(false); // No es la primera visita
+    } else {
+      localStorage.setItem("hasVisited", "true"); // Marcar como visitado
+    }
+  }, []);
   return (
     <div className="container">
+      {isFirstVisit && (
+        <StoreInfoDialog onClose={() => setIsFirstVisit(false)} />
+      )}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
