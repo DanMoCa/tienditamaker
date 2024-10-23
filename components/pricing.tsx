@@ -11,6 +11,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import DialogStripe from "@/components/dialog-stripe";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 const plans = [
   {
@@ -39,11 +42,22 @@ const plans = [
       "descuentos exclusivos para otros servicios relacionados (marketing, envíos, etc.)",
     ],
     cta: "¡obtenlo ya!",
-    popular: true,
   },
 ];
 
 export default function PricingSection() {
+  const router = useRouter();
+  const { status } = useSession();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      const redirectPath = localStorage.getItem("redirectAfterLogin");
+      if (redirectPath) {
+        router.push(redirectPath);
+      }
+    }
+  }, [status, router]);
+
   return (
     <section className="py-16" id="precios">
       <div className="container mx-auto px-4">
@@ -55,7 +69,7 @@ export default function PricingSection() {
           {plans.map((plan) => (
             <Card
               key={plan.name}
-              className={cn(plan.popular && "border-primary shadow-lg")}
+              className={cn(plan.name && "border-primary shadow-lg")}
             >
               <CardHeader>
                 <CardTitle className="text-2xl">{plan.name}</CardTitle>
@@ -65,7 +79,7 @@ export default function PricingSection() {
                 <div className="mb-4">
                   <span
                     className={`text-4xl font-extrabold ${
-                      plan.popular ? "text-[#a3eef5]" : ""
+                      plan.name == "de por vida" ? "text-[#a3eef5]" : ""
                     }`}
                   >
                     {plan.price}
@@ -82,14 +96,14 @@ export default function PricingSection() {
                 </ul>
               </CardContent>
               <CardFooter>
-                <DialogStripe plan={plan.popular!}>
+                <DialogStripe plan={plan.name!}>
                   <Button
                     className={`w-full ${
-                      plan.popular
+                      plan.name == "de por vida"
                         ? "bg-[#a3eef5] hover:bg-[#a3eef5]/80 text-black"
                         : ""
                     }`}
-                    variant={plan.popular ? "default" : "outline"}
+                    variant={plan.name == "de por vida" ? "default" : "outline"}
                   >
                     {plan.cta}
                   </Button>

@@ -17,7 +17,6 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  //   redirect to dashboard callback
   callbacks: {
     redirect: async ({ url, baseUrl }) => {
       return baseUrl + "/";

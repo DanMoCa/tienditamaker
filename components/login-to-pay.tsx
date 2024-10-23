@@ -8,8 +8,21 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { LogIn, ShieldCheck, Zap } from "lucide-react";
+import { signIn } from "next-auth/react";
 
-export default function Component() {
+export default function Component({ plan }: { plan: string }) {
+  const handleSignIn = async () => {
+    try {
+      localStorage.setItem("redirectAfterLogin", "/#precios");
+      localStorage.setItem("plan", plan);
+
+      await signIn("google", {
+        callbackUrl: window.location.origin,
+      });
+    } catch (error) {
+      console.error("Error during sign in:", error);
+    }
+  };
   return (
     <div className="flex items-center justify-center">
       <div className="w-full max-w-md">
@@ -41,12 +54,7 @@ export default function Component() {
           </div>
         </CardContent>
         <CardFooter className="flex justify-center">
-          <Button
-            className="w-full max-w-xs"
-            onClick={() => {
-              window.location.href = "/api/auth/signin";
-            }}
-          >
+          <Button className="w-full max-w-xs" onClick={handleSignIn}>
             <LogIn className="w-4 h-4 mr-2" />
             iniciar sesión
           </Button>

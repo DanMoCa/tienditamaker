@@ -1,17 +1,13 @@
-import mongoose, { Schema, model } from "mongoose";
+// models/Tienda.js
+import mongoose from "mongoose";
 
 const TiendaSchema = new mongoose.Schema({
-  nombre: { type: String, required: true },
   subdominio: { type: String, required: true, unique: true },
-  template: { type: String, required: true },
-  estadoSubscripcion: {
-    type: String,
-    enum: ["activo", "inactivo"],
-    default: "inactivo",
-  },
-  fechaCreacion: { type: Date, default: Date.now },
+  nombre: { type: String, required: true },
+  colores: { type: Object, required: true },
+  logo: { type: String },
+  eslogan: { type: String },
+  template: { type: String, required: true }, // Nombre del template de Sanity
 });
 
-const Tienda = mongoose.model("Tienda", TiendaSchema);
-
-module.exports = Tienda;
+export default mongoose.models.Tienda || mongoose.model("Tienda", TiendaSchema);
