@@ -15,15 +15,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Store, ShoppingBag, Package, Eye } from "lucide-react";
-import dbConnect from "@/config/database";
 
 export default function StoreInfoDialog({ onClose }: { onClose: () => void }) {
-  async function handleCreateStore() {
-    // Conectar a MongoDB
-    await dbConnect();
-    // Aquí puedes agregar la lógica para crear la tienda
-  }
-
   const [storeData, setStoreData] = useState({
     nombre: "",
     eslogan: "",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/accordion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertCircle, Mail, Phone } from "lucide-react";
+import { useUser } from "@/contexts/user-context";
+import { useRouter } from "next/navigation";
 
 const faqs = [
   {
@@ -72,6 +74,26 @@ export default function SeccionAyuda() {
     setEmail("");
     setMensaje("");
   };
+
+  const { user, loading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && user) {
+      if (user.isPaidUser === "free") {
+        // Redirige a la página de inicio o a una página de actualización
+        router.push("/upgrade"); // Cambia "/upgrade" a la ruta que desees
+      }
+    }
+  }, [loading, user, router]);
+
+  if (loading) {
+    return <p>Cargando...</p>;
+  }
+
+  if (!user) {
+    return <p>No estás autenticado. Por favor, inicia sesión.</p>;
+  }
 
   return (
     <div className="container mx-auto p-4">
