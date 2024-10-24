@@ -38,7 +38,7 @@ const productosMasVendidos = [
   { name: "Sudadera", ventas: 600 },
 ];
 
-export default function Analisis() {
+export default function Dashboard() {
   const [isFirstVisit, setIsFirstVisit] = useState(true); // Estado para verificar la primera visita
 
   useEffect(() => {

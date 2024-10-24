@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import dbConnect from "@/config/database";
 import User from "@/models/user";
+import Shop from "@/models/shop";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
@@ -73,9 +74,26 @@ export async function POST(req: NextRequest) {
 
       console.log(`✅ Successfully updated user ${email} to ${isPaidUser}`); // Debug log
 
+      const nuevaTienda = await Shop.create({
+        subdominio: "",
+        nombre: `tiendita de ${updatedUser.name}`,
+        colores: [
+          { nombre: "colorPrimario", valor: "#fff" },
+          { nombre: "colorSecundario", valor: "#000" },
+        ],
+        logo: "",
+        eslogan: `la mejor tienda de ${updatedUser.name}`,
+        template: "default",
+        user: updatedUser._id, // Relacionar la tienda con el usuario
+      });
+
+      console.log(`✅ Tienda creada`); // Debug log
+
       return NextResponse.json({
         status: "success",
-        message: `User ${updatedUser.email} updated to ${isPaidUser} plan`,
+        message:
+          `User ${updatedUser.email} updated to ${isPaidUser} plan` +
+          ` and new store created`,
       });
     }
 
