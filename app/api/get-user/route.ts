@@ -6,7 +6,7 @@ import User from "@/models/user";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     // En Next 13, necesitamos pasar el request completo al getToken
     const token = await getToken({
