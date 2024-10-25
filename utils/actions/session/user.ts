@@ -14,3 +14,16 @@ export async function getUserIdByEmail(email: string) {
     return null;
   }
 }
+
+export async function getUserDataByEmail(email: any) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    return user;
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    return null;
+  }
+}

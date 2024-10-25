@@ -1,15 +1,10 @@
-// context/UserContext.tsx
+// TODO: FIX THIS FILE TO USE THE CORRECT USER TYPE
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-
-interface User {
-  email: string;
-  name: string;
-  userType: "free" | "initial" | "lifetime";
-}
+import { getUserDataByEmail } from "../actions/session/user";
 
 interface UserContextType {
-  user: User | null;
+  userType: "free" | "initial" | "lifetime" | null;
   loading: boolean;
 }
 
@@ -19,30 +14,27 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const { data: session, status } = useSession();
-  const [user, setUser] = useState<User | null>(null);
+  const [userType, setUserType] = useState<
+    "free" | "initial" | "lifetime" | null
+  >(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
       if (session) {
-        const response = await fetch("/api/get-user", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: session.user?.email }),
-        });
-        const data = await response.json();
-        setUser(data.user);
+        const user = await getUserDataByEmail(session.user?.email as string);
+        if (user) {
+          setUserType(user.userType as "free" | "initial" | "lifetime");
+        }
       }
       setLoading(false);
     };
 
     fetchUser();
-  }, [session]);
+  }, [session, status]);
 
   return (
-    <UserContext.Provider value={{ user, loading }}>
+    <UserContext.Provider value={{ loading, userType }}>
       {children}
     </UserContext.Provider>
   );

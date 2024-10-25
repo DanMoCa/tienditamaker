@@ -6,10 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/utils/hooks/use-toast";
-import { getStoreConfigByUser } from "@/utils/actions/shops/store-config";
 import { updateStoreConfig } from "@/utils/actions/shops/store-config";
 import { useSession } from "next-auth/react";
-import { getUserIdByEmail } from "@/utils/actions/session/get-id";
+import { getUserIdByEmail } from "@/utils/actions/session/user";
 
 export default function StoreConfigDashboard() {
   const { data: session } = useSession();
@@ -24,22 +23,6 @@ export default function StoreConfigDashboard() {
     colors: ["#000000", "#ffffff"],
     logoUrl: "",
   });
-
-  // const fetchStoreConfig = async () => {
-  //   if (userId) {
-  //     const store = await getStoreConfigByUser(userId);
-  //     if (store) {
-  //       setConfig({
-  //         name: store.name,
-  //         subdomain: store.subdomain,
-  //         slogan: store.slogan,
-  //         description: store.description,
-  //         colors: [store.colors[0], store.colors[1]],
-  //         logoUrl: store.logo,
-  //       });
-  //     }
-  //   }
-  // };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
