@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { Header } from "@/components/dashboard/header";
-import { UserProvider } from "@/contexts/user-context";
+import { UserProvider } from "@/utils/contexts/user-context";
 
 export default function DashboardLayout({
   children,

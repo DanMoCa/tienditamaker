@@ -2,7 +2,7 @@
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import HeadingOrders from "@/components/dashboard/orders/heading-orders";
 import OrdersComponent from "@/components/dashboard/orders/orders";
-import { useUser } from "@/contexts/user-context";
+import { useUser } from "@/utils/contexts/user-context";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -22,7 +22,7 @@ export default function Orders() {
       try {
         // Si ya no está cargando y tenemos información del usuario
         if (!loading && user) {
-          if (user.isPaidUser === "free") {
+          if (user.userType === "free") {
             router.push("/upgrade");
             return;
           }

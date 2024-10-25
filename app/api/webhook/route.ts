@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import dbConnect from "@/config/database";
-import User from "@/models/user";
-import Shop from "@/models/shop";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
@@ -42,57 +42,58 @@ export async function POST(req: NextRequest) {
         throw new Error("No user email found in payment intent metadata");
       }
 
-      // Conectar a MongoDB
-      await dbConnect();
-
       // Determinar el tipo de usuario basado en el monto
-      let isPaidUser: "free" | "initial" | "lifetime";
+      let userType: "free" | "initial" | "lifetime";
       if (amount === 59900) {
-        isPaidUser = "initial";
+        userType = "initial";
       } else if (amount === 249900) {
-        isPaidUser = "lifetime";
+        userType = "lifetime";
       } else {
         console.error("❌ Invalid amount:", amount); // Debug log
         throw new Error("Invalid payment amount");
       }
 
       console.log(
-        `💰 Processing payment for ${email} with amount ${amount} to type ${isPaidUser}`
+        `💰 Processing payment for ${email} with amount ${amount} to type ${userType}`
       ); // Debug log
 
       // Actualizar el usuario en la base de datos
-      const updatedUser = await User.findOneAndUpdate(
-        { email: email },
-        { isPaidUser: isPaidUser },
-        { new: true }
-      );
+      const updatedUser = await prisma.user.update({
+        where: { email },
+        data: { userType: userType },
+      });
 
       if (!updatedUser) {
         console.error("❌ User not found for email:", email); // Debug log
         throw new Error("User not found");
       }
 
-      console.log(`✅ Successfully updated user ${email} to ${isPaidUser}`); // Debug log
+      console.log(`✅ Successfully updated user ${email} to ${userType}`); // Debug log
 
-      const nuevaTienda = await Shop.create({
-        subdominio: "",
-        nombre: `tiendita de ${updatedUser.name}`,
-        colores: [
-          { nombre: "colorPrimario", valor: "#fff" },
-          { nombre: "colorSecundario", valor: "#000" },
-        ],
-        logo: "",
-        eslogan: `la mejor tienda de ${updatedUser.name}`,
-        template: "default",
-        user: updatedUser._id, // Relacionar la tienda con el usuario
+      const newStore = await prisma.store.create({
+        data: {
+          name: `tiendita de ${updatedUser.name}`,
+          subdomain: "",
+          description: `La mejor tienda de ${updatedUser.name}`,
+          colors: ["#fff", "#000"],
+          slogan: `la mejor tienda de ${updatedUser.name}`,
+          logo: "",
+          template: "default",
+          user: { connect: { email: updatedUser.email } },
+        },
       });
+
+      if (!newStore) {
+        console.error("❌ Store creation failed for user:", updatedUser.email); // Debug log
+        throw new Error("Store creation failed");
+      }
 
       console.log(`✅ Tienda creada`); // Debug log
 
       return NextResponse.json({
         status: "success",
         message:
-          `User ${updatedUser.email} updated to ${isPaidUser} plan` +
+          `User ${updatedUser.email} updated to ${userType} plan` +
           ` and new store created`,
       });
     }

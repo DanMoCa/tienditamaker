@@ -1,5 +1,5 @@
 import { SidebarContent } from "./sidebar-content";
-import { useSidebar } from "@/hooks/use-sidebar";
+import { useSidebar } from "@/utils/hooks/use-sidebar";
 import { ChevronLeft } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";

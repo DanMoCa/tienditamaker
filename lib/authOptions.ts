@@ -1,7 +1,8 @@
-import dbConnect from "@/config/database";
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import User from "@/models/user";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -20,21 +21,25 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile }) {
-      await dbConnect(); // Conectar a la base de datos
-      // Guardar el usuario en la base de datos
-      const existingUser = await User.findOne({ email: user.email });
-      if (!existingUser) {
-        await User.create({
-          name: user.name,
-          email: user.email,
-          image: user.image,
+    async signIn({ user }) {
+      if (user.email) {
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email },
         });
+        if (!existingUser) {
+          await prisma.user.create({
+            data: {
+              name: user.name!,
+              email: user.email!,
+              image: user.image!,
+            },
+          });
+        }
       }
       return true;
     },
 
-    redirect: async ({ url, baseUrl }) => {
+    redirect: async ({ baseUrl }) => {
       return baseUrl + "/";
     },
   },

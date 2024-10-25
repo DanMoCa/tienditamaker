@@ -11,17 +11,9 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  DollarSign,
-  ShoppingCart,
-  Users,
-} from "lucide-react";
+import { ArrowUpIcon, DollarSign, ShoppingCart, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import StoreInfoDialog from "./dialog-first";
-import { useSession } from "next-auth/react";
-import useProfile from "@/hooks/use-profile";
 
 const ventasPorMes = [
   { name: "Ene", ventas: 4000 },

@@ -2,7 +2,7 @@
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import StoreConfigDashboard from "@/components/dashboard/config/store-config";
 import HeadingConfig from "@/components/dashboard/config/heading-config";
-import { useUser } from "@/contexts/user-context";
+import { useUser } from "@/utils/contexts/user-context";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -22,8 +22,8 @@ export default function Page() {
       try {
         // Si ya no está cargando y tenemos información del usuario
         if (!loading && user) {
-          if (user.isPaidUser === "free") {
-            router.push("/upgrade");
+          if (user.userType === "free") {
+            // router.push("/upgrade");
             return;
           }
           setSessionChecked(true);

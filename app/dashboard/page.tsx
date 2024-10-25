@@ -4,7 +4,7 @@ import HeadingDashboard from "@/components/dashboard/heading-dashboard";
 import DashboardComponent from "@/components/dashboard/dashboard";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUser } from "@/contexts/user-context";
+import { useUser } from "@/utils/contexts/user-context";
 
 export default function Dashboard() {
   const breadcrumbItems = [{ title: "dashboard", link: "/dashboard" }];
@@ -18,7 +18,7 @@ export default function Dashboard() {
       try {
         // Si ya no está cargando y tenemos información del usuario
         if (!loading && user) {
-          if (user.isPaidUser === "free") {
+          if (user.userType === "free") {
             router.push("/upgrade");
             return;
           }

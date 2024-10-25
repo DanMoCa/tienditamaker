@@ -2,7 +2,7 @@
 import ProductsCards from "@/components/dashboard/products/cards";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import HeadingProducts from "@/components/dashboard/products/heading-products";
-import { useUser } from "@/contexts/user-context";
+import { useUser } from "@/utils/contexts/user-context";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -21,7 +21,7 @@ export default function Products() {
       try {
         // Si ya no está cargando y tenemos información del usuario
         if (!loading && user) {
-          if (user.isPaidUser === "free") {
+          if (user.userType === "free") {
             router.push("/upgrade");
             return;
           }

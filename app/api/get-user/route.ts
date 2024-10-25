@@ -1,8 +1,9 @@
 // app/api/user/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-import dbConnect from "@/config/database";
-import User from "@/models/user";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export const dynamic = "force-dynamic";
 
@@ -18,9 +19,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
-    await dbConnect();
-
-    const user = await User.findOne({ email: token.email });
+    const user = await prisma.user.findUnique({
+      where: { email: token.email! },
+    });
 
     if (!user) {
       return NextResponse.json(

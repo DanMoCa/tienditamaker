@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/accordion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertCircle, Mail, Phone } from "lucide-react";
-import { useUser } from "@/contexts/user-context";
+import { useUser } from "@/utils/contexts/user-context";
 import { useRouter } from "next/navigation";
 
 const faqs = [
@@ -80,7 +80,7 @@ export default function SeccionAyuda() {
 
   useEffect(() => {
     if (!loading && user) {
-      if (user.isPaidUser === "free") {
+      if (user.userType === "free") {
         // Redirige a la página de inicio o a una página de actualización
         router.push("/upgrade"); // Cambia "/upgrade" a la ruta que desees
       }

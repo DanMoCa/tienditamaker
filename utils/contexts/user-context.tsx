@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 interface User {
   email: string;
   name: string;
-  isPaidUser: "free" | "initial" | "lifetime";
+  userType: "free" | "initial" | "lifetime";
 }
 
 interface UserContextType {
