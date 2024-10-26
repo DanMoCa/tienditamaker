@@ -166,14 +166,33 @@ export default function Header() {
             crea, administra y escala tu tienda en tienditamaker.
           </p>
           <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
-            <Link href="/api/auth/signin">
+            {user ? (
+              <Link href="/dashboard">
+                <Button
+                  variant="secondary"
+                  className="text-black text-lg sm:text-xl p-4 sm:p-6 bg-[#a3eef5] font-extrabold hover:bg-[#a3eef5]/80 w-full sm:w-auto"
+                >
+                  ir al dashboard
+                </Button>
+              </Link>
+            ) : (
+              <Link href="/api/auth/signin">
+                <Button
+                  variant="secondary"
+                  className="text-black text-lg sm:text-xl p-4 sm:p-6 bg-[#a3eef5] font-extrabold hover:bg-[#a3eef5]/80 w-full sm:w-auto"
+                >
+                  crear tienda
+                </Button>
+              </Link>
+            )}
+            {/* <Link href="/api/auth/signin">
               <Button
                 variant="secondary"
                 className="text-black text-lg sm:text-xl p-4 sm:p-6 bg-[#a3eef5] font-extrabold hover:bg-[#a3eef5]/80 w-full sm:w-auto"
               >
-                iniciar prueba gratuita
+                crear tienda
               </Button>
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>
