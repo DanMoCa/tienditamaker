@@ -1,29 +1,87 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+"use server";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
 
 export async function getUserIdByEmail(email: string) {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
+  const cookieStore = cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
 
-    return user?.id as number;
-  } catch (error) {
-    console.error("Error fetching user ID:", error);
-    return null;
+  try {
+    const { data, error } = await supabase
+      .from("User")
+      .select("id")
+      .eq("email", email);
+
+    if (error?.code) return error;
+
+    return data;
+  } catch (error: any) {
+    return error;
   }
 }
 
 export async function getUserDataByEmail(email: any) {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
+  const cookieStore = cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
 
-    return user;
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-    return null;
+  try {
+    const { data, error } = await supabase
+      .from("User")
+      .select()
+      .eq("email", email);
+
+    if (error?.code) return error;
+
+    return data;
+  } catch (error: any) {
+    return error;
+  }
+}
+
+export async function verifyUserType(email: string) {
+  const cookieStore = cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
+
+  try {
+    const { data, error } = await supabase
+      .from("User")
+      .select("userType")
+      .eq("email", email);
+
+    if (error?.code) return error;
+
+    return data;
+  } catch (error: any) {
+    return error;
   }
 }
