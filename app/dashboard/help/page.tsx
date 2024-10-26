@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,8 +21,6 @@ import {
 } from "@/components/ui/accordion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertCircle, Mail, Phone } from "lucide-react";
-import { useUser } from "@/utils/contexts/user-context";
-import { useRouter } from "next/navigation";
 
 const faqs = [
   {
@@ -64,6 +62,7 @@ export default function SeccionAyuda() {
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [mensaje, setMensaje] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,24 +74,8 @@ export default function SeccionAyuda() {
     setMensaje("");
   };
 
-  const { user, loading } = useUser();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!loading && user) {
-      if (user.userType === "free") {
-        // Redirige a la página de inicio o a una página de actualización
-        router.push("/upgrade"); // Cambia "/upgrade" a la ruta que desees
-      }
-    }
-  }, [loading, user, router]);
-
   if (loading) {
     return <p>Cargando...</p>;
-  }
-
-  if (!user) {
-    return <p>No estás autenticado. Por favor, inicia sesión.</p>;
   }
 
   return (
