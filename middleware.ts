@@ -16,6 +16,11 @@ export async function middleware(req: NextRequest) {
   console.log("Original pathname:", pathname);
   console.log("Base domain:", baseDomain);
 
+  // Si es la ruta principal del dominio base, permitir acceso directo
+  if (hostname === baseDomain && (pathname === "/" || pathname === "")) {
+    return NextResponse.next();
+  }
+
   // Primero, manejar rutas protegidas del dashboard
   if (pathname.startsWith("/dashboard")) {
     console.log("Checking authentication for dashboard access");
@@ -53,6 +58,7 @@ export async function middleware(req: NextRequest) {
     "login",
     "register",
     "dashboard",
+    "", // Agregamos ruta vacía para manejar la raíz
   ];
 
   // Verificar si es una ruta del sistema
