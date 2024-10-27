@@ -7,17 +7,18 @@ export async function middleware(req: NextRequest) {
   const token = await getToken({ req });
   const pathname = req.nextUrl.pathname;
   const hostname = req.headers.get("host");
-  const baseDomain =
-    process.env.NODE_ENV === "production"
-      ? process.env.BASE_DOMAIN
-      : "localhost:3000";
+  const isDevelopment = process.env.NODE_ENV === "development";
+
+  // Configuración de dominios
+  const baseDomain = isDevelopment ? "localhost:3000" : "tienditamaker.com";
 
   console.log("Original hostname:", hostname);
   console.log("Original pathname:", pathname);
+  console.log("Base domain:", baseDomain);
 
-  // Si estamos en localhost:3000, procesar tanto el dashboard como las rutas de tienda
-  if (hostname === "localhost:3000") {
-    console.log("Main domain (localhost:3000) detected");
+  // Si estamos en el dominio principal (localhost:3000 o tienditamaker.com)
+  if (hostname === baseDomain) {
+    console.log("Main domain detected:", hostname);
 
     // Check dashboard access
     if (pathname === "/dashboard" || pathname === "/dashboard/") {
@@ -79,16 +80,20 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Procesar subdominio
-  const currentHost = hostname?.replace(
-    process.env.NODE_ENV === "production"
-      ? `.${baseDomain}`
-      : ".localhost:3000",
-    ""
-  );
+  // Procesar subdominios
+  let currentHost;
+  if (isDevelopment) {
+    // Para desarrollo (localhost:3000)
+    currentHost = hostname?.replace(".localhost:3000", "");
+  } else {
+    // Para producción (tienditamaker.com)
+    currentHost = hostname?.replace(".tienditamaker.com", "");
+  }
 
   console.log("Current host after processing:", currentHost);
 
+  // Si después de procesar es el mismo que el hostname original,
+  // significa que no hay subdominio
   if (currentHost === hostname) {
     console.log("No subdomain detected");
     return NextResponse.next();
@@ -99,7 +104,7 @@ export async function middleware(req: NextRequest) {
 
   if (!response || !response.length) {
     console.log("No store found for subdomain:", currentHost);
-    return NextResponse.next();
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   const tenantSubdomain = response[0].subdomain;
@@ -112,9 +117,8 @@ export async function middleware(req: NextRequest) {
     );
   }
 
-  return NextResponse.rewrite(
-    new URL(tenantSubdomain === "/" ? "" : `tienditamaker.com`, req.url)
-  );
+  // Si no hay subdomain válido, redirigir al dominio principal
+  return NextResponse.redirect(new URL("/", req.url));
 }
 
 export const config = {
