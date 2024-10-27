@@ -1,28 +1,102 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/utils/hooks/use-toast";
-import { updateStoreConfig } from "@/utils/actions/shops/store-config";
+import {
+  getStoreConfigByUser,
+  updateStoreConfig,
+} from "@/utils/actions/store/store-config";
 import { useSession } from "next-auth/react";
 import { getUserIdByEmail } from "@/utils/actions/session/user";
 
-export default function StoreConfigDashboard() {
-  const { data: session } = useSession();
-  const userId = getUserIdByEmail(session?.user?.email as string);
+// Definir la interfaz para la configuración
+interface StoreConfig {
+  name: string;
+  subdomain: string;
+  slogan: string;
+  description: string;
+  colors: [string, string];
+  logo: string;
+}
 
+// Estado inicial con valores por defecto
+const initialConfig: StoreConfig = {
+  name: "",
+  subdomain: "",
+  slogan: "",
+  description: "",
+  colors: ["#000000", "#ffffff"],
+  logo: "",
+};
+
+export default function StoreConfigDashboard() {
+  const { data: session, status } = useSession();
+  const [userId, setUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [config, setConfig] = useState({
-    name: "",
-    subdomain: "",
-    slogan: "",
-    description: "",
-    colors: ["#000000", "#ffffff"],
-    logoUrl: "",
-  });
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [config, setConfig] = useState<StoreConfig>(initialConfig);
+
+  // Efecto para obtener el userId
+  useEffect(() => {
+    async function fetchUserId() {
+      if (session?.user?.email) {
+        try {
+          const id = await getUserIdByEmail(session.user.email);
+          console.log("User ID:", id);
+          console.log("User id type:", typeof id);
+
+          setUserId(id);
+        } catch (error) {
+          console.error("Error fetching user ID:", error);
+          toast({
+            title: "Error",
+            description: "No se pudo obtener la información del usuario",
+            variant: "destructive",
+          });
+        }
+      }
+    }
+
+    if (status === "authenticated") {
+      fetchUserId();
+    }
+  }, [session?.user?.email, status]);
+
+  // Efecto para obtener la configuración
+  useEffect(() => {
+    async function fetchStoreConfig() {
+      if (!userId) return;
+
+      try {
+        const storeConfig = await getStoreConfigByUser(userId);
+        console.log("Store config:", storeConfig);
+
+        if (storeConfig) {
+          // Asegurarse de que los datos tengan la estructura correcta
+          setConfig({
+            ...initialConfig,
+            ...storeConfig,
+            colors: [storeConfig.colors[0], storeConfig.colors[1]],
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching store config:", error);
+        toast({
+          title: "Error",
+          description: "No se pudo cargar la configuración de la tienda",
+          variant: "destructive",
+        });
+      } finally {
+        setIsInitialLoading(false);
+      }
+    }
+
+    fetchStoreConfig();
+  }, [userId]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -32,10 +106,10 @@ export default function StoreConfigDashboard() {
     if (name === "primaryColor" || name === "secondaryColor") {
       setConfig((prev) => ({
         ...prev,
-        colors: {
-          ...prev.colors,
-          [name === "primaryColor" ? "primary" : "secondary"]: value,
-        },
+        colors:
+          name === "primaryColor"
+            ? [value, prev.colors[1]]
+            : [prev.colors[0], value],
       }));
     } else {
       setConfig((prev) => ({ ...prev, [name]: value }));
@@ -48,7 +122,7 @@ export default function StoreConfigDashboard() {
     if (!/^[a-zA-Z0-9-]+$/.test(config.subdomain)) {
       return "El subdominio solo puede contener letras, números y guiones";
     }
-    if (config.logoUrl && !isValidUrl(config.logoUrl)) {
+    if (config.logo && !isValidUrl(config.logo)) {
       return "La URL del logo no es válida";
     }
     return null;
@@ -66,6 +140,15 @@ export default function StoreConfigDashboard() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!userId) {
+      toast({
+        title: "Error",
+        description: "No se pudo identificar al usuario",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const error = validateConfig(config);
     if (error) {
       toast({
@@ -79,7 +162,9 @@ export default function StoreConfigDashboard() {
     setIsLoading(true);
 
     try {
-      await updateStoreConfig(userId, config);
+      const result = await updateStoreConfig(userId, config);
+      console.log("Configuración guardada:", result);
+
       toast({
         title: "Configuración guardada",
         description:
@@ -98,23 +183,38 @@ export default function StoreConfigDashboard() {
     }
   };
 
+  if (status === "loading" || isInitialLoading) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        Cargando configuración...
+      </div>
+    );
+  }
+
+  if (status === "unauthenticated") {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        Por favor, inicia sesión para acceder a la configuración.
+      </div>
+    );
+  }
+
   return (
     <div className="w-full mx-auto">
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Campos existentes sin cambios */}
         <div className="space-y-2">
-          <Label htmlFor="name">Nombre de la tienda</Label>
+          <Label htmlFor="name">nombre de la tienda</Label>
           <Input
             id="name"
             name="name"
             value={config.name}
             onChange={handleChange}
-            placeholder="Mi tienda"
+            placeholder="mi tienda"
             required
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="subdomain">Subdominio</Label>
+          <Label htmlFor="subdomain">subdominio</Label>
           <Input
             id="subdomain"
             name="subdomain"
@@ -125,7 +225,7 @@ export default function StoreConfigDashboard() {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="slogan">Eslogan</Label>
+          <Label htmlFor="slogan">eslogan</Label>
           <Input
             id="slogan"
             name="slogan"
@@ -135,7 +235,7 @@ export default function StoreConfigDashboard() {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="description">Descripción</Label>
+          <Label htmlFor="description">descripción</Label>
           <Textarea
             id="description"
             name="description"
@@ -147,7 +247,7 @@ export default function StoreConfigDashboard() {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="primaryColor">Color primario</Label>
+            <Label htmlFor="primaryColor">color primario</Label>
             <div className="flex items-center space-x-2">
               <Input
                 id="primaryColor"
@@ -166,7 +266,7 @@ export default function StoreConfigDashboard() {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="secondaryColor">Color secundario</Label>
+            <Label htmlFor="secondaryColor">color secundario</Label>
             <div className="flex items-center space-x-2">
               <Input
                 id="secondaryColor"
@@ -186,18 +286,18 @@ export default function StoreConfigDashboard() {
           </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="logoUrl">URL del logo</Label>
+          <Label htmlFor="logo">logo url</Label>
           <Input
-            id="logoUrl"
-            name="logoUrl"
+            id="logo"
+            name="logo"
             type="url"
-            value={config.logoUrl}
+            value={config.logo}
             onChange={handleChange}
             placeholder="https://mitienda.com/logo.png"
           />
         </div>
         <div className="py-4">
-          <Button type="submit" disabled={isLoading}>
+          <Button type="submit" disabled={isLoading || !userId}>
             {isLoading ? "Guardando..." : "Guardar cambios"}
           </Button>
         </div>

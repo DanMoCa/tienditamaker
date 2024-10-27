@@ -1,12 +1,5 @@
 "use client";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import {
   Accordion,
   AccordionContent,
@@ -15,8 +8,6 @@ import {
 } from "@/components/ui/accordion";
 
 import Image from "next/image";
-import { Button } from "./ui/button";
-import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 

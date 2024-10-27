@@ -1,4 +1,4 @@
-import { readStoreDomain } from "@/utils/actions/shops/read-store-domain";
+import { readStoreDomain } from "@/utils/actions/store/read-store-domain";
 
 export default async function page({ params }: { params: { domain: string } }) {
   const result = await readStoreDomain(params?.domain);

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { readStoreDomain } from "./utils/actions/shops/read-store-domain";
+import { readStoreDomain } from "./utils/actions/store/read-store-domain";
 import { verifyUserType } from "./utils/actions/session/user";
 
 export async function middleware(req: NextRequest) {

@@ -2,7 +2,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-export async function getUserIdByEmail(email: string) {
+export async function getStoreConfigByUser(userId: any) {
   const cookieStore = cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -18,47 +18,19 @@ export async function getUserIdByEmail(email: string) {
 
   try {
     const { data, error } = await supabase
-      .from("User")
-      .select("id")
-      .eq("email", email);
-
-    if (error?.code) return error;
-
-    return data![0].id;
-  } catch (error: any) {
-    return error;
-  }
-}
-
-export async function getUserDataByEmail(email: any) {
-  const cookieStore = cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
-        },
-      },
-    }
-  );
-
-  try {
-    const { data, error } = await supabase
-      .from("User")
+      .from("Store")
       .select()
-      .eq("email", email);
+      .eq("userId", userId);
 
     if (error?.code) return error;
 
-    return data;
+    return data![0];
   } catch (error: any) {
     return error;
   }
 }
 
-export async function verifyUserType(email: string) {
+export async function updateStoreConfig(userId: any, config: any) {
   const cookieStore = cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -73,14 +45,13 @@ export async function verifyUserType(email: string) {
   );
 
   try {
-    const { data, error } = await supabase
-      .from("User")
-      .select("userType")
-      .eq("email", email);
+    const { error } = await supabase
+      .from("Store")
+      .upsert({ userId, ...config });
 
     if (error?.code) return error;
 
-    return data;
+    return null;
   } catch (error: any) {
     return error;
   }

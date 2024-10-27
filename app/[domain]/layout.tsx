@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { readStoreDomain } from "@/utils/actions/shops/read-store-domain";
+import { readStoreDomain } from "@/utils/actions/store/read-store-domain";
 
 interface SiteLayoutProps {
   params: { domain: string };
