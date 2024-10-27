@@ -16,27 +16,11 @@ import {
 
 import Image from "next/image";
 import { Button } from "./ui/button";
-import { ArrowRight, Edit, Scale, Shield } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
 export default function Templates() {
-  const templates = [
-    {
-      imageUrl:
-        "https://res.cloudinary.com/do3k4ocu4/image/upload/v1728778795/g4gbivsxb6o88v0lvh08.png",
-      title: "tienda de ropa",
-      description: "una tienda de ropa con un estilo moderno y minimalista.",
-    },
-    {
-      imageUrl:
-        "https://res.cloudinary.com/do3k4ocu4/image/upload/v1728778795/iztqj4cujouhrkb1wqhj.png",
-      title: "tienda de tecnologia",
-      description:
-        "una tienda de tecnologia con un estilo moderno y minimalista.",
-    },
-  ];
-
   const [openStep, setOpenStep] = useState<number | null>(0);
 
   const steps = [
@@ -103,45 +87,5 @@ export default function Templates() {
         </Card>
       </div>
     </section>
-  );
-}
-
-function FeatureCard({
-  title,
-  description,
-  image,
-  alt,
-}: {
-  title: string;
-  description: string;
-  image: string;
-  alt: string;
-}) {
-  return (
-    <Card className="bg-[#a3eef5]/40 border-none text-white h-full w-full flex flex-col justify-between">
-      <CardHeader className="p-0">
-        <Image
-          src={image}
-          alt={alt}
-          className="object-cover rounded-t-lg h-96 w-full"
-          width={1920}
-          height={1080}
-        />
-      </CardHeader>
-      <CardContent className="p-6">
-        <CardTitle className="text-2xl mb-2">{title}</CardTitle>
-        <CardDescription className="text-teal-100">
-          {description}
-        </CardDescription>
-      </CardContent>
-      <CardFooter>
-        <Button
-          variant="link"
-          className="text-teal-300 hover:text-teal-100 p-0"
-        >
-          ver plantilla <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
-      </CardFooter>
-    </Card>
   );
 }
