@@ -9,9 +9,28 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Tiendita Maker",
+  metadataBase: new URL("https://bitafitness.vercel.app"),
+  keywords: [
+    "tiendita maker",
+    "tiendita",
+    "maker",
+    "dropshipping",
+    "tienda online",
+    "proveedores mexicanos",
+  ],
+  openGraph: {
+    description:
+      "tiendita maker es una plataforma para crear tiendas online de dropshipping en un solo click, facil y rapido. ¡PROVEEDORES MEXICANOS!",
+    images: [
+      "https://utfs.io/f/pypyrj2zEPRN7v9UcAGCFvaxZLG5U9KlPH1ythr4RNYqoJVe",
+    ],
+  },
+  title: {
+    default: "tiendita maker",
+    template: "%s | tiendita maker",
+  },
   description:
-    "Crea tu tiendita online de dropshipping en un solo click, facil y rapido. ¡PROVEEDORES MEXICANOS!",
+    "crea tu tiendita online de dropshipping en un solo click, facil y rapido. ¡PROVEEDORES MEXICANOS!",
 };
 
 export default function RootLayout({
