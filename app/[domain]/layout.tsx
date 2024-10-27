@@ -66,7 +66,7 @@ export default async function SiteLayout({
   const siteColors = result?.[0]?.colors;
 
   return (
-    <html lang="es">
+    <html lang="es" className="bg-white">
       <body>
         <CartProvider>
           <Navbar siteName={siteName} colors={siteColors} />

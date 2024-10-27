@@ -6,7 +6,6 @@ import { verifyUserType } from "./utils/actions/session/user";
 export async function middleware(req: NextRequest) {
   const token = await getToken({ req });
   const pathname = req.nextUrl.pathname;
-
   const hostname = req.headers.get("host");
   const baseDomain =
     process.env.NODE_ENV === "production"
@@ -14,12 +13,13 @@ export async function middleware(req: NextRequest) {
       : "localhost:3000";
 
   console.log("Original hostname:", hostname);
+  console.log("Original pathname:", pathname);
 
-  // Si estamos en localhost:3000, tratar como dominio principal
+  // Si estamos en localhost:3000, procesar tanto el dashboard como las rutas de tienda
   if (hostname === "localhost:3000") {
     console.log("Main domain (localhost:3000) detected");
 
-    // Check authentication for dashboard access
+    // Check dashboard access
     if (pathname === "/dashboard" || pathname === "/dashboard/") {
       console.log("Checking authentication for dashboard access");
 
@@ -27,9 +27,7 @@ export async function middleware(req: NextRequest) {
         console.log("No token found, redirecting to login");
         return NextResponse.redirect(new URL("/", req.url));
       }
-      console.log("Token found:", token);
 
-      // Verify user type using server action
       try {
         const userType = (await verifyUserType(token.email as string))[0]
           .userType;
@@ -47,10 +45,41 @@ export async function middleware(req: NextRequest) {
       }
     }
 
+    // Procesar rutas de tienda (e.g., /tienda/products/producto1)
+    const storePathMatch = pathname.match(/^\/([^\/]+)(\/.*)?$/);
+    if (storePathMatch) {
+      const potentialStore = storePathMatch[1];
+      // Excluir rutas del sistema
+      const systemRoutes = [
+        "api",
+        "_next",
+        "favicon.ico",
+        "dashboard",
+        "upgrade",
+        "login",
+        "register",
+      ];
+
+      if (!systemRoutes.includes(potentialStore)) {
+        console.log("Potential store path detected:", potentialStore);
+
+        // Verificar si la tienda existe
+        const response = await readStoreDomain(potentialStore);
+
+        if (response && response.length > 0) {
+          console.log("Store found:", potentialStore);
+          const remainingPath = storePathMatch[2] || "";
+          return NextResponse.rewrite(
+            new URL(`/${potentialStore}${remainingPath}`, req.url)
+          );
+        }
+      }
+    }
+
     return NextResponse.next();
   }
 
-  // Procesar subdominio solo si no es localhost:3000
+  // Procesar subdominio
   const currentHost = hostname?.replace(
     process.env.NODE_ENV === "production"
       ? `.${baseDomain}`
@@ -60,8 +89,6 @@ export async function middleware(req: NextRequest) {
 
   console.log("Current host after processing:", currentHost);
 
-  // Si después de procesar es el mismo que el hostname original,
-  // significa que no hay subdomain
   if (currentHost === hostname) {
     console.log("No subdomain detected");
     return NextResponse.next();
@@ -79,7 +106,10 @@ export async function middleware(req: NextRequest) {
 
   if (tenantSubdomain) {
     console.log("Rewriting URL for subdomain:", tenantSubdomain);
-    return NextResponse.rewrite(new URL(`/${tenantSubdomain}`, req.url));
+    const finalPath = pathname === "/" ? "" : pathname;
+    return NextResponse.rewrite(
+      new URL(`/${tenantSubdomain}${finalPath}`, req.url)
+    );
   }
 
   return NextResponse.rewrite(

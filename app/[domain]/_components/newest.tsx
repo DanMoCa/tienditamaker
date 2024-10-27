@@ -10,7 +10,7 @@ export default async function Newest() {
       categoryName: "Hombres",
       price: 25.0,
       imageUrl:
-        "https://utfs.io/f/1xhj3j2zEPRNfrHN7dC6s1S0R75wL3lAVCbqKGjiPoQx9zge",
+        "https://utfs.io/f/pypyrj2zEPRNIqSWmQ1WUZrb4Nl1tuky6Ez8LmgAxDnQq9YJ",
       slug: "polo-de-algodon",
     },
     {
@@ -19,7 +19,7 @@ export default async function Newest() {
       categoryName: "Hombres",
       price: 45.0,
       imageUrl:
-        "https://utfs.io/f/1xhj3j2zEPRNfrHN7dC6s1S0R75wL3lAVCbqKGjiPoQx9zge",
+        "https://utfs.io/f/pypyrj2zEPRNIqSWmQ1WUZrb4Nl1tuky6Ez8LmgAxDnQq9YJ",
       slug: "pantalon-de-mezclilla",
     },
     {
@@ -28,7 +28,7 @@ export default async function Newest() {
       categoryName: "Mujeres",
       price: 30.0,
       imageUrl:
-        "https://utfs.io/f/1xhj3j2zEPRNfrHN7dC6s1S0R75wL3lAVCbqKGjiPoQx9zge",
+        "https://utfs.io/f/pypyrj2zEPRNIqSWmQ1WUZrb4Nl1tuky6Ez8LmgAxDnQq9YJ",
       slug: "blusa-de-algodon",
     },
     {
@@ -37,7 +37,7 @@ export default async function Newest() {
       categoryName: "Mujeres",
       price: 40.0,
       imageUrl:
-        "https://utfs.io/f/1xhj3j2zEPRNfrHN7dC6s1S0R75wL3lAVCbqKGjiPoQx9zge",
+        "https://utfs.io/f/pypyrj2zEPRNIqSWmQ1WUZrb4Nl1tuky6Ez8LmgAxDnQq9YJ",
       slug: "falda-de-mezclilla",
     },
   ];
