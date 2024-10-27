@@ -9,7 +9,7 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://bitafitness.vercel.app"),
+  metadataBase: new URL("https://tienditamaker.com"),
   keywords: [
     "tiendita maker",
     "tiendita",
