@@ -8,7 +8,6 @@ export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
   const hostname = req.headers.get("host");
   const isDevelopment = process.env.NODE_ENV === "development";
-
   // Configuración de dominios
   const baseDomain = isDevelopment ? "localhost:3000" : "tienditamaker.com";
 
@@ -16,93 +15,54 @@ export async function middleware(req: NextRequest) {
   console.log("Original pathname:", pathname);
   console.log("Base domain:", baseDomain);
 
-  // Primero, manejar rutas protegidas del dashboard
-  if (pathname.startsWith("/dashboard")) {
-    console.log("Checking authentication for dashboard access");
+  // Si estamos en el dominio principal (localhost:3000 o tienditamaker.com)
+  if (hostname === baseDomain) {
+    console.log("Main domain detected:", hostname);
 
-    if (!token) {
-      console.log("No token found, redirecting to login");
-      return NextResponse.redirect(new URL("/", req.url));
-    }
+    // Check dashboard access
+    if (pathname === "/dashboard" || pathname === "/dashboard/") {
+      console.log("Checking authentication for dashboard access");
 
-    try {
-      const userType = (await verifyUserType(token.email as string))[0]
-        .userType;
-      console.log("User type:", userType);
-
-      if (userType === "free") {
-        console.log(
-          "Free user attempting to access dashboard, redirecting to upgrade"
-        );
-        return NextResponse.redirect(new URL("/upgrade", req.url));
+      if (!token) {
+        console.log("No token found, redirecting to login");
+        return NextResponse.redirect(new URL("/", req.url));
       }
 
-      return NextResponse.next();
-    } catch (error) {
-      console.error("Error verifying user type:", error);
-      return NextResponse.next();
-    }
-  }
+      try {
+        const userType = (await verifyUserType(token.email as string))[0]
+          .userType;
+        console.log("User type:", userType);
 
-  // Lista de rutas del sistema que siempre deben pasar directamente
-  const systemRoutes = [
-    "api",
-    "_next",
-    "favicon.ico",
-    "upgrade",
-    "login",
-    "register",
-    "dashboard",
-    "",
-  ];
-
-  // Verificar si es una ruta del sistema
-  const firstSegment = pathname.split("/")[1];
-  if (systemRoutes.includes(firstSegment)) {
-    return NextResponse.next();
-  }
-
-  // Procesar subdominios
-  if (hostname !== baseDomain) {
-    let currentHost;
-    if (isDevelopment) {
-      currentHost = hostname?.replace(".localhost:3000", "");
-    } else {
-      currentHost = hostname?.replace(".tienditamaker.com", "");
+        if (userType === "free") {
+          console.log(
+            "Free user attempting to access dashboard, redirecting to upgrade"
+          );
+          return NextResponse.redirect(new URL("/upgrade", req.url));
+        }
+      } catch (error) {
+        console.error("Error verifying user type:", error);
+        return NextResponse.next();
+      }
     }
 
-    console.log("Processing subdomain:", currentHost);
-
-    // Si después de procesar es el mismo que el hostname original,
-    // significa que no hay subdominio válido
-    if (currentHost === hostname) {
-      console.log("Invalid subdomain");
-      return NextResponse.next();
-    }
-
-    // Verificar si existe la tienda para el subdominio
-    const response = await readStoreDomain(currentHost!);
-
-    if (!response || !response.length) {
-      console.log("No store found for subdomain:", currentHost);
-      return NextResponse.redirect(new URL("/", `https://${baseDomain}`));
-    }
-
-    const tenantSubdomain = response[0].subdomain;
-    console.log("Rewriting URL for subdomain:", tenantSubdomain);
-    return NextResponse.rewrite(
-      new URL(`/${tenantSubdomain}${pathname}`, req.url)
-    );
-  }
-
-  // Para el dominio principal, procesar posibles rutas de tienda
-  if (pathname !== "/" && !pathname.startsWith("/_next")) {
+    // Procesar rutas de tienda (e.g., /tienda/products/producto1)
     const storePathMatch = pathname.match(/^\/([^\/]+)(\/.*)?$/);
     if (storePathMatch) {
       const potentialStore = storePathMatch[1];
+      // Excluir rutas del sistema
+      const systemRoutes = [
+        "api",
+        "_next",
+        "favicon.ico",
+        "dashboard",
+        "upgrade",
+        "login",
+        "register",
+        "", // Para manejar rutas sin subdominio (e.g., /products)
+      ];
 
       if (!systemRoutes.includes(potentialStore)) {
-        console.log("Checking store path:", potentialStore);
+        console.log("Potential store path detected:", potentialStore);
 
         // Verificar si la tienda existe
         const response = await readStoreDomain(potentialStore);
@@ -116,10 +76,49 @@ export async function middleware(req: NextRequest) {
         }
       }
     }
+
+    return NextResponse.next();
   }
 
-  // Si no es ninguno de los casos anteriores, continuar normalmente
-  return NextResponse.next();
+  // Procesar subdominios
+  let currentHost;
+  if (isDevelopment) {
+    // Para desarrollo (localhost:3000)
+    currentHost = hostname?.replace(".localhost:3000", "");
+  } else {
+    // Para producción (tienditamaker.com)
+    currentHost = hostname?.replace(".tienditamaker.com", "");
+  }
+
+  console.log("Current host after processing:", currentHost);
+
+  // Si después de procesar es el mismo que el hostname original,
+  // significa que no hay subdominio
+  if (currentHost === hostname) {
+    console.log("No subdomain detected");
+    return NextResponse.next();
+  }
+
+  // Handle subdomain requests
+  const response = await readStoreDomain(currentHost!);
+
+  if (!response || !response.length) {
+    console.log("No store found for subdomain:", currentHost);
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  const tenantSubdomain = response[0].subdomain;
+
+  if (tenantSubdomain) {
+    console.log("Rewriting URL for subdomain:", tenantSubdomain);
+    const finalPath = pathname === "/" ? "" : pathname;
+    return NextResponse.rewrite(
+      new URL(`/${tenantSubdomain}${finalPath}`, req.url)
+    );
+  }
+
+  // Si no hay subdomain válido, redirigir al dominio principal
+  return NextResponse.redirect(new URL("/", req.url));
 }
 
 export const config = {
