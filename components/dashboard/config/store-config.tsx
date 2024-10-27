@@ -202,6 +202,15 @@ export default function StoreConfigDashboard() {
   return (
     <div className="w-full mx-auto">
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Boton para visitar la tienda */}
+        {/* <div className="flex justify-end">
+          <Button
+            variant="outline"
+            href={`https://${config.subdomain}.utfs.io`}
+            target="_blank"
+          >
+            Visitar tienda
+          </Button> */}
         <div className="space-y-2">
           <Label htmlFor="name">nombre de la tienda</Label>
           <Input

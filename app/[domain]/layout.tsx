@@ -2,16 +2,57 @@ import { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { readStoreDomain } from "@/utils/actions/store/read-store-domain";
+import Navbar from "./_components/navbar";
+import ShoppingCartModal from "./_components/shopping-modal";
+import CartProvider from "./_components/providers";
 
 interface SiteLayoutProps {
   params: { domain: string };
   children: ReactNode;
 }
 
+// Función para generar metadata dinámica
+export async function generateMetadata({
+  params,
+}: {
+  params: { domain: string };
+}): Promise<Metadata> {
+  // Obtener los datos de la tienda
+  const result = await readStoreDomain(params?.domain);
+
+  // Si no hay resultados, puedes retornar metadata por defecto o manejar el error
+  if (!result || !result[0]) {
+    return {
+      title: "tiendita no encontrada",
+      description: "la tienda que buscas no existe",
+    };
+  }
+
+  const { subdomain, description } = result[0];
+
+  return {
+    title: `tiendita de ${subdomain}`,
+    description: description || `compra en la tiendita de ${subdomain}`,
+    // Puedes agregar más propiedades de metadata aquí
+    openGraph: {
+      title: `tiendita de ${subdomain}`,
+      description: description || `compra en la tiendita de ${subdomain}`,
+      siteName: subdomain,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `tiendita de ${subdomain}`,
+      description: description || `compra en la tiendita de ${subdomain}`,
+    },
+  };
+}
+
 export default async function SiteLayout({
   params,
   children,
 }: SiteLayoutProps) {
+  console.log("SiteLayout params:", params);
+
   const result = await readStoreDomain(params?.domain);
 
   if (!result) {
@@ -22,26 +63,17 @@ export default async function SiteLayout({
   const siteDomain = result?.[0]?.subdomain;
   const siteDescription = result?.[0]?.description;
   const siteLogo = result?.[0]?.logo;
+  const siteColors = result?.[0]?.colors;
 
   return (
-    <div className="flex flex-col mt-[1rem] justify-center items-center w-[90%]">
-      <div className="flex flex-col items-center p-3 w-full">
-        <div className="flex flex-col justify-start items-center gap-2 w-full">
-          <div className="flex gap-3 justify-start items-center w-full">
-            <h1 className="scroll-m-20 text-3xl md:text-4xl tracking-tight font-bold text-center">
-              {siteName} . {siteDomain}
-            </h1>
-          </div>
-          <div className="flex gap-3 justify-start items-center w-full border-b pb-4">
-            <p className="text-gray-500">{siteDescription}</p>
-          </div>
-        </div>
-      </div>
-      <div className="flex items-center w-full">
-        <div className="grid gap-5 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 mt-5">
+    <html lang="es">
+      <body>
+        <CartProvider>
+          <Navbar siteName={siteName} colors={siteColors} />
+          <ShoppingCartModal />
           {children}
-        </div>
-      </div>
-    </div>
+        </CartProvider>
+      </body>
+    </html>
   );
 }
