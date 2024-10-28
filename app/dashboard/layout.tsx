@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { Header } from "@/components/dashboard/header";
 import { UserProvider } from "@/utils/contexts/user-context";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function DashboardLayout({
   children,
@@ -22,6 +23,7 @@ export default function DashboardLayout({
             <h2 className="mb-4 text-xl font-semibold">la tienda de jorge</h2>
             {children}
           </main>
+          <Toaster richColors />
         </div>
       </div>
     </UserProvider>

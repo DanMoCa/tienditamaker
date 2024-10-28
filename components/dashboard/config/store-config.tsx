@@ -5,13 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/utils/hooks/use-toast";
+import { toast } from "sonner";
+
 import {
   getStoreConfigByUser,
   updateStoreConfig,
 } from "@/utils/actions/store/store-config";
 import { useSession } from "next-auth/react";
 import { getUserIdByEmail } from "@/utils/actions/session/user";
+import { UploadButton } from "@/utils/uploadthing/uploadthing";
 
 // Definir la interfaz para la configuración
 interface StoreConfig {
@@ -52,11 +54,7 @@ export default function StoreConfigDashboard() {
           setUserId(id);
         } catch (error) {
           console.error("Error fetching user ID:", error);
-          toast({
-            title: "Error",
-            description: "No se pudo obtener la información del usuario",
-            variant: "destructive",
-          });
+          toast.error("No se pudo obtener el ID del usuario");
         }
       }
     }
@@ -82,14 +80,11 @@ export default function StoreConfigDashboard() {
             ...storeConfig,
             colors: [storeConfig.colors[0], storeConfig.colors[1]],
           });
+          toast.success("Configuración de la tienda cargada exitosamente");
         }
       } catch (error) {
         console.error("Error fetching store config:", error);
-        toast({
-          title: "Error",
-          description: "No se pudo cargar la configuración de la tienda",
-          variant: "destructive",
-        });
+        toast.error("No se pudo obtener la configuración de la tienda");
       } finally {
         setIsInitialLoading(false);
       }
@@ -141,21 +136,13 @@ export default function StoreConfigDashboard() {
     e.preventDefault();
 
     if (!userId) {
-      toast({
-        title: "Error",
-        description: "No se pudo identificar al usuario",
-        variant: "destructive",
-      });
+      toast.error("No se pudo obtener el ID del usuario");
       return;
     }
 
     const error = validateConfig(config);
     if (error) {
-      toast({
-        title: "Error de validación",
-        description: error,
-        variant: "destructive",
-      });
+      toast.error(error);
       return;
     }
 
@@ -165,19 +152,10 @@ export default function StoreConfigDashboard() {
       const result = await updateStoreConfig(userId, config);
       console.log("Configuración guardada:", result);
 
-      toast({
-        title: "Configuración guardada",
-        description:
-          "Los cambios en la configuración de tu tienda han sido guardados exitosamente.",
-      });
+      toast.success("Configuración guardada exitosamente");
     } catch (error) {
       console.error("Error al guardar la configuración:", error);
-      toast({
-        title: "Error",
-        description:
-          "Hubo un error al guardar la configuración. Por favor, intenta de nuevo.",
-        variant: "destructive",
-      });
+      toast.error("No se pudo guardar la configuración");
     } finally {
       setIsLoading(false);
     }
@@ -296,6 +274,15 @@ export default function StoreConfigDashboard() {
         </div>
         <div className="space-y-2">
           <Label htmlFor="logo">logo url</Label>
+          <UploadButton
+            className="mt-4 ut-button:bg-red-500 ut-button:ut-readying:bg-red-500/50"
+            endpoint="imageUploader"
+            onClientUploadComplete={(url) => {
+              setConfig((prev) => ({ ...prev, logo: url[0].url }));
+              toast.success("Logo subido exitosamente");
+            }}
+          />
+
           <Input
             id="logo"
             name="logo"
@@ -303,6 +290,7 @@ export default function StoreConfigDashboard() {
             value={config.logo}
             onChange={handleChange}
             placeholder="https://mitienda.com/logo.png"
+            disabled
           />
         </div>
         <div className="py-4">

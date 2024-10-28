@@ -20,6 +20,7 @@ model Store {
   template    String  @default("default")
   userId      Int
   user        User     @relation(fields: [userId], references: [id])
+  products    Product[]
 }
 
 model User {
@@ -31,4 +32,35 @@ model User {
   createdAt  DateTime @default(now())
   updatedAt  DateTime? @updatedAt
   stores     Store[]
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  images       String[]
+  storeId     Int
+  store       Store @relation(fields: [storeId], references: [id])
+  providerId  Int
+  provider    Provider @relation(fields: [providerId], references: [id])
+}
+
+model ProviderProduct {
+  id        Int      @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  images       String[]
+  providerId  Int
+  provider    Provider @relation(fields: [providerId], references: [id])
+}
+
+model Provider {
+  id        Int      @id @default(autoincrement())
+  name        String
+  description String
+  image       String
+  products    ProviderProduct[]
+  clientProducts Product[]
 }

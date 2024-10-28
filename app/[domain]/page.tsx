@@ -12,7 +12,7 @@ export default async function page({ params }: { params: { domain: string } }) {
   const siteSlogan = result?.[0]?.slogan;
   return (
     <div className="bg-white pb-6 sm:pb-8 lg:pb-12">
-      <Hero slogan={siteSlogan} logo={siteLogo} />
+      <Hero slogan={siteSlogan} logo={siteLogo} name={siteName} />
       <Newest />
     </div>
   );

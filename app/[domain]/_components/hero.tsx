@@ -4,9 +4,11 @@ import Link from "next/link";
 export default async function Hero({
   slogan,
   logo,
+  name,
 }: {
   slogan: string;
   logo: string;
+  name: string;
 }) {
   return (
     <section className="mx-auto max-w-2xl px-4 sm:pb-6 lg:max-w-7xl lg:px-8">
@@ -24,8 +26,12 @@ export default async function Hero({
         <div className="mb-12 flex w-full md:mb-16 lg:w-2/3">
           <div className="relative left-12 top-12 z-10 -ml-12 overflow-hidden rounded-lg bg-gray-100 shadow-lg md:left-16 md:top-16 lg:ml-0">
             <Image
-              src={logo}
-              alt="Great Photo"
+              // Si el logo no existe, se puede usar un placeholder
+              src={
+                logo ||
+                "https://utfs.io/f/rF2DW7sv5SQ0y26zGxad0ubJeKm6RifY7XDLqHxWM2zTln3a"
+              }
+              alt={`logo de ${name}`}
               className="h-full w-full object-cover object-center"
               priority
               width={500}
