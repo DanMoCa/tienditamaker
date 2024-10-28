@@ -39,7 +39,7 @@ export default async function Hero({
             />
           </div>
 
-          <div className="overflow-hidden rounded-lg bg-gray-100 shadow-lg">
+          {/* <div className="overflow-hidden rounded-lg bg-gray-100 shadow-lg">
             <Image
               src={logo}
               alt="Great Photo"
@@ -48,7 +48,7 @@ export default async function Hero({
               height={500}
               priority
             />
-          </div>
+          </div> */}
         </div>
       </div>
 

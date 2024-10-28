@@ -11,16 +11,35 @@ interface SiteLayoutProps {
   children: ReactNode;
 }
 
-// Función para generar metadata dinámica
+// Función auxiliar para generar clases CSS basadas en los colores de la tienda
+const generateThemeClasses = (colors: any) => {
+  if (!colors) return "";
+
+  // Asegúrate de que colors tenga un formato válido
+  const {
+    primary = "#000000",
+    secondary = "#ffffff",
+    background = "#ffffff",
+    text = "#000000",
+  } = colors;
+
+  return `
+    [--color-primary:${primary}]
+    [--color-secondary:${secondary}]
+    [--color-background:${background}]
+    [--color-text:${text}]
+  `
+    .replace(/\s+/g, " ")
+    .trim();
+};
+
 export async function generateMetadata({
   params,
 }: {
   params: { domain: string };
 }): Promise<Metadata> {
-  // Obtener los datos de la tienda
   const result = await readStoreDomain(params?.domain);
 
-  // Si no hay resultados, puedes retornar metadata por defecto o manejar el error
   if (!result || !result[0]) {
     return {
       title: "tiendita no encontrada",
@@ -33,7 +52,6 @@ export async function generateMetadata({
   return {
     title: `tiendita de ${subdomain}`,
     description: description || `compra en la tiendita de ${subdomain}`,
-    // Puedes agregar más propiedades de metadata aquí
     openGraph: {
       title: `tiendita de ${subdomain}`,
       description: description || `compra en la tiendita de ${subdomain}`,
@@ -51,8 +69,6 @@ export default async function SiteLayout({
   params,
   children,
 }: SiteLayoutProps) {
-  console.log("SiteLayout params:", params);
-
   const result = await readStoreDomain(params?.domain);
 
   if (!result) {
@@ -65,13 +81,23 @@ export default async function SiteLayout({
   const siteLogo = result?.[0]?.logo;
   const siteColors = result?.[0]?.colors;
 
+  // Genera las clases de tema basadas en los colores de la tienda
+  const themeClasses = generateThemeClasses(siteColors);
+
   return (
-    <html lang="es" className="bg-white">
-      <body>
+    <html
+      lang="es"
+      className={`
+        ${themeClasses}
+        bg-[var(--color-background)]
+        text-[var(--color-text)]
+      `}
+    >
+      <body className="min-h-screen">
         <CartProvider>
           <Navbar siteName={siteName} colors={siteColors} />
           <ShoppingCartModal />
-          {children}
+          <main className="container mx-auto px-4">{children}</main>
         </CartProvider>
       </body>
     </html>
