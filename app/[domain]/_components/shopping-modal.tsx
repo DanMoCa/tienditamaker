@@ -6,11 +6,17 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-
 import Image from "next/image";
 import { useShoppingCart } from "use-shopping-cart";
+import { loadStripe } from "@stripe/stripe-js";
+import { useState } from "react";
+
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+);
 
 export default function ShoppingCartModal() {
+  const [isLoading, setIsLoading] = useState(false);
   const {
     cartCount,
     shouldDisplayCart,
@@ -18,32 +24,72 @@ export default function ShoppingCartModal() {
     cartDetails,
     removeItem,
     totalPrice,
-    redirectToCheckout,
   } = useShoppingCart();
 
-  async function handleCheckoutClick(event: any) {
+  const handleCheckoutClick = async (event: React.MouseEvent) => {
     event.preventDefault();
+    setIsLoading(true);
+
     try {
-      const result = await redirectToCheckout();
-      if (result?.error) {
-        console.log("result");
+      // Preparar los items del carrito
+      const cartItems = Object.values(cartDetails ?? {}).map((item) => ({
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        image: typeof item.image === "string" ? item.image : null,
+        description: item.description,
+      }));
+
+      // Llamar a nuestra API para crear la sesión de Stripe
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ cartItems }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.details || "Error al crear la sesión de checkout"
+        );
       }
-    } catch (error) {
-      console.log(error);
+
+      const { sessionId } = await response.json();
+
+      // Redirigir al checkout de Stripe
+      const stripe = await stripePromise;
+      if (!stripe) throw new Error("No se pudo cargar Stripe");
+
+      const { error } = await stripe.redirectToCheckout({
+        sessionId,
+      });
+
+      if (error) {
+        console.error("Error:", error);
+        throw new Error(error.message);
+      }
+    } catch (error: any) {
+      console.error("Error:", error);
+      alert("Error al procesar el checkout: " + error.message);
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
+
   return (
     <Sheet open={shouldDisplayCart} onOpenChange={() => handleCartClick()}>
       <SheetContent className="sm:max-w-lg w-[90vw]">
         <SheetHeader>
-          <SheetTitle>carrito</SheetTitle>
+          <SheetTitle>Carrito</SheetTitle>
         </SheetHeader>
 
         <div className="h-full flex flex-col justify-between">
           <div className="mt-8 flex-1 overflow-y-auto">
             <ul className="-my-6 divide-y divide-gray-200">
               {cartCount === 0 ? (
-                <h1 className="py-6">no hay productos en tu carrito. </h1>
+                <h1 className="py-6">No hay productos en tu carrito.</h1>
               ) : (
                 <>
                   {Object.values(cartDetails ?? {}).map((entry) => (
@@ -69,7 +115,9 @@ export default function ShoppingCartModal() {
                         </div>
 
                         <div className="flex flex-1 items-end justify-between text-sm">
-                          <p className="text-gray-500">QTY: {entry.quantity}</p>
+                          <p className="text-gray-500">
+                            Cantidad: {entry.quantity}
+                          </p>
 
                           <div className="flex">
                             <button
@@ -77,7 +125,7 @@ export default function ShoppingCartModal() {
                               onClick={() => removeItem(entry.id)}
                               className="font-medium text-primary hover:text-primary/80"
                             >
-                              eliminar
+                              Eliminar
                             </button>
                           </div>
                         </div>
@@ -91,16 +139,20 @@ export default function ShoppingCartModal() {
 
           <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
             <div className="flex justify-between text-base font-medium text-gray-900">
-              <p>subtotal:</p>
+              <p>Subtotal:</p>
               <p>${totalPrice}</p>
             </div>
             <p className="mt-0.5 text-sm text-gray-500">
-              envío e impuestos se calculan al finalizar la compra.
+              Envío e impuestos se calculan al finalizar la compra.
             </p>
 
             <div className="mt-6">
-              <Button onClick={handleCheckoutClick} className="w-full">
-                pagar
+              <Button
+                onClick={handleCheckoutClick}
+                className="w-full"
+                disabled={cartCount === 0 || isLoading}
+              >
+                {isLoading ? "Procesando..." : "Pagar"}
               </Button>
             </div>
 
@@ -109,9 +161,9 @@ export default function ShoppingCartModal() {
                 o{" "}
                 <button
                   onClick={() => handleCartClick()}
-                  className=" font-medium text-primary hover:text-primary/80"
+                  className="font-medium text-primary hover:text-primary/80"
                 >
-                  seguir comprando
+                  Seguir comprando
                 </button>
               </p>
             </div>
