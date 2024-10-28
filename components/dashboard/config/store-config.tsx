@@ -11,8 +11,6 @@ import {
   getStoreConfigByUser,
   updateStoreConfig,
 } from "@/utils/actions/store/store-config";
-import { useSession } from "next-auth/react";
-import { getUserIdByEmail } from "@/utils/actions/session/user";
 import { UploadButton } from "@/utils/uploadthing/uploadthing";
 import Link from "next/link";
 
@@ -37,7 +35,6 @@ const initialConfig: StoreConfig = {
 };
 
 export default function StoreConfigDashboard() {
-  const { data: session, status } = useSession();
   const [userId, setUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -138,14 +135,6 @@ export default function StoreConfigDashboard() {
       setIsLoading(false);
     }
   };
-
-  if (status === "loading" || isInitialLoading) {
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        Cargando configuración...
-      </div>
-    );
-  }
 
   return (
     <div className="w-full mx-auto">
