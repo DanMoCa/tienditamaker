@@ -14,6 +14,7 @@ import {
 import { useSession } from "next-auth/react";
 import { getUserIdByEmail } from "@/utils/actions/session/user";
 import { UploadButton } from "@/utils/uploadthing/uploadthing";
+import Link from "next/link";
 
 // Definir la interfaz para la configuración
 interface StoreConfig {
@@ -80,7 +81,6 @@ export default function StoreConfigDashboard() {
             ...storeConfig,
             colors: [storeConfig.colors[0], storeConfig.colors[1]],
           });
-          toast.success("Configuración de la tienda cargada exitosamente");
         }
       } catch (error) {
         console.error("Error fetching store config:", error);
@@ -179,16 +179,17 @@ export default function StoreConfigDashboard() {
 
   return (
     <div className="w-full mx-auto">
+      {/* Boton para visitar la tienda */}
+      <div className="flex justify-end">
+        <Link
+          href={`https://${config.subdomain}.tienditamaker.com`}
+          passHref
+          target="_blank"
+        >
+          <Button variant="outline">Visitar tienda</Button>
+        </Link>
+      </div>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Boton para visitar la tienda */}
-        {/* <div className="flex justify-end">
-          <Button
-            variant="outline"
-            href={`https://${config.subdomain}.utfs.io`}
-            target="_blank"
-          >
-            Visitar tienda
-          </Button> */}
         <div className="space-y-2">
           <Label htmlFor="name">nombre de la tienda</Label>
           <Input

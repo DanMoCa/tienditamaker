@@ -52,7 +52,7 @@ export default async function ProductsPage({
       <div className="mx-auto max-w-2xl px-4 sm:px-6  lg:max-w-7xl lg:px-8">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-            productos para {params.slug}
+            todos los productos
           </h2>
         </div>
 

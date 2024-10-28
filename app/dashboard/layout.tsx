@@ -19,10 +19,7 @@ export default function DashboardLayout({
         <Header activeItem={activeItem} setActiveItem={setActiveItem} />
         <div className="flex flex-1 overflow-hidden">
           <Sidebar activeItem={activeItem} setActiveItem={setActiveItem} />
-          <main className="flex-1 overflow-auto p-4">
-            <h2 className="mb-4 text-xl font-semibold">la tienda de jorge</h2>
-            {children}
-          </main>
+          <main className="flex-1 overflow-auto p-4">{children}</main>
           <Toaster richColors />
         </div>
       </div>
