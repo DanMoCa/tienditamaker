@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+const stripe = new Stripe(`${process.env.STRIPE_SECRET_KEY!}`);
 
 export async function POST(request: Request) {
   try {
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
       // Crear el objeto base del producto
       const lineItem = {
         price_data: {
-          currency: "usd",
+          currency: "mxn",
           product_data: {
             name: item.name,
             description: item.description || undefined,
@@ -41,8 +41,9 @@ export async function POST(request: Request) {
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_URL}/success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_URL}/cancel`,
+      //   TODO: Update the success_url and cancel_url to match custom domain
+      success_url: `http://saoko.tienditamaker/success`,
+      cancel_url: `http://saoko.tienditamaker/cancel`,
     });
 
     return NextResponse.json({ sessionId: session.id });
