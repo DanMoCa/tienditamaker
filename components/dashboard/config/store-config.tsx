@@ -43,28 +43,6 @@ export default function StoreConfigDashboard() {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [config, setConfig] = useState<StoreConfig>(initialConfig);
 
-  // Efecto para obtener el userId
-  useEffect(() => {
-    async function fetchUserId() {
-      if (session?.user?.email) {
-        try {
-          const id = await getUserIdByEmail(session.user.email);
-          console.log("User ID:", id);
-          console.log("User id type:", typeof id);
-
-          setUserId(id);
-        } catch (error) {
-          console.error("Error fetching user ID:", error);
-          toast.error("No se pudo obtener el ID del usuario");
-        }
-      }
-    }
-
-    if (status === "authenticated") {
-      fetchUserId();
-    }
-  }, [session?.user?.email, status]);
-
   // Efecto para obtener la configuración
   useEffect(() => {
     async function fetchStoreConfig() {
@@ -169,14 +147,6 @@ export default function StoreConfigDashboard() {
     );
   }
 
-  if (status === "unauthenticated") {
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        Por favor, inicia sesión para acceder a la configuración.
-      </div>
-    );
-  }
-
   return (
     <div className="w-full mx-auto">
       {/* Boton para visitar la tienda */}
@@ -186,7 +156,7 @@ export default function StoreConfigDashboard() {
           passHref
           target="_blank"
         >
-          <Button variant="outline">Visitar tienda</Button>
+          <Button variant="outline">visitar tienda</Button>
         </Link>
       </div>
       <form onSubmit={handleSubmit} className="space-y-4">

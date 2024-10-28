@@ -1,22 +1,23 @@
 "use client";
 
 import { ReactNode } from "react";
-import { CartProvider as USCProvider } from "use-shopping-cart";
+import { CartProvider as ProviderCart } from "use-shopping-cart";
+const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!;
 
 export default function CartProvider({ children }: { children: ReactNode }) {
   return (
-    <USCProvider
+    <ProviderCart
       mode="payment"
       cartMode="client-only"
-      stripe={process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string}
-      successUrl="https://commerce-next-yt.vercel.app/stripe/success"
-      cancelUrl="https://commerce-next-yt.vercel.app/stripe/error"
-      currency="USD"
+      stripe={stripeKey}
+      successUrl="http://localhost:3000/success"
+      cancelUrl="http://localhost:3000"
+      currency="MXN"
       billingAddressCollection={false}
       shouldPersist={true}
       language="es-MX"
     >
       {children}
-    </USCProvider>
+    </ProviderCart>
   );
 }
