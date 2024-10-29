@@ -28,14 +28,14 @@ import { toast } from "sonner";
 import { setNewProduct } from "@/utils/actions/provider/provider";
 import { X } from "lucide-react";
 
-// Modificado el schema para manejar una sola imagen
+// Modificado el schema para manejar múltiples imágenes
 const productSchema = z.object({
   name: z.string().min(1, "El nombre del producto es requerido"),
   description: z.string().min(1, "La descripción del producto es requerida"),
-  //   price es float, no string
   price: z.string().min(1, "El precio del producto es requerido"),
-  //   puedes subir mas de una imagen
-  images: z.string().url("La imagen del producto es requerida"),
+  images: z
+    .array(z.string().url("La URL de la imagen no es válida"))
+    .min(1, "Se requiere al menos una imagen"),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
@@ -49,14 +49,14 @@ export default function DialogDemo({
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  console.log(typeof providerId);
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: "",
       description: "",
-      images: "",
+      price: "",
+      images: [],
     },
   });
 
@@ -65,7 +65,7 @@ export default function DialogDemo({
       name: "",
       description: "",
       price: "0",
-      images: "",
+      images: [],
     });
   };
 
@@ -76,14 +76,12 @@ export default function DialogDemo({
         name: data.name,
         description: data.description,
         price: data.price,
-        //  image es un array de strings
-        images: [data.images],
+        images: data.images,
       });
-      console.log(data);
 
       toast.success("Producto agregado correctamente");
-      setIsOpen(false); // Cerrar el diálogo después de guardar
-      resetForm(); // Resetear el formulario
+      setIsOpen(false);
+      resetForm();
     } catch (error) {
       toast.error("Ocurrió un error al agregar el producto");
     } finally {
@@ -154,42 +152,51 @@ export default function DialogDemo({
               name="images"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>imagenes del producto</FormLabel>
+                  <FormLabel>imágenes del producto</FormLabel>
                   <div className="space-y-2">
                     <UploadButton
                       endpoint="imageUploader"
                       onClientUploadComplete={(files) => {
-                        if (files?.[0]) {
-                          form.setValue("images", files[0].url);
-                          toast.success("Imagenes subidas correctamente");
+                        if (files?.length) {
+                          // Agregar las nuevas URLs al array existente
+                          const newUrls = files.map((file) => file.url);
+                          const currentUrls = field.value || [];
+                          form.setValue("images", [...currentUrls, ...newUrls]);
+                          toast.success("Imágenes subidas correctamente");
                         }
                       }}
                       onUploadError={(error) => {
                         toast.error(
-                          `Error al subir la imagen: ${error.message}`
+                          `Error al subir las imágenes: ${error.message}`
                         );
                       }}
                       className="mt-4 ut-button:bg-[#a3eef5] ut-button:ut-readying:bg-[#a3eef5]/50 ut-button:text-gray-900"
                     />
-                    {field.value && (
-                      <div className="relative">
-                        <Input
-                          value={field.value}
-                          readOnly
-                          disabled
-                          className="pr-10"
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="absolute right-2 top-1/2 -translate-y-1/2"
-                          onClick={() => form.setValue("images", "")}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    )}
+                    <div className="space-y-2">
+                      {field.value?.map((url, index) => (
+                        <div key={index} className="relative">
+                          <Input
+                            value={url}
+                            readOnly
+                            disabled
+                            className="pr-10"
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-2 top-1/2 -translate-y-1/2"
+                            onClick={() => {
+                              const newUrls = [...field.value];
+                              newUrls.splice(index, 1);
+                              form.setValue("images", newUrls);
+                            }}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                   <FormMessage />
                 </FormItem>
