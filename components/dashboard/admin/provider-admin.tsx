@@ -17,33 +17,38 @@ export default function Providers() {
   return (
     <Card className="w-[350px]">
       <CardHeader>
-        <Avatar>
-          <AvatarImage src="https://randomuser.me/api/portraits " />
-          <AvatarFallback>
-            <span>j</span>
-          </AvatarFallback>
-        </Avatar>
-        <CardTitle>jorge</CardTitle>
+        <div className="flex justify-start items-center gap-4">
+          <Avatar>
+            <AvatarImage src="https://avatar.iran.liara.run/public" />
+            <AvatarFallback>
+              <span>jm</span>
+            </AvatarFallback>
+          </Avatar>
+          <CardTitle>jorge montanez</CardTitle>
+        </div>
         <CardDescription>
           vendedor de ropa y a veces cosas ilegales
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
-          <div className="grid w-full items-center gap-4">
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" placeholder="Name of your project" />
+        {/* muestra los productos del vendedor */}
+        <div>
+          <Label>Productos</Label>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span>playera</span>
+              <span>$100</span>
             </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="framework">Framework</Label>
+            <div className="flex items-center justify-between">
+              <span>pantalon</span>
+              <span>$200</span>
             </div>
           </div>
-        </form>
+        </div>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="outline">Cancel</Button>
-        <Button>Deploy</Button>
+        <Button variant="outline">editar</Button>
+        <Button>ver productos</Button>
       </CardFooter>
     </Card>
   );

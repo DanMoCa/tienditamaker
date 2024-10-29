@@ -10,41 +10,29 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { useForm, useFieldArray, Controller } from "react-hook-form";
-import { PlusCircle, X } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { X } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-const productSchema = z.object({
-  name: z.string().min(1, "El nombre del producto es requerido"),
-  description: z.string().min(1, "La descripción del producto es requerida"),
-  price: z.string().refine((val) => !isNaN(Number(val)), {
-    message: "El precio debe ser un número válido",
-  }),
-  images: z
-    .any()
-    .refine((files) => files?.length > 0, "La imagen es requerida"),
-});
+import { UploadButton } from "@/utils/uploadthing/uploadthing";
+import { toast } from "sonner";
+import { setNewProvider } from "@/utils/actions/provider/provider";
 
 const providerSchema = z.object({
   name: z.string().min(1, "El nombre del proveedor es requerido"),
   description: z.string().min(1, "La descripción del proveedor es requerida"),
-  image: z.any().refine((files) => files?.length > 0, "La imagen es requerida"),
-  products: z.array(productSchema),
+  image: z.array(z.string().min(1, "La imagen del proveedor es requerida")),
 });
 
 type ProviderFormValues = z.infer<typeof providerSchema>;
@@ -61,20 +49,23 @@ export default function DialogDemo({
     defaultValues: {
       name: "",
       description: "",
-      products: [],
     },
-  });
-
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "products",
   });
 
   const onSubmit = async (data: ProviderFormValues) => {
     setIsSubmitting(true);
-    // Aquí iría la lógica para enviar los datos al servidor
     console.log(data);
-    await new Promise((resolve) => setTimeout(resolve, 2000)); // Simula una operación asíncrona
+    try {
+      await setNewProvider({
+        name: data.name,
+        description: data.description,
+        image: data.image,
+      });
+      toast.success("Proveedor agregado correctamente");
+    } catch (error) {
+      toast.error("Ocurrió un error al agregar el proveedor");
+    }
+
     setIsSubmitting(false);
     form.reset();
   };
@@ -86,7 +77,7 @@ export default function DialogDemo({
         <DialogHeader>
           <DialogTitle>agregar proveedor</DialogTitle>
           <DialogDescription>
-            Llena el formulario para agregar un nuevo proveedor
+            llena el formulario para agregar un nuevo proveedor
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -127,24 +118,36 @@ export default function DialogDemo({
                 <FormItem>
                   <FormLabel>imagen del proveedor</FormLabel>
                   <FormControl>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => onChange(e.target.files)}
-                      {...field}
+                    <UploadButton
+                      endpoint="imageUploader"
+                      onClientUploadComplete={(files) => {
+                        form.setValue(
+                          "image",
+                          files.map((file) => file.url)
+                        );
+                        toast.success("imagen subida correctamente");
+                      }}
+                      className="mt-4 ut-button:bg-[#a3eef5] ut-button:ut-readying:bg-[#a3eef5]/50 ut-button:text-gray-900"
                     />
                   </FormControl>
-                  <FormMessage />
+                  {/* mostrar url del archivo en un input disabled */}
+                  <FormControl>
+                    <Input
+                      value={value}
+                      onChange={onChange}
+                      placeholder="url de la imagen"
+                      disabled
+                      className="mt-2"
+                    />
+                  </FormControl>
                 </FormItem>
               )}
             />
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "guardando..." : "guardar proveedor"}
+            </Button>
           </form>
         </Form>
-        <DialogFooter>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "guardando..." : "guardar proveedor"}
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
