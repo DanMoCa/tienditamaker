@@ -80,12 +80,12 @@ export default function ShoppingCartModal() {
 
   return (
     <Sheet open={shouldDisplayCart} onOpenChange={() => handleCartClick()}>
-      <SheetContent className="sm:max-w-lg w-[90vw]">
+      <SheetContent className="sm:max-w-lg w-[90vw] bg-white">
         <SheetHeader>
-          <SheetTitle>carrito</SheetTitle>
+          <SheetTitle className="text-secondary">carrito</SheetTitle>
         </SheetHeader>
 
-        <div className="h-full flex flex-col justify-between">
+        <div className="h-full flex flex-col justify-between bg-white">
           <div className="mt-8 flex-1 overflow-y-auto">
             <ul className="-my-6 divide-y divide-gray-200">
               {cartCount === 0 ? (
@@ -123,7 +123,7 @@ export default function ShoppingCartModal() {
                             <button
                               type="button"
                               onClick={() => removeItem(entry.id)}
-                              className="font-medium text-primary hover:text-primary/80"
+                              className="font-medium text-secondary hover:text-secondary/80"
                             >
                               eliminar
                             </button>
@@ -149,10 +149,10 @@ export default function ShoppingCartModal() {
             <div className="mt-6">
               <Button
                 onClick={handleCheckoutClick}
-                className="w-full"
-                disabled={cartCount === 0 || isLoading}
+                className="w-full bg-secondary hover:bg-secondary/80 text-primary"
+                // disabled={cartCount === 0 || isLoading}
               >
-                {isLoading ? "Procesando..." : "Pagar"}
+                {isLoading ? "procesando..." : "pagar"}
               </Button>
             </div>
 
@@ -161,7 +161,7 @@ export default function ShoppingCartModal() {
                 o{" "}
                 <button
                   onClick={() => handleCartClick()}
-                  className="font-medium text-primary hover:text-primary/80"
+                  className="font-medium text-secondary hover:text-secondary/80"
                 >
                   seguir comprando
                 </button>

@@ -1,6 +1,6 @@
-"use client";
-
-import { useEffect, useState } from "react";
+import React from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,12 +10,10 @@ import {
   getStoreConfigByUser,
   updateStoreConfig,
 } from "@/utils/actions/store/store-config";
+import { getUserIdByEmail } from "@/utils/actions/session/user";
 import { UploadButton } from "@/utils/uploadthing/uploadthing";
 import Link from "next/link";
-import { getUserIdByEmail } from "@/utils/actions/session/user";
-import { useSession } from "next-auth/react";
 
-// Definir la interfaz para la configuración
 interface StoreConfig {
   name: string;
   subdomain: string;
@@ -25,7 +23,6 @@ interface StoreConfig {
   logo: string;
 }
 
-// Estado inicial con valores por defecto
 const initialConfig: StoreConfig = {
   name: "",
   subdomain: "",
@@ -36,133 +33,151 @@ const initialConfig: StoreConfig = {
 };
 
 export default function StoreConfigDashboard() {
-  const [userId, setUserId] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const [config, setConfig] = useState<StoreConfig>(initialConfig);
   const { data: session, status } = useSession();
+  const [isLoading, setIsLoading] = useState(false);
+  const [config, setConfig] = useState<StoreConfig>(initialConfig);
 
-  // Efecto para obtener la configuración
-  useEffect(() => {
-    async function fetchStoreConfig() {
-      // Obtener el ID del usuario
-      const userId = await getUserIdByEmail(session?.user?.email as string);
-      if (!userId) return toast.error("No se pudo obtener el ID del usuario");
+  // Memoized function to fetch user ID
+  const fetchUserId = useCallback(async (email: string) => {
+    try {
+      return await getUserIdByEmail(email);
+    } catch (error) {
+      console.error("Error fetching user ID:", error);
+      toast.error("No se pudo obtener el ID del usuario");
+      return null;
+    }
+  }, []);
 
-      try {
-        const storeConfig = await getStoreConfigByUser(userId);
-        console.log("Store config:", storeConfig);
-
-        if (storeConfig) {
-          // Asegurarse de que los datos tengan la estructura correcta
-          setConfig({
-            ...initialConfig,
-            ...storeConfig,
-            colors: [storeConfig.colors[0], storeConfig.colors[1]],
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching store config:", error);
-        toast.error("No se pudo obtener la configuración de la tienda");
-      } finally {
-        setIsInitialLoading(false);
+  // Memoized function to fetch store configuration
+  const fetchStoreConfig = useCallback(async (userId: string) => {
+    try {
+      const storeConfig = await getStoreConfigByUser(userId);
+      if (storeConfig) {
+        setConfig({
+          ...initialConfig,
+          ...storeConfig,
+          colors: [storeConfig.colors[0], storeConfig.colors[1]],
+        });
       }
+    } catch (error) {
+      console.error("Error fetching store config:", error);
+      toast.error("No se pudo obtener la configuración de la tienda");
     }
+  }, []);
 
-    fetchStoreConfig();
-  }, [userId, session]);
+  // Unified useEffect for data fetching
+  useEffect(() => {
+    const initializeData = async () => {
+      if (session?.user?.email) {
+        const userId = await fetchUserId(session.user.email);
+        if (userId) {
+          await fetchStoreConfig(userId);
+        }
+      }
+    };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-
-    if (name === "primaryColor" || name === "secondaryColor") {
-      setConfig((prev) => ({
-        ...prev,
-        colors:
-          name === "primaryColor"
-            ? [value, prev.colors[1]]
-            : [prev.colors[0], value],
-      }));
-    } else {
-      setConfig((prev) => ({ ...prev, [name]: value }));
+    if (status === "authenticated") {
+      initializeData();
     }
-  };
+  }, [status, session, fetchUserId, fetchStoreConfig]);
 
-  const validateConfig = (config: any) => {
+  // Memoized change handler
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = e.target;
+
+      setConfig((prev) => {
+        if (name === "primaryColor") {
+          return { ...prev, colors: [value, prev.colors[1]] };
+        }
+        if (name === "secondaryColor") {
+          return { ...prev, colors: [prev.colors[0], value] };
+        }
+        return { ...prev, [name]: value };
+      });
+    },
+    []
+  );
+
+  // Memoized validation function
+  const validateConfig = useCallback((config: StoreConfig) => {
     if (!config.name.trim()) return "El nombre de la tienda es requerido";
     if (!config.subdomain.trim()) return "El subdominio es requerido";
     if (!/^[a-zA-Z0-9-]+$/.test(config.subdomain)) {
       return "El subdominio solo puede contener letras, números y guiones";
     }
-    if (config.logo && !isValidUrl(config.logo)) {
+    if (config.logo && !config.logo.startsWith("http")) {
       return "La URL del logo no es válida";
     }
     return null;
-  };
+  }, []);
 
-  const isValidUrl = (url: string): boolean => {
-    try {
-      new URL(url);
-      return true;
-    } catch {
-      return false;
-    }
-  };
+  // Memoized submit handler
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!session?.user?.email) {
+        toast.error("Debes iniciar sesión");
+        return;
+      }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+      const error = validateConfig(config);
+      if (error) {
+        toast.error(error);
+        return;
+      }
 
-    if (!userId) {
-      toast.error("No se pudo obtener el ID del usuario");
-      return;
-    }
+      setIsLoading(true);
 
-    const error = validateConfig(config);
-    if (error) {
-      toast.error(error);
-      return;
-    }
+      try {
+        const userId = await fetchUserId(session.user.email);
+        if (!userId) throw new Error("No se pudo obtener el ID del usuario");
 
-    setIsLoading(true);
+        await updateStoreConfig(userId, config);
+        toast.success("Configuración guardada exitosamente");
+      } catch (error) {
+        console.error("Error al guardar la configuración:", error);
+        toast.error("No se pudo guardar la configuración");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [config, session, fetchUserId, validateConfig]
+  );
 
-    try {
-      const result = await updateStoreConfig(userId, config);
-      console.log("Configuración guardada:", result);
-
-      toast.success("Configuración guardada exitosamente");
-    } catch (error) {
-      console.error("Error al guardar la configuración:", error);
-      toast.error("No se pudo guardar la configuración");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  if (status === "loading" || isInitialLoading) return <div>Cargando...</div>;
+  // Handle loading state
+  if (status === "loading") {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        Cargando...
+      </div>
+    );
+  }
 
   return (
     <div className="w-full mx-auto">
-      {/* Boton para visitar la tienda */}
-      <div className="flex justify-end">
-        <Link
-          href={`https://${config.subdomain}.tienditamaker.com`}
-          passHref
-          target="_blank"
-        >
-          <Button variant="outline">visitar tienda</Button>
-        </Link>
+      <div className="flex justify-end mb-4">
+        {config.subdomain && (
+          <Link
+            href={`https://${config.subdomain}.tienditamaker.com`}
+            passHref
+            target="_blank"
+          >
+            <Button variant="outline">Visitar tienda</Button>
+          </Link>
+        )}
       </div>
-      <form onSubmit={handleSubmit} className="space-y-4">
+
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
-          <Label htmlFor="name">nombre de la tienda</Label>
+          <Label htmlFor="name">Nombre de la tienda</Label>
           <Input
             id="name"
             name="name"
             value={config.name}
             onChange={handleChange}
-            placeholder="mi tienda"
+            placeholder="Mi tienda"
+            className="w-full"
             required
           />
         </div>
@@ -260,8 +275,11 @@ export default function StoreConfigDashboard() {
           />
         </div>
         <div className="py-4">
-          <Button type="submit" disabled={isLoading || !userId}>
-            {isLoading ? "Guardando..." : "Guardar cambios"}
+          <Button
+            type="submit"
+            disabled={isLoading || status !== "authenticated"}
+          >
+            {isLoading ? "guardando..." : "guardar cambios"}
           </Button>
         </div>
       </form>

@@ -14,15 +14,25 @@ export default function DashboardLayout({
   const [activeItem, setActiveItem] = useState("general");
 
   return (
-    <UserProvider>
-      <div className="flex flex-col h-screen border-b border-neutral-700">
-        <Header activeItem={activeItem} setActiveItem={setActiveItem} />
-        <div className="flex flex-1 overflow-hidden">
-          <Sidebar activeItem={activeItem} setActiveItem={setActiveItem} />
-          <main className="flex-1 overflow-auto p-4">{children}</main>
-          <Toaster richColors />
-        </div>
-      </div>
-    </UserProvider>
+    <>
+      <head>
+        <title>tiendita dashboard</title>
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="description" content="tiendita dashboard" />
+        <meta name="url" content="https://tienditamaker.com" />
+      </head>
+      <body>
+        <UserProvider>
+          <div className="flex flex-col h-screen border-b border-neutral-700">
+            <Header activeItem={activeItem} setActiveItem={setActiveItem} />
+            <div className="flex flex-1 overflow-hidden">
+              <Sidebar activeItem={activeItem} setActiveItem={setActiveItem} />
+              <main className="flex-1 overflow-auto p-4">{children}</main>
+              <Toaster richColors />
+            </div>
+          </div>
+        </UserProvider>
+      </body>
+    </>
   );
 }
