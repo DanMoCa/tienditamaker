@@ -23,8 +23,8 @@ export function Header({
   return (
     <header className="border-b px-4 py-3 flex items-center justify-between ">
       <MobileHeader activeItem={activeItem} setActiveItem={setActiveItem} />
-      <h1 className="text-xl font-semibold hidden md:block">
-        tiendita dashboard
+      <h1 className="text-xl font-semibold hidden md:flex">
+        tiendita <p className="text-[#a3eef5]">dashboard</p>
       </h1>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
