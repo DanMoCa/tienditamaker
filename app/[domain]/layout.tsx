@@ -85,15 +85,14 @@ export default async function SiteLayout({
   const themeClasses = generateThemeClasses(siteColors);
 
   return (
-    <html
-      lang="es"
-      className={`
+    <html lang="es">
+      <body
+        className={`
         ${themeClasses}
         bg-[var(--color-background)]
-        text-[var(--color-text)]
+        text-[var(--color-text)] min-h-screen
       `}
-    >
-      <body className="min-h-screen">
+      >
         <CartProvider>
           <Navbar siteName={siteName} colors={siteColors} />
           <ShoppingCartModal />

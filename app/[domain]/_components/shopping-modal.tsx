@@ -82,14 +82,14 @@ export default function ShoppingCartModal() {
     <Sheet open={shouldDisplayCart} onOpenChange={() => handleCartClick()}>
       <SheetContent className="sm:max-w-lg w-[90vw]">
         <SheetHeader>
-          <SheetTitle>Carrito</SheetTitle>
+          <SheetTitle>carrito</SheetTitle>
         </SheetHeader>
 
         <div className="h-full flex flex-col justify-between">
           <div className="mt-8 flex-1 overflow-y-auto">
             <ul className="-my-6 divide-y divide-gray-200">
               {cartCount === 0 ? (
-                <h1 className="py-6">No hay productos en tu carrito.</h1>
+                <h1 className="py-6">no hay productos en tu carrito.</h1>
               ) : (
                 <>
                   {Object.values(cartDetails ?? {}).map((entry) => (
@@ -116,7 +116,7 @@ export default function ShoppingCartModal() {
 
                         <div className="flex flex-1 items-end justify-between text-sm">
                           <p className="text-gray-500">
-                            Cantidad: {entry.quantity}
+                            cantidad: {entry.quantity}
                           </p>
 
                           <div className="flex">
@@ -125,7 +125,7 @@ export default function ShoppingCartModal() {
                               onClick={() => removeItem(entry.id)}
                               className="font-medium text-primary hover:text-primary/80"
                             >
-                              Eliminar
+                              eliminar
                             </button>
                           </div>
                         </div>
@@ -139,11 +139,11 @@ export default function ShoppingCartModal() {
 
           <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
             <div className="flex justify-between text-base font-medium text-gray-900">
-              <p>Subtotal:</p>
+              <p>subtotal:</p>
               <p>${totalPrice}</p>
             </div>
             <p className="mt-0.5 text-sm text-gray-500">
-              Envío e impuestos se calculan al finalizar la compra.
+              envío e impuestos se calculan al finalizar la compra.
             </p>
 
             <div className="mt-6">
@@ -163,7 +163,7 @@ export default function ShoppingCartModal() {
                   onClick={() => handleCartClick()}
                   className="font-medium text-primary hover:text-primary/80"
                 >
-                  Seguir comprando
+                  seguir comprando
                 </button>
               </p>
             </div>

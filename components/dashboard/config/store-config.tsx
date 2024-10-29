@@ -6,13 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-
 import {
   getStoreConfigByUser,
   updateStoreConfig,
 } from "@/utils/actions/store/store-config";
 import { UploadButton } from "@/utils/uploadthing/uploadthing";
 import Link from "next/link";
+import { getUserIdByEmail } from "@/utils/actions/session/user";
+import { useSession } from "next-auth/react";
 
 // Definir la interfaz para la configuración
 interface StoreConfig {
@@ -39,11 +40,14 @@ export default function StoreConfigDashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [config, setConfig] = useState<StoreConfig>(initialConfig);
+  const { data: session, status } = useSession();
 
   // Efecto para obtener la configuración
   useEffect(() => {
     async function fetchStoreConfig() {
-      if (!userId) return;
+      // Obtener el ID del usuario
+      const userId = await getUserIdByEmail(session?.user?.email as string);
+      if (!userId) return toast.error("No se pudo obtener el ID del usuario");
 
       try {
         const storeConfig = await getStoreConfigByUser(userId);
@@ -66,7 +70,7 @@ export default function StoreConfigDashboard() {
     }
 
     fetchStoreConfig();
-  }, [userId]);
+  }, [userId, session]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -135,6 +139,8 @@ export default function StoreConfigDashboard() {
       setIsLoading(false);
     }
   };
+
+  if (status === "loading" || isInitialLoading) return <div>Cargando...</div>;
 
   return (
     <div className="w-full mx-auto">
