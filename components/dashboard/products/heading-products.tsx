@@ -2,7 +2,7 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import ProductDialog from "./dialog";
+import ProductDialog from "./dialog-products";
 
 export default function Component() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);

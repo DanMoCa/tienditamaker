@@ -1,5 +1,5 @@
 "use client";
-import ProductsCards from "@/components/dashboard/products/cards";
+import ProductsCards from "@/components/dashboard/products/cards-products";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import HeadingProducts from "@/components/dashboard/products/heading-products";
 
