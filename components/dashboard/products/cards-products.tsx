@@ -78,21 +78,29 @@ const useProducts = (storeId: number | null) => {
     setState((prev) => ({ ...prev, isLoading: true }));
     try {
       const products = await getProducts(storeId);
-      const providerProductId = products.map(
+
+      // Extraer los IDs de los productos del proveedor
+      const providerProductIds = products.map(
         (product: ProductData) => product.providerProductId
       );
-      console.log(providerProductId);
 
-      const providerPrices = await getProductsProvider(providerProductId);
-      console.log(providerPrices);
+      // Obtener los precios del proveedor para todos los productos
+      const providerProducts = await getProductsProvider(providerProductIds);
 
+      // Crear un mapa de id -> precio para fácil acceso
+      const providerPricesMap = new Map(
+        providerProducts.map((product: any) => [product.id, product.price])
+      );
+
+      // Combinar los productos con sus precios de proveedor correspondientes
       const productsWithProviderPrices = products.map(
-        (product: ProductData, index: number) => ({
+        (product: ProductData) => ({
           ...product,
-          providerPrice: providerPrices[index]?.price || null,
+          providerPrice:
+            providerPricesMap.get(product.providerProductId) || null,
         })
       );
-      console.log(productsWithProviderPrices);
+
       setState({
         data: productsWithProviderPrices,
         isLoading: false,
@@ -157,7 +165,7 @@ const ProductCard = memo(
 
           {product.providerPrice !== null && (
             <p className="mt-2 text-sm font-bold text-green-600">
-              Precio del proveedor: ${product.providerPrice}
+              precio del proveedor: ${product.providerPrice}
             </p>
           )}
           <p className="mt-2 text-lg font-bold">Precio: ${product.price}</p>

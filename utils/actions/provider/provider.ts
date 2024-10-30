@@ -97,7 +97,7 @@ export async function setNewProduct(
   }
 }
 
-export async function getProducts(providerId: number) {
+export async function getProducts(providerId: string | string[]) {
   const cookieStore = cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -112,14 +112,25 @@ export async function getProducts(providerId: number) {
   );
 
   try {
-    const { data, error } = await supabase
-      .from("ProviderProduct")
-      .select()
-      .eq("providerId", providerId);
+    if (Array.isArray(providerId)) {
+      // Si es un array, usar in para buscar múltiples IDs
+      const { data, error } = await supabase
+        .from("ProviderProduct")
+        .select()
+        .in("providerId", providerId);
 
-    if (error?.code) return error;
+      if (error?.code) return error;
+      return data;
+    } else {
+      // Si es un solo ID, usar eq como antes
+      const { data, error } = await supabase
+        .from("ProviderProduct")
+        .select()
+        .eq("providerId", providerId);
 
-    return data;
+      if (error?.code) return error;
+      return data;
+    }
   } catch (error: any) {
     return error;
   }
