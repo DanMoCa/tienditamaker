@@ -1,51 +1,29 @@
 import Link from "next/link";
 import Image from "next/image";
+import { readStoreDomain } from "@/utils/actions/store/read-store-domain";
+import { getProductsByStoreId } from "@/utils/actions/store/store-config";
 
 export const dynamic = "force-dynamic";
 
-export default async function ProductsPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const data = [
-    {
-      _id: "1",
-      name: "Polo de algodón",
-      categoryName: "Hombres",
-      price: 25.0,
-      imageUrl:
-        "https://utfs.io/f/pypyrj2zEPRNIqSWmQ1WUZrb4Nl1tuky6Ez8LmgAxDnQq9YJ",
-      slug: "polo-de-algodon",
-    },
-    {
-      _id: "2",
-      name: "Pantalón de mezclilla",
-      categoryName: "Hombres",
-      price: 45.0,
-      imageUrl:
-        "https://utfs.io/f/pypyrj2zEPRNIqSWmQ1WUZrb4Nl1tuky6Ez8LmgAxDnQq9YJ",
-      slug: "pantalon-de-mezclilla",
-    },
-    {
-      _id: "3",
-      name: "Blusa de algodón",
-      categoryName: "Mujeres",
-      price: 30.0,
-      imageUrl:
-        "https://utfs.io/f/pypyrj2zEPRNIqSWmQ1WUZrb4Nl1tuky6Ez8LmgAxDnQq9YJ",
-      slug: "blusa-de-algodon",
-    },
-    {
-      _id: "4",
-      name: "Falda de mezclilla",
-      categoryName: "Mujeres",
-      price: 40.0,
-      imageUrl:
-        "https://utfs.io/f/pypyrj2zEPRNIqSWmQ1WUZrb4Nl1tuky6Ez8LmgAxDnQq9YJ",
-      slug: "falda-de-mezclilla",
-    },
-  ];
+interface ProductsPageProps {
+  params: { domain: string };
+}
+interface ProductData {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  images: any;
+}
+
+export default async function ProductsPage({ params }: ProductsPageProps) {
+  const result = await readStoreDomain(params?.domain);
+  const id = result?.[0]?.id;
+  const data = await getProductsByStoreId(id);
+
+  const productSlug = data.map((product: ProductData) => {
+    return product.name.replace(/\s+/g, "-").toLowerCase();
+  });
 
   return (
     <div className="bg-white">
@@ -57,11 +35,11 @@ export default async function ProductsPage({
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-          {data.map((product) => (
-            <div key={product._id} className="group relative">
+          {data.map((product: ProductData) => (
+            <div key={product.id} className="group relative">
               <div className="aspect-square w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:h-80">
                 <Image
-                  src={product.imageUrl}
+                  src={product.images[0]}
                   alt="Product image"
                   className="w-full h-full object-cover object-center lg:h-full lg:w-full"
                   width={300}
@@ -72,12 +50,12 @@ export default async function ProductsPage({
               <div className="mt-4 flex justify-between">
                 <div>
                   <h3 className="text-sm text-gray-700">
-                    <Link href={`/product/${product.slug}`}>
+                    <Link href={`/product/${productSlug}`} passHref>
                       {product.name}
                     </Link>
                   </h3>
                   <p className="mt-1 text-sm text-gray-500">
-                    {product.categoryName}
+                    {product.description}
                   </p>
                 </div>
                 <p className="text-sm font-medium text-gray-900">
