@@ -29,6 +29,7 @@ export default function CheckoutNow({
   return (
     <Button
       variant="outline"
+      className="text-white"
       onClick={() => {
         buyNow(product.price_id);
       }}

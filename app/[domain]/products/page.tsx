@@ -21,10 +21,6 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
   const id = result?.[0]?.id;
   const data = await getProductsByStoreId(id);
 
-  const productSlug = data.map((product: ProductData) => {
-    return product.name.replace(/\s+/g, "-").toLowerCase();
-  });
-
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 sm:px-6  lg:max-w-7xl lg:px-8">
@@ -50,7 +46,12 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
               <div className="mt-4 flex justify-between">
                 <div>
                   <h3 className="text-sm text-gray-700">
-                    <Link href={`/product/${productSlug}`} passHref>
+                    <Link
+                      href={`/product/${product.name
+                        .trim()
+                        .replace(/ /g, "-")}?id=${product.id}`}
+                      passHref
+                    >
                       {product.name}
                     </Link>
                   </h3>

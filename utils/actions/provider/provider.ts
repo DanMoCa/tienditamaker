@@ -97,7 +97,7 @@ export async function setNewProduct(
   }
 }
 
-export async function getProducts(providerId: string | string[]) {
+export async function getProducts(providerId: number | string[]) {
   const cookieStore = cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
