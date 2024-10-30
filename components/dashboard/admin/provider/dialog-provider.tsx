@@ -72,12 +72,13 @@ export default function DialogDemo({
   const onSubmit = async (data: ProductFormValues) => {
     setIsSubmitting(true);
     try {
-      await setNewProduct(providerId, {
+      const trans = await setNewProduct(providerId, {
         name: data.name,
         description: data.description,
         price: data.price,
         images: data.images,
       });
+      console.log({ trans });
 
       toast.success("Producto agregado correctamente");
       setIsOpen(false);

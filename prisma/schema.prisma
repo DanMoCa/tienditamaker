@@ -8,60 +8,64 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-
 model Store {
-  id         Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   name        String
   subdomain   String
   description String
   colors      String[]  @default(["#000000", "#ffffff"])
   slogan      String
   logo        String
-  template    String  @default("default")
+  template    String    @default("default")
   userId      Int
-  user        User     @relation(fields: [userId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
   products    Product[]
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  name       String
-  email      String   @unique
-  image      String
-  userType String  @default("free")
-  isAdmin    Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime? @updatedAt
-  stores     Store[]
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  image     String
+  userType  String    @default("free")
+  isAdmin   Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  stores    Store[]
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String
-  price       Float
-  images       String[]
-  storeId     Int
-  store       Store @relation(fields: [storeId], references: [id])
-  providerId  Int
-  provider    Provider @relation(fields: [providerId], references: [id])
+  id               Int            @id @default(autoincrement())
+  name             String
+  description      String
+  price            Float
+  images           String[]
+  storeId          Int
+  store            Store          @relation(fields: [storeId], references: [id])
+  providerProductId Int
+  providerProduct   ProviderProduct @relation(fields: [providerProductId], references: [id])
+  customizations   Json?          // Para almacenar personalizaciones específicas de la tienda
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime?       @updatedAt
 }
 
 model ProviderProduct {
-  id        Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   name        String
   description String
   price       Float
-  images       String[]
+  images      String[]
   providerId  Int
-  provider    Provider @relation(fields: [providerId], references: [id])
+  provider    Provider  @relation(fields: [providerId], references: [id])
+  products    Product[] // Productos de tiendas basados en este producto de proveedor
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime?  @updatedAt
 }
 
 model Provider {
-  id        Int      @id @default(autoincrement())
+  id          Int               @id @default(autoincrement())
   name        String
   description String
   image       String
   products    ProviderProduct[]
-  clientProducts Product[]
 }

@@ -1,111 +1,266 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SelectGroup,
+  SelectLabel,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import { PlusCircle } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
-interface Producto {
-  id: number;
-  nombre: string;
-  precio: number;
-  imagen: string;
-  descripcion: string;
-}
+import { setNewProduct } from "@/utils/actions/product/product";
+import { getProducts, getProviders } from "@/utils/actions/provider/provider";
+import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Image from "next/image";
 
-export default function Component() {
-  const [productos, setProductos] = useState<Producto[]>([]);
-  const [dialogoAbierto, setDialogoAbierto] = useState(false);
-  const [nuevoProducto, setNuevoProducto] = useState<Omit<Producto, "id">>({
-    nombre: "",
-    precio: 0,
-    imagen: "",
-    descripcion: "",
+const formSchema = z.object({
+  providerProductId: z
+    .string()
+    .min(1, "por favor selecciona un producto del proveedor"),
+  name: z.string().min(1, "nombre es requerido"),
+  description: z.string().min(1, "descripción es requerida"),
+  price: z.number().min(0, "El precio del producto es requerido"),
+  customizations: z.record(z.string()).optional(),
+});
+
+type ProductDialogProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  storeId: number;
+};
+
+export default function ProductDialog({
+  isOpen,
+  onClose,
+  storeId,
+}: ProductDialogProps) {
+  const [selectedProviderProduct, setSelectedProviderProduct] =
+    useState<any>(null);
+  const [groupedProducts, setGroupedProducts] = useState<{
+    [key: string]: any;
+  }>({});
+  const [providers, setProviders] = useState<any[]>([]);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      providerProductId: "",
+      name: "",
+      description: "",
+      price: 0,
+      customizations: {},
+    },
   });
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setNuevoProducto((prev) => ({
-      ...prev,
-      [name]: name === "precio" ? parseFloat(value) : value,
-    }));
+  useEffect(() => {
+    const fetchProviderProducts = async () => {
+      const providersData = await getProviders();
+      setProviders(providersData);
+
+      const groupedProductsData: { [key: string]: any } = {};
+
+      await Promise.all(
+        providersData.map(async (provider: any) => {
+          const products = await getProducts(provider.id);
+          groupedProductsData[provider.name] = products.map((product: any) => ({
+            ...product,
+            providerId: provider.id,
+          }));
+        })
+      );
+
+      setGroupedProducts(groupedProductsData);
+    };
+
+    fetchProviderProducts();
+  }, []);
+
+  const handleProviderProductChange = (value: string) => {
+    const product = Object.values(groupedProducts)
+      .flat()
+      .find((p: any) => p.id.toString() === value);
+
+    setSelectedProviderProduct(product || null);
+    if (product) {
+      form.setValue("name", product.name);
+      form.setValue("description", product.description);
+      form.setValue("price", product.price);
+    }
   };
 
-  const agregarProducto = (e: React.FormEvent) => {
-    e.preventDefault();
-    setProductos((prev) => [...prev, { ...nuevoProducto, id: Date.now() }]);
-    setNuevoProducto({ nombre: "", precio: 0, imagen: "", descripcion: "" });
-    setDialogoAbierto(false);
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    try {
+      const productData = {
+        name: data.name,
+        description: data.description,
+        price: data.price.toString(),
+        images: selectedProviderProduct?.images || [],
+        storeId: storeId,
+        providerProductId: parseInt(data.providerProductId),
+      };
+
+      await setNewProduct(productData);
+      onClose();
+      toast.success("producto creado correctamente");
+    } catch (error) {
+      console.error("Failed to create product:", error);
+      toast.error("Ocurrió un error al crear el producto");
+    }
   };
 
   return (
-    <div className="flex justify-between items-center mb-6">
-      <h1 className="text-3xl font-bold"></h1>
-      <Dialog open={dialogoAbierto} onOpenChange={setDialogoAbierto}>
-        <DialogTrigger asChild>
-          <Button>
-            <PlusCircle className="mr-2 h-4 w-4" /> Agregar Producto
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>agregar nuevo producto</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={agregarProducto} className="space-y-4">
-            <div>
-              <Label htmlFor="nombre">nombre del producto</Label>
-              <Input
-                id="nombre"
-                name="nombre"
-                value={nuevoProducto.nombre}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="precio">precio</Label>
-              <Input
-                id="precio"
-                name="precio"
-                type="number"
-                value={nuevoProducto.precio}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="imagen">url de la imagen</Label>
-              <Input
-                id="imagen"
-                name="imagen"
-                value={nuevoProducto.imagen}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="descripcion">descripción</Label>
-              <Textarea
-                id="descripcion"
-                name="descripcion"
-                value={nuevoProducto.descripcion}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <Button type="submit">guardar producto</Button>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>agregar nuevo producto</DialogTitle>
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormField
+              control={form.control}
+              name="providerProductId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>producto del proveedor</FormLabel>
+                  <Select
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      handleProviderProductChange(value);
+                    }}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="selecciona un producto del proveedor" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.entries(groupedProducts).map(
+                        ([providerName, products]) => (
+                          <SelectGroup key={providerName}>
+                            <div className="flex my-4">
+                              <Avatar>
+                                <AvatarImage
+                                  src={
+                                    providers.find(
+                                      (p) => p.name === providerName
+                                    )?.image
+                                  }
+                                />
+                                <AvatarFallback>
+                                  {providerName
+                                    .split(" ")
+                                    .map((word) => word[0])
+                                    .join("")
+                                    .toUpperCase()}
+                                </AvatarFallback>
+                              </Avatar>
+                              <SelectLabel className="font-bold">
+                                {providerName}
+                              </SelectLabel>
+                            </div>
+                            {products.map((product: any) => (
+                              <SelectItem
+                                key={product.id}
+                                value={product.id.toString()}
+                              >
+                                <div className="flex gap-4">
+                                  <Image
+                                    width={24}
+                                    height={24}
+                                    src={product.images[0]}
+                                    alt={product.name}
+                                  />
+                                  {product.name}
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        )
+                      )}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>nombre</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>descripción</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="price"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>precio</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(parseFloat(e.target.value))
+                      }
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <DialogFooter>
+              <Button type="submit">guardar cambios</Button>
+            </DialogFooter>
           </form>
-        </DialogContent>
-      </Dialog>
-    </div>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 }
