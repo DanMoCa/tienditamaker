@@ -100,7 +100,10 @@ function ProviderCard({ provider }: { provider: Provider }) {
           className="w-full"
           onClick={() => {
             // Implementar lógica para ver productos
-            router.push(`/dashboard/admin/provider/${provider.id}`);
+            router.push(
+              // TODO: Mejorar la URL para que sea más amigable
+              `/dashboard/admin/provider/${provider.id}?id=${provider.id}`
+            );
           }}
         >
           ver productos

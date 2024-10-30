@@ -1,17 +1,12 @@
 "use client";
 import Image from "next/image";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getProducts } from "@/utils/actions/provider/provider";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface ProductData {
   id: string;
@@ -84,6 +79,13 @@ function ProductCard({ product }: { product: ProductData }) {
 }
 
 export default function Products() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+  console.log(id);
+
+  const providerId = id ? parseInt(id) : 0;
+
   const [products, setProducts] = useState<ProductData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -92,11 +94,11 @@ export default function Products() {
     const fetchProducts = async () => {
       try {
         setIsLoading(true);
-        const data = await getProducts(1);
+        const data = await getProducts(providerId);
         setProducts(data);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Error al cargar proveedores"
+          err instanceof Error ? err.message : "Error al cargar productos"
         );
       } finally {
         setIsLoading(false);
@@ -104,7 +106,7 @@ export default function Products() {
     };
 
     fetchProducts();
-  }, []);
+  }, [providerId]);
 
   if (isLoading) {
     return (
@@ -128,7 +130,7 @@ export default function Products() {
   if (!products.length) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[200px] space-y-4">
-        <p className="text-gray-500">No hay proveedores disponibles</p>
+        <p className="text-gray-500">No hay productos disponibles</p>
       </div>
     );
   }
