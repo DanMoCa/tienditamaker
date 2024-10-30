@@ -17,14 +17,15 @@ import { Loader2, Pencil, ShoppingBag } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useState, useCallback, memo } from "react";
-
+import { getProducts as getProductsProvider } from "@/utils/actions/provider/provider";
 // Types
 interface ProductData {
   id: string;
   name: string;
   description: string;
-  price: number;
+  price: string;
   images: string[];
+  providerProductId: string;
 }
 
 interface FetchState<T> {
@@ -77,7 +78,26 @@ const useProducts = (storeId: number | null) => {
     setState((prev) => ({ ...prev, isLoading: true }));
     try {
       const products = await getProducts(storeId);
-      setState({ data: products, isLoading: false, error: null });
+      const providerProductId = products.map(
+        (product: ProductData) => product.providerProductId
+      );
+      console.log(providerProductId);
+
+      const providerPrices = await getProductsProvider(providerProductId);
+      console.log(providerPrices);
+
+      const productsWithProviderPrices = products.map(
+        (product: ProductData, index: number) => ({
+          ...product,
+          providerPrice: providerPrices[index]?.price || null,
+        })
+      );
+      console.log(productsWithProviderPrices);
+      setState({
+        data: productsWithProviderPrices,
+        isLoading: false,
+        error: null,
+      });
     } catch (err) {
       setState({
         data: [],
@@ -96,56 +116,62 @@ const useProducts = (storeId: number | null) => {
 };
 
 // Componente de producto con memo para evitar re-renders innecesarios
-const ProductCard = memo(({ product }: { product: ProductData }) => {
-  const handleEdit = useCallback(() => {
-    // TODO: Implementar lógica de edición
-    console.log("Editar producto:", product.id);
-  }, [product.id]);
+const ProductCard = memo(
+  ({
+    product,
+  }: {
+    product: ProductData & { providerPrice: string | null };
+  }) => {
+    const handleEdit = useCallback(() => {
+      // TODO: Implementar lógica de edición
+      console.log("Editar producto:", product.id);
+    }, [product.id]);
 
-  return (
-    <Card className="w-full">
-      <CardHeader>
-        <div className="aspect-square relative overflow-hidden rounded-lg">
-          {product.images && product.images.length > 0 ? (
-            <Image
-              src={product.images[0]}
-              alt={product.name}
-              fill
-              className="object-cover"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-              priority={false}
-            />
-          ) : (
-            <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-              <ShoppingBag className="w-12 h-12 text-gray-400" />
-            </div>
+    return (
+      <Card className="w-full">
+        <CardHeader>
+          <div className="aspect-square relative overflow-hidden rounded-lg">
+            {product.images && product.images.length > 0 ? (
+              <Image
+                src={product.images[0]}
+                alt={product.name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                priority={false}
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                <ShoppingBag className="w-12 h-12 text-gray-400" />
+              </div>
+            )}
+          </div>
+          <CardTitle className="mt-4 text-lg font-semibold truncate">
+            {product.name}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-gray-500 line-clamp-2">
+            {product.description}
+          </p>
+
+          {product.providerPrice !== null && (
+            <p className="mt-2 text-sm font-bold text-green-600">
+              Precio del proveedor: ${product.providerPrice}
+            </p>
           )}
-        </div>
-        <CardTitle className="mt-4 text-lg font-semibold truncate">
-          {product.name}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-gray-500 line-clamp-2">
-          {product.description}
-        </p>
-        <p className="mt-2 text-lg font-bold">
-          $
-          {Number(product.price).toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
-        </p>
-      </CardContent>
-      <CardFooter className="flex justify-between gap-2">
-        <Button variant="outline" className="w-full" onClick={handleEdit}>
-          <Pencil className="w-4 h-4 mr-2" />
-          editar
-        </Button>
-      </CardFooter>
-    </Card>
-  );
-});
+          <p className="mt-2 text-lg font-bold">Precio: ${product.price}</p>
+        </CardContent>
+        <CardFooter className="flex justify-between gap-2">
+          <Button variant="outline" className="w-full" onClick={handleEdit}>
+            <Pencil className="w-4 h-4 mr-2" />
+            editar
+          </Button>
+        </CardFooter>
+      </Card>
+    );
+  }
+);
 
 ProductCard.displayName = "ProductCard";
 
@@ -217,7 +243,10 @@ export default function ProductsView() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {products.map((product) => (
-        <ProductCard key={product.id} product={product} />
+        <ProductCard
+          key={product.id}
+          product={product as ProductData & { providerPrice: string | null }}
+        />
       ))}
     </div>
   );

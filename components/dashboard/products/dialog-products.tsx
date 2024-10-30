@@ -37,6 +37,8 @@ import { getProducts, getProviders } from "@/utils/actions/provider/provider";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
+import { UploadButton } from "@/utils/uploadthing/uploadthing";
+import { X } from "lucide-react";
 
 const formSchema = z.object({
   providerProductId: z
@@ -45,6 +47,9 @@ const formSchema = z.object({
   name: z.string().min(1, "nombre es requerido"),
   description: z.string().min(1, "descripción es requerida"),
   price: z.number().min(0, "El precio del producto es requerido"),
+  images: z
+    .array(z.string().url("La URL de la imagen no es válida"))
+    .min(1, "Se requiere al menos una imagen"),
   customizations: z.record(z.string()).optional(),
 });
 
@@ -73,6 +78,8 @@ export default function ProductDialog({
       name: "",
       description: "",
       price: 0,
+      images: [],
+
       customizations: {},
     },
   });
@@ -119,7 +126,7 @@ export default function ProductDialog({
         name: data.name,
         description: data.description,
         price: data.price.toString(),
-        images: selectedProviderProduct?.images || [],
+        images: data.images,
         storeId: storeId,
         providerProductId: parseInt(data.providerProductId),
       };
@@ -250,6 +257,61 @@ export default function ProductDialog({
                       }
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="images"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>imágenes del producto</FormLabel>
+                  <div className="space-y-2">
+                    <UploadButton
+                      endpoint="imageUploader"
+                      onClientUploadComplete={(files) => {
+                        if (files?.length) {
+                          // Agregar las nuevas URLs al array existente
+                          const newUrls = files.map((file) => file.url);
+                          const currentUrls = field.value || [];
+                          form.setValue("images", [...currentUrls, ...newUrls]);
+                          toast.success("Imágenes subidas correctamente");
+                        }
+                      }}
+                      onUploadError={(error) => {
+                        toast.error(
+                          `Error al subir las imágenes: ${error.message}`
+                        );
+                      }}
+                      className="mt-4 ut-button:bg-[#a3eef5] ut-button:ut-readying:bg-[#a3eef5]/50 ut-button:text-gray-900"
+                    />
+                    <div className="space-y-2">
+                      {field.value?.map((url, index) => (
+                        <div key={index} className="relative">
+                          <Input
+                            value={url}
+                            readOnly
+                            disabled
+                            className="pr-10"
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-2 top-1/2 -translate-y-1/2"
+                            onClick={() => {
+                              const newUrls = [...field.value];
+                              newUrls.splice(index, 1);
+                              form.setValue("images", newUrls);
+                            }}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}

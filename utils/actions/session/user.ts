@@ -103,7 +103,7 @@ export async function verifyUserType(email: string) {
   try {
     const { data, error } = await supabase
       .from("User")
-      .select("userType")
+      .select("userType, isAdmin")
       .eq("email", email);
 
     if (error?.code) return error;

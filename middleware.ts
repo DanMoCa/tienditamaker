@@ -21,10 +21,17 @@ export async function middleware(req: NextRequest) {
     }
 
     try {
-      const userType = (await verifyUserType(token.email as string))[0]
-        .userType;
+      const userData = await verifyUserType(token.email as string);
+      const userType = userData[0].userType;
+      const isAdmin = userData[0].isAdmin; // Obtener el valor de isAdmin
+
       if (userType === "free") {
         return NextResponse.redirect(new URL("/upgrade", req.url));
+      }
+
+      // Nueva validación para isAdmin
+      if (!isAdmin && pathname.startsWith("/dashboard/admin")) {
+        return NextResponse.redirect(new URL("/", req.url)); // Redirigir si no es admin
       }
     } catch (error) {
       console.error("Error verifying user type:", error);
