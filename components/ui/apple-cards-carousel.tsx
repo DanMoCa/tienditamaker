@@ -191,7 +191,7 @@ export const Card = ({
   return (
     <>
       <AnimatePresence>
-        {open && (
+        {/* {open && (
           <div className="fixed inset-0 h-screen z-50 overflow-auto">
             <motion.div
               initial={{ opacity: 0 }}
@@ -228,11 +228,11 @@ export const Card = ({
               <div className="py-10">{card.content}</div>
             </motion.div>
           </div>
-        )}
+        )} */}
       </AnimatePresence>
       <motion.button
         layoutId={layout ? `card-${card.title}` : undefined}
-        onClick={handleOpen}
+        // onClick={handleOpen}
         className="rounded-3xl bg-gray-100 dark:bg-neutral-900 h-80 w-56 md:h-[40rem] md:w-96 overflow-hidden flex flex-col items-start justify-start relative z-10"
       >
         <div className="absolute h-full top-0 inset-x-0 bg-gradient-to-b from-black/50 via-transparent to-transparent z-30 pointer-events-none" />

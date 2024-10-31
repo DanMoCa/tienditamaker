@@ -23,31 +23,22 @@ export default function Footer() {
           <nav className="mb-4 md:mb-0">
             <ul className="flex flex-wrap justify-center gap-4">
               <li>
-                <a href="/" className="hover:text-gray-900 transition-colors">
-                  Inicio
+                <a href="/" className="transition-colors">
+                  inicio
                 </a>
               </li>
               <li>
-                <a
-                  href="#proveedores"
-                  className="hover:text-gray-900 transition-colors"
-                >
+                <a href="#proveedores" className="transition-colors">
                   proveedores
                 </a>
               </li>
               <li>
-                <a
-                  href="#plantillas"
-                  className="hover:text-gray-900 transition-colors"
-                >
+                <a href="#plantillas" className="transition-colors">
                   plantillas
                 </a>
               </li>
               <li>
-                <a
-                  href="#precios"
-                  className="hover:text-gray-900 transition-colors"
-                >
+                <a href="#precios" className="transition-colors">
                   precios
                 </a>
               </li>
