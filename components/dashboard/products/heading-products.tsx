@@ -25,7 +25,6 @@ export default function Component({ storeId }: ProductsViewProps) {
           <ProductDialog
             isOpen={isDialogOpen}
             onClose={() => setIsDialogOpen(false)}
-            // TODO: Add storeId
             storeId={storeId}
           />
         </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronDown, LogOut, Menu, User, X } from "lucide-react";
+import { ChevronDown, LogOut, Menu, User } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import { DropdownMenuContent, DropdownMenuItem } from "./ui/dropdown-menu";
+import { motion } from "framer-motion";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -44,12 +45,11 @@ export default function Header() {
         }`}
       >
         <div className="flex items-center space-x-4 sm:space-x-8 text-xl font-semibold justify-between w-full">
-          <Link
-            href="/"
+          <NavItem
+            text="tienditamaker"
+            href="#inicio"
             className="text-[#a3eef5] font-bold text-xl sm:text-2xl"
-          >
-            tienditamaker
-          </Link>
+          />
           <div className="hidden md:flex space-x-6 flex-1 justify-center">
             <NavItem text="proveedores" hasDropdown href="#proveedores" />
             <NavItem text="plantillas" href="#plantillas" />
@@ -147,7 +147,7 @@ export default function Header() {
           </Sheet>
         </div>
       </nav>
-      <div className="relative h-screen bg-gray-900 text-white">
+      <div className="relative h-screen bg-gray-900 text-white" id="inicio">
         <div className="absolute inset-0 bg-black opacity-50"></div>
         <Image
           src="https://res.cloudinary.com/do3k4ocu4/image/upload/v1729372881/nkdzhx4e3rizdsrddyzw.jpg"
@@ -185,14 +185,6 @@ export default function Header() {
                 </Button>
               </Link>
             )}
-            {/* <Link href="/api/auth/signin">
-              <Button
-                variant="secondary"
-                className="text-black text-lg sm:text-xl p-4 sm:p-6 bg-[#a3eef5] font-extrabold hover:bg-[#a3eef5]/80 w-full sm:w-auto"
-              >
-                crear tienda
-              </Button>
-            </Link> */}
           </div>
         </div>
       </div>
@@ -204,18 +196,29 @@ function NavItem({
   text,
   hasDropdown = false,
   href,
+  className,
 }: {
   text: string;
   hasDropdown?: boolean;
   href?: string;
+  className?: string;
 }) {
+  const handleScroll = (event: React.MouseEvent) => {
+    event.preventDefault();
+    const targetId = href?.substring(1);
+    const targetElement = document.getElementById(targetId!);
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="relative group">
-      <Link href={href!}>
-        <button className="text-foreground flex items-center text-white">
+      <Link href={href!} onClick={handleScroll}>
+        <motion.button className={` flex items-center ${className}`}>
           {text}
           {hasDropdown && <ChevronDown className="ml-1 h-4 w-4" />}
-        </button>
+        </motion.button>
       </Link>
     </div>
   );
