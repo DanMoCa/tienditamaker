@@ -35,7 +35,7 @@ export const CheckoutPage = ({ amount }: { amount: number }) => {
       .then((data) => {
         setClientSecret(data.clientSecret);
       });
-  }, [amount]);
+  }, [amount, session]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
