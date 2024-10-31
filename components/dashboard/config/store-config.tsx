@@ -13,16 +13,8 @@ import {
 } from "@/utils/actions/store/store-config";
 import { getUserIdByEmail } from "@/utils/actions/session/user";
 import { UploadButton } from "@/utils/uploadthing/uploadthing";
-import Link from "next/link";
 import { Loader2 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { CardContent, CardFooter } from "@/components/ui/card";
 
 // Define interfaces for type safety
 interface StoreConfig {
@@ -206,18 +198,6 @@ export default function StoreConfigDashboard() {
   return (
     <div className="w-full mx-auto">
       <CardContent>
-        <div className="flex justify-end mb-4">
-          {config.subdomain && (
-            <Link
-              href={`https://${config.subdomain}.tienditamaker.com`}
-              passHref
-              target="_blank"
-            >
-              <Button variant="outline">visitar tienda</Button>
-            </Link>
-          )}
-        </div>
-
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="name">nombre de la tienda</Label>

@@ -4,10 +4,8 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import HeadingProducts from "@/components/dashboard/products/heading-products";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import {
-  getStoreIdByUser,
-  getUserIdByEmail,
-} from "@/utils/actions/session/user";
+import { getUserIdByEmail } from "@/utils/actions/session/user";
+import { getStoreIdByUser } from "@/utils/actions/store/store-config";
 
 export default function Products() {
   const { data: session } = useSession();
