@@ -6,7 +6,11 @@ const stripe = new Stripe(`${process.env.STRIPE_SECRET_KEY!}`);
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { cartItems } = body;
+    console.log("Checkout body:", body);
+    console.log("Checkout userId:", body.userId);
+    console.log("Checkout subdomain:", body.subdomain);
+
+    const { cartItems, subdomain, userId } = body;
 
     // Transformar los items del carrito al formato que espera Stripe
     const lineItems = cartItems.map((item: any) => {
@@ -15,6 +19,7 @@ export async function POST(request: Request) {
         price_data: {
           currency: "mxn",
           product_data: {
+            id: item.id,
             name: item.name,
             description: item.description || undefined,
             images: [] as string[], // Define images as an array of strings
@@ -23,6 +28,7 @@ export async function POST(request: Request) {
         },
         quantity: item.quantity,
       };
+      console.log("Line item:", lineItem);
 
       // Solo agregar imágenes si la URL es válida
       if (
@@ -38,13 +44,32 @@ export async function POST(request: Request) {
 
     // Crear la sesión de Stripe
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
+      payment_method_types: ["card", "oxxo"],
+      billing_address_collection: "required",
+      shipping_address_collection: {
+        allowed_countries: ["MX"],
+      },
       line_items: lineItems,
       mode: "payment",
       //   TODO: Update the success_url and cancel_url to match custom domain
-      success_url: `http://saoko.tienditamaker/success`,
-      cancel_url: `http://saoko.tienditamaker/cancel`,
+      success_url: `http://saoko.tienditamaker.com/success`,
+      cancel_url: `http://saoko.tienditamaker.com/cancel`,
+      metadata: {
+        cartItems: JSON.stringify(
+          cartItems.map((item: any) => {
+            return {
+              id: item.name,
+              quantity: item.quantity,
+              price: item.price,
+            };
+          })
+        ),
+        subdomain,
+        userId,
+      },
     });
+    console.log("Checkout session created:", session);
+    console.log("Checkout session ID:", session.id);
 
     return NextResponse.json({ sessionId: session.id });
   } catch (error: any) {

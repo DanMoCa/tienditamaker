@@ -15,7 +15,7 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string
 );
 
-export default function ShoppingCartModal() {
+export default function ShoppingCartModal({ userId }: { userId: number }) {
   const [isLoading, setIsLoading] = useState(false);
   const {
     cartCount,
@@ -40,13 +40,15 @@ export default function ShoppingCartModal() {
         description: item.description,
       }));
 
+      const subdomain = window.location.hostname.split(".")[0];
+
       // Llamar a nuestra API para crear la sesión de Stripe
       const response = await fetch("/api/checkout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ cartItems }),
+        body: JSON.stringify({ cartItems, userId, subdomain }),
       });
 
       if (!response.ok) {
