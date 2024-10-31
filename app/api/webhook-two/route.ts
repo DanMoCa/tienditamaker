@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { PrismaClient } from "@prisma/client";
-import { saveAddressToDatabase } from "@/utils/actions/store/shipping";
+import { saveDataToDatabase } from "@/utils/actions/store/shipping";
 
 const prisma = new PrismaClient();
 
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
       console.log("🏠 User ID from metadata:", userId); // Debug log
 
       if (address) {
-        await saveAddressToDatabase(address); // Implementa esta función según tu lógica
+        await saveDataToDatabase(address); // Implementa esta función según tu lógica
       }
     }
 

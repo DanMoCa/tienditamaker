@@ -15,7 +15,7 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string
 );
 
-export default function ShoppingCartModal({ userId }: { userId: number }) {
+export default function ShoppingCartModal({ storeId }: { storeId: number }) {
   const [isLoading, setIsLoading] = useState(false);
   const {
     cartCount,
@@ -48,7 +48,7 @@ export default function ShoppingCartModal({ userId }: { userId: number }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ cartItems, userId, subdomain }),
+        body: JSON.stringify({ cartItems, storeId, subdomain }),
       });
 
       if (!response.ok) {

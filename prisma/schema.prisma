@@ -20,6 +20,7 @@ model Store {
   userId      Int
   user        User      @relation(fields: [userId], references: [id])
   products    Product[]
+  shipping    Shipping[]
 }
 
 model User {
@@ -68,4 +69,13 @@ model Provider {
   description String
   image       String
   products    ProviderProduct[]
+}
+
+model Shipping {
+  id        Int      @id @default(autoincrement())
+  cartItems Json
+  storeId   Int
+  store     Store    @relation(fields: [storeId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt
 }

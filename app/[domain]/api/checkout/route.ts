@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     console.log("Checkout userId:", body.userId);
     console.log("Checkout subdomain:", body.subdomain);
 
-    const { cartItems, subdomain, userId } = body;
+    const { cartItems, subdomain, storeId } = body;
 
     // Transformar los items del carrito al formato que espera Stripe
     const lineItems = cartItems.map((item: any) => {
@@ -65,7 +65,7 @@ export async function POST(request: Request) {
           })
         ),
         subdomain,
-        userId,
+        storeId,
       },
     });
     console.log("Checkout session created:", session);

@@ -80,7 +80,7 @@ export default async function SiteLayout({
   const siteDescription = result?.[0]?.description;
   const siteLogo = result?.[0]?.logo;
   const siteColors = result?.[0]?.colors;
-  const siteUserId = result?.[0]?.userId;
+  const siteStoreId = result?.[0]?.userId;
 
   // Genera las clases de tema basadas en los colores de la tienda
   const themeClasses = generateThemeClasses(siteColors);
@@ -96,7 +96,7 @@ export default async function SiteLayout({
       >
         <CartProvider>
           <Navbar siteName={siteName} colors={siteColors} />
-          <ShoppingCartModal userId={siteUserId} />
+          <ShoppingCartModal storeId={siteStoreId} />
           <main className="container mx-auto px-4">{children}</main>
         </CartProvider>
       </body>
