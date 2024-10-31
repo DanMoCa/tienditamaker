@@ -14,7 +14,7 @@ const sidebarItems = [
   { icon: Package, label: "productos", href: "/dashboard/products" },
   { icon: ShoppingCart, label: "pedidos", href: "/dashboard/orders" },
   { icon: Settings, label: "configuracion", href: "/dashboard/config" },
-  { icon: Lock, label: "admin", href: "/dashboard/admin" },
+  // { icon: Lock, label: "admin", href: "/dashboard/admin" },
 ];
 
 export function SidebarContent({

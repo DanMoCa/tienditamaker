@@ -4,7 +4,11 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import ProductDialog from "./dialog-products";
 
-export default function Component() {
+interface ProductsViewProps {
+  storeId: number;
+}
+
+export default function Component({ storeId }: ProductsViewProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
@@ -21,7 +25,8 @@ export default function Component() {
           <ProductDialog
             isOpen={isDialogOpen}
             onClose={() => setIsDialogOpen(false)}
-            storeId={1}
+            // TODO: Add storeId
+            storeId={storeId}
           />
         </div>
       </div>

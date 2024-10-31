@@ -97,7 +97,7 @@ export async function setNewProduct(
   }
 }
 
-export async function getProducts(providerId: number | string[]) {
+export async function getProducts(providerId: number | number[]) {
   const cookieStore = cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -113,25 +113,25 @@ export async function getProducts(providerId: number | string[]) {
 
   try {
     if (Array.isArray(providerId)) {
-      // Si es un array, usar in para buscar múltiples IDs
+      // Optimización: Obtener todos los productos de proveedores en una sola consulta
       const { data, error } = await supabase
         .from("ProviderProduct")
         .select()
-        .in("providerId", providerId);
+        .in("id", providerId);
 
-      if (error?.code) return error;
+      if (error) throw error;
       return data;
     } else {
-      // Si es un solo ID, usar eq como antes
       const { data, error } = await supabase
         .from("ProviderProduct")
         .select()
         .eq("providerId", providerId);
 
-      if (error?.code) return error;
+      if (error) throw error;
       return data;
     }
-  } catch (error: any) {
-    return error;
+  } catch (error) {
+    console.error("Error fetching provider products:", error);
+    return [];
   }
 }

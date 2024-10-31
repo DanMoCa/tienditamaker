@@ -53,13 +53,21 @@ export async function getProducts(storeId: number) {
   try {
     const { data, error } = await supabase
       .from("Product")
-      .select()
+      .select(
+        `
+        *,
+        providerProduct:providerProductId (
+          id,
+          price
+        )
+      `
+      )
       .eq("storeId", storeId);
 
-    if (error?.code) return error;
-
+    if (error) throw error;
     return data;
-  } catch (error: any) {
-    return error;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
   }
 }
