@@ -117,7 +117,7 @@ export default function ProductPageSlug({
                 key={product.id}
                 price_id={product.id}
               />
-              <CheckoutNow
+              {/* <CheckoutNow
                 currency="MXN"
                 description={product.description}
                 image={product.images[0]}
@@ -125,7 +125,7 @@ export default function ProductPageSlug({
                 price={product.price}
                 key={product.id}
                 price_id={product.id}
-              />
+              /> */}
             </div>
             <p className="mt-12 text-base text-gray-500 tracking-wide">
               {product.description}

@@ -32,6 +32,8 @@ export default function AddToBag({
   };
   return (
     <Button
+      variant="outline"
+      className="text-white"
       onClick={() => {
         addItem(product);
         handleCartClick();

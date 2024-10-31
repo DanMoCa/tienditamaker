@@ -24,6 +24,8 @@ export default function ShoppingCartModal({ storeId }: { storeId: number }) {
     cartDetails,
     removeItem,
     totalPrice,
+    decrementItem,
+    incrementItem,
   } = useShoppingCart();
 
   const handleCheckoutClick = async (event: React.MouseEvent) => {
@@ -99,9 +101,10 @@ export default function ShoppingCartModal({ storeId }: { storeId: number }) {
                       <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                         <Image
                           src={entry.image as string}
-                          alt="Product image"
+                          alt={`Imagen de ${entry.name}`}
                           width={100}
                           height={100}
+                          className="object-cover w-full h-full"
                         />
                       </div>
 
@@ -118,7 +121,24 @@ export default function ShoppingCartModal({ storeId }: { storeId: number }) {
 
                         <div className="flex flex-1 items-end justify-between text-sm">
                           <p className="text-gray-500">
-                            cantidad: {entry.quantity}
+                            cantidad:{" "}
+                            <span>
+                              <Button
+                                variant="ghost"
+                                onClick={() => decrementItem(entry.id)}
+                                className="ml-2 text-secondary hover:text-secondary/80 hover:bg-transparent"
+                              >
+                                -
+                              </Button>
+                              {entry.quantity}
+                              <Button
+                                variant="ghost"
+                                onClick={() => incrementItem(entry.id)}
+                                className="ml-2 text-secondary hover:text-secondary/80 hover:bg-transparent"
+                              >
+                                +
+                              </Button>
+                            </span>
                           </p>
 
                           <div className="flex">
