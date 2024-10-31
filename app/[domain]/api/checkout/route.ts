@@ -49,18 +49,22 @@ export async function POST(request: Request) {
       shipping_address_collection: {
         allowed_countries: ["MX"],
       },
+      phone_number_collection: {
+        enabled: true,
+      },
       line_items: lineItems,
       mode: "payment",
       //   TODO: Update the success_url and cancel_url to match custom domain
-      success_url: `http://saoko.tienditamaker.com/success`,
-      cancel_url: `http://saoko.tienditamaker.com/cancel`,
+      success_url: `http://${subdomain}.tienditamaker.com/success`,
+      cancel_url: `http://${subdomain}.tienditamaker.com/cancel`,
       metadata: {
         cartItems: JSON.stringify(
           cartItems.map((item: any) => {
             return {
-              id: item.name,
+              product: item.name,
               quantity: item.quantity,
               price: item.price,
+              subtotal: item.price * item.quantity,
             };
           })
         ),

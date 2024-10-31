@@ -74,7 +74,7 @@ model Provider {
 model Shipping {
   id        Int      @id @default(autoincrement())
   cartItems Json
-  address Json
+  customerData Json
   storeId   Int
   store     Store    @relation(fields: [storeId], references: [id])
   createdAt DateTime @default(now())
