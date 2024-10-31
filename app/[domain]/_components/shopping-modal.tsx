@@ -34,10 +34,10 @@ export default function ShoppingCartModal({ storeId }: { storeId: number }) {
       // Preparar los items del carrito
       const cartItems = Object.values(cartDetails ?? {}).map((item) => ({
         name: item.name,
+        description: item.description,
         price: item.price,
         quantity: item.quantity,
         image: typeof item.image === "string" ? item.image : null,
-        description: item.description,
       }));
 
       const subdomain = window.location.hostname.split(".")[0];
