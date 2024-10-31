@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Manrope } from "next/font/google";
 import SessionWrapper from "@/components/session-wrapper";
+import { Analytics } from "@vercel/analytics/react";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -42,6 +43,7 @@ export default function RootLayout({
     <html lang="es" className={`${manrope.className} dark`}>
       <body>
         <SessionWrapper>{children}</SessionWrapper>
+        <Analytics />
       </body>
     </html>
   );
