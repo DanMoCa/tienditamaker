@@ -75,7 +75,7 @@ export default function Templates() {
             height={1080}
             className="object-cover rounded-lg"
           /> */}
-          <video className="w-full rounded-lg" autoPlay loop muted>
+          <video className="w-full rounded-lg" autoPlay loop muted playsInline>
             <source
               src="https://utfs.io/f/rF2DW7sv5SQ0D1RZ5Qh3dVtRoPKUeYIrbO5LizFgC7Bsyl9p"
               type="video/mp4"
