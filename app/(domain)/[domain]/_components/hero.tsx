@@ -36,16 +36,20 @@ export default async function Hero({
             />
           </div>
 
-          {/* <div className="overflow-hidden rounded-lg bg-gray-100 shadow-lg">
+          <div className="overflow-hidden rounded-lg bg-gray-100 shadow-lg">
             <Image
-              src={logo}
-              alt="Great Photo"
+              // Si el logo no existe, se puede usar un placeholder
+              src={
+                logo ||
+                "https://utfs.io/f/rF2DW7sv5SQ0y26zGxad0ubJeKm6RifY7XDLqHxWM2zTln3a"
+              }
+              alt={`logo de ${name}`}
               className="h-full w-full object-cover object-center"
+              priority
               width={500}
               height={500}
-              priority
             />
-          </div> */}
+          </div>
         </div>
       </div>
     </section>
