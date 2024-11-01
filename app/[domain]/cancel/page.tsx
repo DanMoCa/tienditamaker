@@ -1,3 +1,4 @@
+"use client";
 import { XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,17 +11,17 @@ import {
 
 export default function Component() {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <Card className="w-full max-w-md bg-white">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">
+          <CardTitle className="text-2xl font-bold text-center text-black">
             estado del pedido
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col items-center space-y-4">
             <XCircle className="w-16 h-16 text-red-500" />
-            <h2 className="text-xl font-semibold text-center">
+            <h2 className="text-xl font-semibold text-center text-black">
               pedido cancelado
             </h2>
             <p className="text-center text-gray-600">
@@ -31,6 +32,7 @@ export default function Component() {
         </CardContent>
         <CardFooter className="flex justify-center">
           <Button
+            variant="secondary"
             className="w-full max-w-xs"
             onClick={() => {
               window.location.href = "/";
