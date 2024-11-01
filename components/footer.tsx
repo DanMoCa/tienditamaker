@@ -1,4 +1,5 @@
 import { Facebook, Twitter, Instagram, Github } from "lucide-react";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -46,22 +47,30 @@ export default function Footer() {
           </nav>
 
           <div className="flex space-x-4">
-            <a href="#" className="text-gray-400 hover:text-gray-500">
-              <span className="sr-only">Facebook</span>
-              <Facebook className="h-6 w-6" />
-            </a>
-            <a href="#" className="text-gray-400 hover:text-gray-500">
+            <Link
+              href="https://x.com/saoko1x"
+              target="_blank"
+              className="text-gray-400 hover:text-gray-500"
+            >
               <span className="sr-only">Twitter</span>
               <Twitter className="h-6 w-6" />
-            </a>
-            <a href="#" className="text-gray-400 hover:text-gray-500">
+            </Link>
+            <Link
+              href="https://instagram.com/saoko1x"
+              target="_blank"
+              className="text-gray-400 hover:text-gray-500"
+            >
               <span className="sr-only">Instagram</span>
               <Instagram className="h-6 w-6" />
-            </a>
-            <a href="#" className="text-gray-400 hover:text-gray-500">
+            </Link>
+            <Link
+              href="https://github.com/saoko1x"
+              target="_blank"
+              className="text-gray-400 hover:text-gray-500"
+            >
               <span className="sr-only">GitHub</span>
               <Github className="h-6 w-6" />
-            </a>
+            </Link>
           </div>
         </div>
 
