@@ -4,6 +4,7 @@ import Sell from "@/components/sell";
 import Templates from "@/components/templates";
 import PricingSection from "@/components/pricing";
 import Footer from "@/components/footer";
+import Providers from "@/components/providers";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
         <Features />
         <Sell />
         <Templates />
+        <Providers />
         <PricingSection />
       </main>
       <Footer />

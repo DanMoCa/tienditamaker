@@ -58,7 +58,7 @@ export default function PricingSection() {
   }, [status, router]);
 
   return (
-    <section className="py-16" id="precios">
+    <section className="py-16 bg-neutral-900" id="precios">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-12">
           sencillo, transparente y{" "}

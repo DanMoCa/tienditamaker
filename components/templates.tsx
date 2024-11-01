@@ -68,13 +68,20 @@ export default function Templates() {
           </Accordion>
         </div>
         <Card>
-          <Image
-            src="https://res.cloudinary.com/do3k4ocu4/image/upload/v1729375314/mzabytoowu49x1og9xix.png"
+          {/* <Image
+            src="https://utfs.io/f/rF2DW7sv5SQ0D1RZ5Qh3dVtRoPKUeYIrbO5LizFgC7Bsyl9p"
             alt="Invoice preview"
             width={1920}
             height={1080}
             className="object-cover rounded-lg"
-          />
+          /> */}
+          <video className="w-full rounded-lg" autoPlay loop muted>
+            <source
+              src="https://utfs.io/f/rF2DW7sv5SQ0D1RZ5Qh3dVtRoPKUeYIrbO5LizFgC7Bsyl9p"
+              type="video/mp4"
+            />
+            tu navegador no soporta videos
+          </video>
         </Card>
       </div>
     </section>
