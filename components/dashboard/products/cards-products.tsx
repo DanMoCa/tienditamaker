@@ -121,7 +121,7 @@ function ProductCard({
 
           {/* Button delete */}
           <Button
-            variant="outline"
+            variant="destructive"
             onClick={async () => {
               await deleteProduct(product.id).then(() => {
                 fetchProducts();
