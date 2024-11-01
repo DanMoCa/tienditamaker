@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { ChevronDown, ChevronUp, Package } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ChevronDown, ChevronUp, Loader2, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -12,62 +12,104 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { getOrdersByStoreId } from "@/utils/actions/store/shipping";
+import { getStoreConfigByUser } from "@/utils/actions/store/store-config";
+import { getUserIdByEmail } from "@/utils/actions/session/user";
+import { useSession } from "next-auth/react";
 
-interface Producto {
-  id: number;
-  nombre: string;
-  cantidad: number;
-  precio: number;
+interface CartItems {
+  price: number;
+  product: string;
+  quantity: number;
+  subtotal: number;
+}
+interface CustomerData {
+  name: string;
+  email: string;
+  phone: string;
+  address: {
+    city: string;
+    line1: string;
+    line2: string;
+    state: string;
+    country: string;
+    postal_code: string;
+  };
 }
 
-interface Pedido {
+interface Order {
   id: number;
-  fecha: string;
-  cliente: string;
-  total: number;
-  estado: "Pendiente" | "Enviado" | "Entregado";
-  productos: Producto[];
+  status: string;
+  cartItems: CartItems[];
+  customerData: CustomerData;
+  createdAt: string;
+  updatedAt: string;
 }
 
-const pedidosIniciales: Pedido[] = [
+const initialOrders: Order[] = [
   {
     id: 1,
-    fecha: "2023-05-15",
-    cliente: "María García",
-    total: 599,
-    estado: "Pendiente",
-    productos: [
-      { id: 1, nombre: "Playera Clásica", cantidad: 2, precio: 299 },
-      { id: 2, nombre: "Gorra Deportiva", cantidad: 1, precio: 199 },
+    status: "Pendiente",
+    cartItems: [
+      {
+        price: 100,
+        product: "Producto 1",
+        quantity: 2,
+        subtotal: 200,
+      },
+      {
+        price: 50,
+        product: "Producto 2",
+        quantity: 3,
+        subtotal: 150,
+      },
     ],
-  },
-  {
-    id: 2,
-    fecha: "2023-05-14",
-    cliente: "Juan Pérez",
-    total: 349,
-    estado: "Enviado",
-    productos: [
-      { id: 3, nombre: "Playera Estampada", cantidad: 1, precio: 349 },
-    ],
-  },
-  {
-    id: 3,
-    fecha: "2023-05-13",
-    cliente: "Ana Martínez",
-    total: 747,
-    estado: "Entregado",
-    productos: [
-      { id: 4, nombre: "Gorra Snapback", cantidad: 1, precio: 249 },
-      { id: 1, nombre: "Playera Clásica", cantidad: 1, precio: 299 },
-      { id: 3, nombre: "Playera Estampada", cantidad: 1, precio: 349 },
-    ],
+    customerData: {
+      name: "Juan Perez",
+      email: " [email protected]",
+      phone: "1234567890",
+      address: {
+        city: "Ciudad",
+        line1: "Calle 123",
+        line2: "Colonia",
+        state: "Estado",
+        country: "País",
+        postal_code: "12345",
+      },
+    },
+    createdAt: "2022-01-01",
+    updatedAt: "2022-01-01",
   },
 ];
 
 export default function GestionPedidos() {
-  const [pedidos, setPedidos] = useState<Pedido[]>(pedidosIniciales);
+  const { data: session, status } = useSession();
+  const [pedidos, setPedidos] = useState<Order[]>([]);
   const [expandidos, setExpandidos] = useState<number[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    try {
+      const fetchOrders = async () => {
+        setIsLoading(true);
+        const userId = session?.user?.email
+          ? await getUserIdByEmail(session.user.email)
+          : 0;
+        const storeId = userId ? await getStoreConfigByUser(userId) : 0;
+        console.log(storeId);
+        const data = storeId ? await getOrdersByStoreId(storeId.id) : [];
+
+        setPedidos(Array.isArray(data) ? data : []);
+        console.log(data);
+
+        setIsLoading(false);
+      };
+
+      fetchOrders();
+    } catch (error) {
+      console.error("Error al cargar pedidos:", error);
+    }
+  }, [session]);
 
   const toggleExpansion = (id: number) => {
     setExpandidos((prev) =>
@@ -77,17 +119,32 @@ export default function GestionPedidos() {
     );
   };
 
-  const getEstadoColor = (estado: Pedido["estado"]) => {
-    switch (estado) {
-      case "Pendiente":
+  const getEstadoColor = (status: Order["status"]) => {
+    switch (status) {
+      case "pending":
         return "bg-yellow-500";
-      case "Enviado":
+      case "shipped":
         return "bg-blue-500";
-      case "Entregado":
+      case "delivered":
         return "bg-green-500";
       default:
         return "bg-gray-500";
     }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[200px]">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  const formatedCreatedAt = (date: string) => {
+    const createdAt = new Date(date);
+    return `${createdAt.getDate()}/${
+      createdAt.getMonth() + 1
+    }/${createdAt.getFullYear()}`;
   };
 
   return (
@@ -97,7 +154,7 @@ export default function GestionPedidos() {
           <Card key={pedido.id}>
             <CardHeader>
               <CardTitle className="flex justify-between items-center">
-                <span>Pedido #{pedido.id}</span>
+                <span>Pedido {formatedCreatedAt(pedido.createdAt)}</span>
                 <Button
                   variant="ghost"
                   onClick={() => toggleExpansion(pedido.id)}
@@ -113,14 +170,31 @@ export default function GestionPedidos() {
             <CardContent>
               <div className="flex justify-between items-center mb-4">
                 <div>
-                  <p className="font-semibold">{pedido.cliente}</p>
-                  <p className="text-sm text-gray-500">{pedido.fecha}</p>
+                  <p className="font-semibold">{pedido.customerData.name}</p>
+
+                  <div className="flex">
+                    <p className="text-sm text-gray-500">
+                      email: {pedido.customerData.email} - {` `}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {` `}teléfono: {pedido.customerData.phone}
+                    </p>
+                  </div>
+                  <p className="text-sm text-gray-500">
+                    direccion: {pedido.customerData.address.line1},{" "}
+                    {pedido.customerData.address.city},{" "}
+                    {pedido.customerData.address.state},{" "}
+                    {pedido.customerData.address.country},{" "}
+                    {pedido.customerData.address.postal_code}
+                  </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge className={getEstadoColor(pedido.estado)}>
-                    {pedido.estado}
+                  <Badge className={getEstadoColor(pedido.status)}>
+                    {pedido.status}
                   </Badge>
-                  <span className="font-bold">${pedido.total.toFixed(2)}</span>
+                  <span className="font-bold">
+                    ${pedido.cartItems[0].subtotal}
+                  </span>
                 </div>
               </div>
               {expandidos.includes(pedido.id) && (
@@ -134,13 +208,13 @@ export default function GestionPedidos() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {pedido.productos.map((producto) => (
-                      <TableRow key={producto.id}>
-                        <TableCell>{producto.nombre}</TableCell>
-                        <TableCell>{producto.cantidad}</TableCell>
-                        <TableCell>${producto.precio.toFixed(2)}</TableCell>
+                    {pedido.cartItems.map((producto, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{producto.product}</TableCell>
+                        <TableCell>{producto.quantity}</TableCell>
+                        <TableCell>${producto.price.toFixed(2)}</TableCell>
                         <TableCell>
-                          ${(producto.cantidad * producto.precio).toFixed(2)}
+                          ${(producto.quantity * producto.price).toFixed(2)}
                         </TableCell>
                       </TableRow>
                     ))}

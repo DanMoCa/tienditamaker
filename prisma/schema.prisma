@@ -73,6 +73,7 @@ model Provider {
 
 model Shipping {
   id        Int      @id @default(autoincrement())
+  status  String  @default("pending") // pending, shipped, delivered
   cartItems Json
   customerData Json
   storeId   Int

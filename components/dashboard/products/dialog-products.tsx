@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -32,7 +33,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
-import { setNewProduct } from "@/utils/actions/product/product";
+import { setNewProduct, updateProduct } from "@/utils/actions/product/product";
 import { getProducts, getProviders } from "@/utils/actions/provider/provider";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -54,16 +55,21 @@ const formSchema = z.object({
 });
 
 type ProductDialogProps = {
-  isOpen: boolean;
-  onClose: () => void;
   storeId: number;
+  children: React.ReactNode;
+  productToEdit?: any; // Añadimos esta prop para el producto a editar
+  mode?: "create" | "edit"; // Añadimos un modo para distinguir entre crear y editar
+  onSuccess?: () => void; // Callback para cuando la operación es exitosa
 };
 
 export default function ProductDialog({
-  isOpen,
-  onClose,
   storeId,
+  children,
+  productToEdit,
+  mode = "create",
+  onSuccess,
 }: ProductDialogProps) {
+  const [isOpen, setIsOpen] = useState(false);
   const [selectedProviderProduct, setSelectedProviderProduct] =
     useState<any>(null);
   const [groupedProducts, setGroupedProducts] = useState<{
@@ -79,10 +85,26 @@ export default function ProductDialog({
       description: "",
       price: 0,
       images: [],
-
       customizations: {},
     },
   });
+
+  // Efecto para cargar los datos del producto cuando estamos en modo edición
+  useEffect(() => {
+    if (mode === "edit" && productToEdit && isOpen) {
+      form.reset({
+        providerProductId: productToEdit.providerProductId.toString(),
+        name: productToEdit.name,
+        description: productToEdit.description,
+        price: parseFloat(productToEdit.price),
+        images: productToEdit.images,
+        customizations: productToEdit.customizations || {},
+      });
+      setSelectedProviderProduct(productToEdit);
+    } else if (!isOpen) {
+      form.reset(); // Limpiamos el formulario cuando se cierra el diálogo
+    }
+  }, [mode, productToEdit, form, isOpen]);
 
   useEffect(() => {
     const fetchProviderProducts = async () => {
@@ -104,8 +126,10 @@ export default function ProductDialog({
       setGroupedProducts(groupedProductsData);
     };
 
-    fetchProviderProducts();
-  }, []);
+    if (isOpen) {
+      fetchProviderProducts();
+    }
+  }, [isOpen]);
 
   const handleProviderProductChange = (value: string) => {
     const product = Object.values(groupedProducts)
@@ -131,20 +155,36 @@ export default function ProductDialog({
         providerProductId: parseInt(data.providerProductId),
       };
 
-      await setNewProduct(productData);
-      onClose();
-      toast.success("producto creado correctamente");
+      if (mode === "edit" && productToEdit) {
+        await updateProduct({ ...productData }, productToEdit.id);
+        toast.success("producto actualizado correctamente");
+      } else {
+        await setNewProduct(productData);
+        toast.success("producto creado correctamente");
+      }
+
+      setIsOpen(false);
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
-      console.error("Failed to create product:", error);
-      toast.error("Ocurrió un error al crear el producto");
+      console.error("Failed to handle product:", error);
+      toast.error(
+        `Ocurrió un error al ${
+          mode === "edit" ? "actualizar" : "crear"
+        } el producto`
+      );
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>agregar nuevo producto</DialogTitle>
+          <DialogTitle>
+            {mode === "edit" ? "editar producto" : "agregar nuevo producto"}
+          </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -159,7 +199,8 @@ export default function ProductDialog({
                       field.onChange(value);
                       handleProviderProductChange(value);
                     }}
-                    defaultValue={field.value}
+                    value={field.value}
+                    disabled={mode === "edit"} // Deshabilitamos el cambio de producto en modo edición
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -272,7 +313,6 @@ export default function ProductDialog({
                       endpoint="imageUploader"
                       onClientUploadComplete={(files) => {
                         if (files?.length) {
-                          // Agregar las nuevas URLs al array existente
                           const newUrls = files.map((file) => file.url);
                           const currentUrls = field.value || [];
                           form.setValue("images", [...currentUrls, ...newUrls]);
@@ -318,7 +358,9 @@ export default function ProductDialog({
             />
 
             <DialogFooter>
-              <Button type="submit">guardar cambios</Button>
+              <Button type="submit">
+                {mode === "edit" ? "guardar cambios" : "crear producto"}
+              </Button>
             </DialogFooter>
           </form>
         </Form>

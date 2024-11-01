@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import ProductDialog from "./dialog-products";
 
 // Types
 interface Product {
@@ -27,11 +28,15 @@ interface Product {
   };
 }
 
-interface ProductsViewProps {
+interface ProductsCardsProps {
   storeId: number;
+  refresh?: number; // Añadimos esta prop
 }
 
-export default function ProductsView({ storeId }: ProductsViewProps) {
+export default function ProductsCards({
+  storeId,
+  refresh,
+}: ProductsCardsProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -54,7 +59,11 @@ export default function ProductsView({ storeId }: ProductsViewProps) {
 
   useEffect(() => {
     fetchProducts();
-  }, [fetchProducts]);
+  }, [fetchProducts, refresh]); // Añadimos refresh como dependencia
+
+  const handleUpdate = () => {
+    fetchProducts();
+  };
 
   if (isLoading) {
     return (
@@ -121,10 +130,24 @@ export default function ProductsView({ storeId }: ProductsViewProps) {
             <p className="mt-2 text-lg font-bold">Precio: ${product.price}</p>
           </CardContent>
           <CardFooter>
-            <Button variant="outline" className="w-full">
-              <Pencil className="w-4 h-4 mr-2" />
-              editar
-            </Button>
+            <ProductDialog
+              storeId={storeId}
+              productToEdit={{
+                id: product.id,
+                name: product.name,
+                description: product.description,
+                price: product.price,
+                images: product.images,
+                providerProductId: product.providerProductId,
+              }}
+              mode="edit"
+              onSuccess={handleUpdate}
+            >
+              <Button variant="outline" className="w-full">
+                <Pencil className="w-4 h-4 mr-2" />
+                editar
+              </Button>
+            </ProductDialog>
           </CardFooter>
         </Card>
       ))}
