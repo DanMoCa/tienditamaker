@@ -47,7 +47,7 @@ export default function Header() {
         <div className="flex items-center space-x-4 sm:space-x-8 text-xl font-semibold justify-between w-full">
           <NavItem
             text="tienditamaker"
-            href="#inicio"
+            href="/"
             className="text-[#a3eef5] font-bold text-xl sm:text-2xl"
           />
           <div className="hidden md:flex space-x-6 flex-1 justify-center">
@@ -147,47 +147,6 @@ export default function Header() {
           </Sheet>
         </div>
       </nav>
-      <div className="relative h-screen bg-gray-900 text-white" id="inicio">
-        <div className="absolute inset-0 bg-black opacity-50"></div>
-        <Image
-          src="https://res.cloudinary.com/do3k4ocu4/image/upload/v1729372881/nkdzhx4e3rizdsrddyzw.jpg"
-          alt="Background"
-          className="w-full h-screen object-cover"
-          width={2160}
-          height={1440}
-        />
-        <div className="absolute inset-0 flex flex-col justify-center px-4 sm:px-6 md:px-12 lg:px-24">
-          <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold mb-4 leading-tight">
-            construye tu tienda
-            <br />
-            en minutos
-          </h1>
-          <p className="text-lg sm:text-xl md:text-2xl mb-8 max-w-2xl">
-            crea, administra y escala tu tienda en tienditamaker.
-          </p>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
-            {user ? (
-              <Link href="/dashboard">
-                <Button
-                  variant="secondary"
-                  className="text-black text-lg sm:text-xl p-4 sm:p-6 bg-[#a3eef5] font-extrabold hover:bg-[#a3eef5]/80 w-full sm:w-auto"
-                >
-                  ir al dashboard
-                </Button>
-              </Link>
-            ) : (
-              <Link href="/api/auth/signin">
-                <Button
-                  variant="secondary"
-                  className="text-black text-lg sm:text-xl p-4 sm:p-6 bg-[#a3eef5] font-extrabold hover:bg-[#a3eef5]/80 w-full sm:w-auto"
-                >
-                  crear tienda
-                </Button>
-              </Link>
-            )}
-          </div>
-        </div>
-      </div>
     </header>
   );
 }
@@ -205,10 +164,14 @@ function NavItem({
 }) {
   const handleScroll = (event: React.MouseEvent) => {
     event.preventDefault();
-    const targetId = href?.substring(1);
-    const targetElement = document.getElementById(targetId!);
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: "smooth" });
+    if (href === "/") {
+      window.location.href = href;
+    } else {
+      const targetId = href?.substring(1);
+      const targetElement = document.getElementById(targetId!);
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: "smooth" });
+      }
     }
   };
 

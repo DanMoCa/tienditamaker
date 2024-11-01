@@ -23,7 +23,10 @@ export default function Sell() {
               haces envíos a méxico y quieres expandir tu negocio?{" "}
               <span className="text-[#a3eef5]">conviértete</span> en proveedor
             </h2>
-            <Link href="/proveedores" target="_blank">
+            <Link
+              href="mailto:jemg2510@gmail.com?Subject=Quiero%20ser%20proveedor%20de%20tiendita%20maker"
+              target="_blank"
+            >
               <Button className="mt-8 w-40" variant="default">
                 contáctanos
               </Button>
