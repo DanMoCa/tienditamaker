@@ -41,11 +41,16 @@ const initialConfig: StoreConfig = {
 };
 
 export default function StoreConfigDashboard() {
-  const { data: session, status } = useSession();
+  const { data: sessionData, status } = useSession();
+  const [session, setSession] = useState(sessionData);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [config, setConfig] = useState<StoreConfig>(initialConfig);
+
+  useEffect(() => {
+    setSession(sessionData);
+  }, [sessionData]);
 
   // Memoized function to fetch user ID
   const fetchUserId = useCallback(async (email: string) => {

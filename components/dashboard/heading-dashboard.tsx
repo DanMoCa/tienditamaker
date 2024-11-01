@@ -7,7 +7,7 @@ export default function Component() {
       <div className="flex items-start justify-between">
         <Heading
           title="dashboard"
-          description="análisis y estadísticas de tu tienda"
+          description="análisis y estadísticas de tu tienda ¡PROXIMAMENTE! (FAKE INFO)"
         />
       </div>
       <Separator />

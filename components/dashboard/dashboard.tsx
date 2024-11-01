@@ -46,7 +46,7 @@ export default function Dashboard() {
   return (
     <div className="container">
       {isFirstVisit && (
-        <StoreInfoDialog onClose={() => setIsFirstVisit(false)} />
+        <StoreInfoDialog onClose={() => setIsFirstVisit(false)} isOpen={true} />
       )}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
         <Card>
