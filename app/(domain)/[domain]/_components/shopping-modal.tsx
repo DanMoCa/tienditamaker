@@ -84,12 +84,12 @@ export default function ShoppingCartModal({ storeId }: { storeId: number }) {
 
   return (
     <Sheet open={shouldDisplayCart} onOpenChange={() => handleCartClick()}>
-      <SheetContent className="sm:max-w-lg w-[90vw] bg-white">
+      <SheetContent className="sm:max-w-lg w-[90vw] ">
         <SheetHeader>
-          <SheetTitle className="text-secondary">carrito</SheetTitle>
+          <SheetTitle>carrito</SheetTitle>
         </SheetHeader>
 
-        <div className="h-full flex flex-col justify-between bg-white">
+        <div className="h-full flex flex-col justify-between">
           <div className="mt-8 flex-1 overflow-y-auto">
             <ul className="-my-6 divide-y divide-gray-200">
               {cartCount === 0 ? (
@@ -126,7 +126,7 @@ export default function ShoppingCartModal({ storeId }: { storeId: number }) {
                               <Button
                                 variant="ghost"
                                 onClick={() => decrementItem(entry.id)}
-                                className="ml-2 text-secondary hover:text-secondary/80 hover:bg-transparent"
+                                className="ml-2 hover:text-primary/80 hover:bg-transparent"
                               >
                                 -
                               </Button>
@@ -134,7 +134,7 @@ export default function ShoppingCartModal({ storeId }: { storeId: number }) {
                               <Button
                                 variant="ghost"
                                 onClick={() => incrementItem(entry.id)}
-                                className="ml-2 text-secondary hover:text-secondary/80 hover:bg-transparent"
+                                className="ml-2 hover:text-primary/80 hover:bg-transparent"
                               >
                                 +
                               </Button>
@@ -145,7 +145,7 @@ export default function ShoppingCartModal({ storeId }: { storeId: number }) {
                             <button
                               type="button"
                               onClick={() => removeItem(entry.id)}
-                              className="font-medium text-secondary hover:text-secondary/80"
+                              className="font-medium hover:text-primary/80"
                             >
                               eliminar
                             </button>
@@ -159,7 +159,7 @@ export default function ShoppingCartModal({ storeId }: { storeId: number }) {
             </ul>
           </div>
 
-          <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
+          <div className="border-t px-4 py-6 sm:px-6">
             <div className="flex justify-between text-base font-medium text-gray-900">
               <p>subtotal:</p>
               <p>${totalPrice}</p>
@@ -171,7 +171,7 @@ export default function ShoppingCartModal({ storeId }: { storeId: number }) {
             <div className="mt-6">
               <Button
                 onClick={handleCheckoutClick}
-                className="w-full bg-secondary hover:bg-secondary/80 text-primary"
+                className="w-full hover:bg-primary/80 "
                 // disabled={cartCount === 0 || isLoading}
               >
                 {isLoading ? "procesando..." : "pagar"}
@@ -183,7 +183,7 @@ export default function ShoppingCartModal({ storeId }: { storeId: number }) {
                 o{" "}
                 <button
                   onClick={() => handleCartClick()}
-                  className="font-medium text-secondary hover:text-secondary/80"
+                  className="font-medium hover:text-primary/80"
                 >
                   seguir comprando
                 </button>

@@ -12,16 +12,16 @@ import {
 export default function Component() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <Card className="w-full max-w-md bg-white">
+      <Card className="w-full max-w-md ">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center text-black">
+          <CardTitle className="text-2xl font-bold text-center">
             estado del pedido
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col items-center space-y-4">
             <XCircle className="w-16 h-16 text-red-500" />
-            <h2 className="text-xl font-semibold text-center text-black">
+            <h2 className="text-xl font-semibold text-center ">
               pedido cancelado
             </h2>
             <p className="text-center text-gray-600">
@@ -32,7 +32,7 @@ export default function Component() {
         </CardContent>
         <CardFooter className="flex justify-center">
           <Button
-            variant="secondary"
+            variant="default"
             className="w-full max-w-xs"
             onClick={() => {
               window.location.href = "/";

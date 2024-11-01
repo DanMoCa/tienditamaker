@@ -44,7 +44,7 @@ export default function Navbar({
             <div key={idx}>
               {pathname === link.href ? (
                 <Link
-                  className="text-lg font-semibold transition duration-100 hover:text-secondary/60"
+                  className="text-lg font-semibold transition duration-100 hover:text-primary/60"
                   href={link.href}
                 >
                   {link.name}
@@ -52,7 +52,7 @@ export default function Navbar({
               ) : (
                 <Link
                   href={link.href}
-                  className="text-lg font-semibold transition duration-100 hover:text-secondary/60"
+                  className="text-lg font-semibold transition duration-100 hover:text-primary/60"
                 >
                   {link.name}
                 </Link>
@@ -63,6 +63,7 @@ export default function Navbar({
 
         <div className="flex divide-x">
           <Button
+            variant="ghost"
             onClick={() => handleCartClick()}
             className="flex flex-col gap-y-1.5 h-12 w-12 sm:h-20 sm:w-20 md:h-24 md:w-24 rounded-none bg-transparent"
           >

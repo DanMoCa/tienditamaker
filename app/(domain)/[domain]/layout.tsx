@@ -1,37 +1,21 @@
+import type { Metadata } from "next";
+import "@/app/(main)/globals.css";
+import { Manrope } from "next/font/google";
 import { ReactNode } from "react";
 import { notFound } from "next/navigation";
-import { Metadata } from "next";
 import { readStoreDomain } from "@/utils/actions/store/read-store-domain";
 import Navbar from "./_components/navbar";
 import ShoppingCartModal from "./_components/shopping-modal";
 import CartProvider from "./_components/providers";
 
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-manrope",
+});
 interface SiteLayoutProps {
   params: { domain: string };
   children: ReactNode;
 }
-
-// Función auxiliar para generar clases CSS basadas en los colores de la tienda
-const generateThemeClasses = (colors: any) => {
-  if (!colors) return "";
-
-  // Asegúrate de que colors tenga un formato válido
-  const {
-    primary = "#000000",
-    secondary = "#ffffff",
-    background = "#ffffff",
-    text = "#000000",
-  } = colors;
-
-  return `
-    [--color-primary:${primary}]
-    [--color-secondary:${secondary}]
-    [--color-background:${background}]
-    [--color-text:${text}]
-  `
-    .replace(/\s+/g, " ")
-    .trim();
-};
 
 export async function generateMetadata({
   params,
@@ -82,18 +66,9 @@ export default async function SiteLayout({
   const siteColors = result?.[0]?.colors;
   const siteStoreId = result?.[0]?.userId;
 
-  // Genera las clases de tema basadas en los colores de la tienda
-  const themeClasses = generateThemeClasses(siteColors);
-
   return (
     <html lang="es">
-      <body
-        className={`
-        ${themeClasses}
-        bg-[var(--color-background)]
-        text-[var(--color-text)] min-h-screen
-      `}
-      >
+      <body>
         <CartProvider>
           <Navbar siteName={siteName} colors={siteColors} />
           <ShoppingCartModal storeId={siteStoreId} />

@@ -70,7 +70,7 @@ export default function ProductPageSlug({
   }
 
   return (
-    <div className="bg-white">
+    <div>
       <div className="mx-auto max-w-screen-xl px-4 md:px-8">
         <div className="grid gap-8 md:grid-cols-2">
           <ImageGallery images={product.images} />
