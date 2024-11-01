@@ -41,6 +41,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${manrope.className} dark`}>
+      <head>
+        {/* <!-- Abralytics Tracking Script --> */}
+
+        <script
+          defer
+          data-domain="tienditamaker.com"
+          src="https://app.abralytics.com/assets/tracker/index.js"
+        ></script>
+      </head>
       <body>
         <SessionWrapper>{children}</SessionWrapper>
         <Analytics />
