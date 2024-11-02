@@ -80,7 +80,7 @@ export default function Header() {
               </>
             ) : (
               <>
-                <Link href="/api/auth/signin">
+                <Link href="/api/auth/login">
                   <Button
                     variant="outline"
                     className="text-sm sm:text-lg font-bold bg-[#a3eef5] hover:bg-[#a3eef5]/80 text-black"
@@ -133,7 +133,7 @@ export default function Header() {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 ) : (
-                  <Link href="/api/auth/signin">
+                  <Link href="/api/auth/login">
                     <Button
                       variant="outline"
                       className="w-full text-lg font-bold bg-[#a3eef5] hover:bg-[#a3eef5]/80 text-black"
