@@ -97,9 +97,14 @@ function ProductCard({
             : product.description}
         </p>
         <div className="flex justify-between items-center">
-          <Badge variant="secondary" className="text-lg">
-            ${product.price!}
-          </Badge>
+          <div className="flex-col items-center justify-center flex gap-2">
+            <Badge variant="destructive" className="text-xs line-through">
+              ${product.providerProduct?.price}
+            </Badge>
+            <Badge variant="secondary" className="text-lg">
+              ${product.price!}
+            </Badge>
+          </div>
           <ProductDialog
             storeId={storeId}
             productToEdit={{

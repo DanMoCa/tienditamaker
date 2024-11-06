@@ -288,7 +288,7 @@ export default function ProductDialog({
               name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>precio</FormLabel>
+                  <FormLabel>precio personalizado</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
