@@ -46,7 +46,11 @@ export function Header({
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
 
-          <DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              window.open("https://tienditamaker.com/help");
+            }}
+          >
             <LifeBuoy className="mr-2 h-4 w-4" />
             <span>ayuda</span>
           </DropdownMenuItem>

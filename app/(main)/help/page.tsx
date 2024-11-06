@@ -24,38 +24,38 @@ import { AlertCircle, Mail, Phone } from "lucide-react";
 
 const faqs = [
   {
-    question: "¿Cuál es el tiempo de entrega?",
+    question: "¿cuál es el tiempo de entrega?",
     answer:
-      "Nuestro tiempo de entrega estándar es de 3 a 5 días hábiles. Para pedidos urgentes, ofrecemos envío express con entrega en 1-2 días hábiles por un costo adicional.",
+      "nuestro tiempo de entrega estándar es de 3 a 5 días hábiles. pero dependiendo del proveedor de envíos, puede variar. te enviaremos un correo electrónico con tu número de seguimiento una vez que tu pedido haya sido enviado.",
   },
   {
-    question: "¿Cómo puedo hacer un cambio o devolución?",
+    question: "¿cómo puedo hacer un cambio/devolución?",
     answer:
-      "Puedes solicitar un cambio o devolución dentro de los 30 días posteriores a la compra. Visita nuestra página de devoluciones para iniciar el proceso. Asegúrate de que el artículo esté en su estado original con todas las etiquetas.",
+      "puedes solicitar un cambio o devolución dentro de los 30 días posteriores a la compra. visita nuestra página de devoluciones para iniciar el proceso. asegúrate de que el artículo esté en su estado original con todas las etiquetas.",
   },
   {
-    question: "¿Ofrecen envío internacional?",
+    question: "¿ofrecen envío internacional?",
     answer:
-      "Sí, ofrecemos envíos internacionales a la mayoría de los países. Los costos y tiempos de envío varían según el destino. Puedes ver las opciones disponibles durante el proceso de pago.",
+      "no ofrecemos envío internacional en este momento solo en méxico. sin embargo, estamos trabajando para expandirnos a otros países en el futuro. mantente atento a actualizaciones en nuestra página de envíos.",
   },
   {
-    question: "¿Cómo puedo rastrear mi pedido?",
+    question: "¿cómo puedo rastrear mi pedido?",
     answer:
-      "Una vez que tu pedido haya sido enviado, recibirás un correo electrónico con un número de seguimiento. Puedes usar este número en nuestra página de 'Rastrear Pedido' o directamente en el sitio web del servicio de paquetería.",
+      "una vez que tu pedido haya sido enviado, recibirás un correo electrónico con un número de seguimiento. puedes usar este número directamente en el sitio web del servicio de paquetería.",
   },
   {
-    question: "¿Tienen tiendas físicas?",
+    question: "¿tienen tiendas físicas?",
     answer:
-      "Actualmente, operamos exclusivamente en línea. Esto nos permite ofrecer los mejores precios y llegar a clientes en todo el país. Sin embargo, estamos considerando abrir tiendas físicas en el futuro.",
+      "actualmente, operamos exclusivamente en línea. esto nos permite ofrecer los mejores precios y llegar a clientes en todo el país. sin embargo, estamos considerando abrir tiendas físicas en el futuro.",
   },
 ];
 
 const enlaces = [
-  { titulo: "Política de Privacidad", url: "/privacidad" },
-  { titulo: "Términos y Condiciones", url: "/terminos" },
-  { titulo: "Guía de Tallas", url: "/guia-tallas" },
-  { titulo: "Cuidado de Prendas", url: "/cuidado-prendas" },
-  { titulo: "Programa de Lealtad", url: "/lealtad" },
+  { titulo: "política de privacidad", url: "/privacidad" },
+  { titulo: "términos y condiciones", url: "/terminos" },
+  { titulo: "guía de tallas", url: "/guia-tallas" },
+  { titulo: "cuidado de prendas", url: "/cuidado-prendas" },
+  { titulo: "programa de lealtad", url: "/lealtad" },
 ];
 
 export default function SeccionAyuda() {
@@ -79,22 +79,22 @@ export default function SeccionAyuda() {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Centro de Ayuda</h1>
+    <div className="container mx-auto pt-16 px-4">
+      <h1 className="text-3xl font-bold mb-6">centro de ayuda</h1>
 
       <Tabs defaultValue="faq" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="faq">Preguntas Frecuentes</TabsTrigger>
-          <TabsTrigger value="contacto">Contacto</TabsTrigger>
-          <TabsTrigger value="enlaces">Enlaces Útiles</TabsTrigger>
+          <TabsTrigger value="faq">preguntas frecuentes</TabsTrigger>
+          <TabsTrigger value="contacto">contacto</TabsTrigger>
+          <TabsTrigger value="enlaces">enlaces útiles</TabsTrigger>
         </TabsList>
 
         <TabsContent value="faq">
           <Card>
             <CardHeader>
-              <CardTitle>Preguntas Frecuentes</CardTitle>
+              <CardTitle>preguntas frecuentes</CardTitle>
               <CardDescription>
-                Encuentra respuestas a las preguntas más comunes
+                encuentra respuestas a las preguntas más comunes
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -113,16 +113,16 @@ export default function SeccionAyuda() {
         <TabsContent value="contacto">
           <Card>
             <CardHeader>
-              <CardTitle>Contáctanos</CardTitle>
+              <CardTitle>contáctanos</CardTitle>
               <CardDescription>
-                Estamos aquí para ayudarte. Envíanos un mensaje y te
+                estamos aquí para ayudarte. envíanos un mensaje y te
                 responderemos lo antes posible.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="nombre">Nombre</Label>
+                  <Label htmlFor="nombre">nombre</Label>
                   <Input
                     id="nombre"
                     value={nombre}
@@ -131,7 +131,7 @@ export default function SeccionAyuda() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">email</Label>
                   <Input
                     id="email"
                     type="email"
@@ -141,7 +141,7 @@ export default function SeccionAyuda() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="mensaje">Mensaje</Label>
+                  <Label htmlFor="mensaje">mensaje</Label>
                   <Textarea
                     id="mensaje"
                     value={mensaje}
@@ -149,17 +149,17 @@ export default function SeccionAyuda() {
                     required
                   />
                 </div>
-                <Button type="submit">Enviar Mensaje</Button>
+                <Button type="submit">enviar mensaje</Button>
               </form>
             </CardContent>
             <CardFooter className="flex justify-between">
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4" />
-                <span>+1 (555) 123-4567</span>
+                <span>+52 614 353 46 30</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4" />
-                <span>ayuda@tutienda.com</span>
+                <span>jemg2510@gmail.com</span>
               </div>
             </CardFooter>
           </Card>
@@ -168,9 +168,9 @@ export default function SeccionAyuda() {
         <TabsContent value="enlaces">
           <Card>
             <CardHeader>
-              <CardTitle>Enlaces Útiles</CardTitle>
+              <CardTitle>enlaces útiles</CardTitle>
               <CardDescription>
-                Información adicional que puede ser de tu interés
+                información adicional que puede ser de tu interés
               </CardDescription>
             </CardHeader>
             <CardContent>

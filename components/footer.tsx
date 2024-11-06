@@ -43,6 +43,11 @@ export default function Footer() {
                   precios
                 </a>
               </li>
+              <li>
+                <a href="/help" className="transition-colors">
+                  ayuda
+                </a>
+              </li>
             </ul>
           </nav>
 
