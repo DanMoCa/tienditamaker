@@ -14,7 +14,8 @@ import {
 import { getUserIdByEmail } from "@/utils/actions/session/user";
 import { UploadButton } from "@/utils/uploadthing/uploadthing";
 import { Loader2 } from "lucide-react";
-import { CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import MobileMockup from "./mobile-mockup";
 
 // Define interfaces for type safety
 interface StoreConfig {
@@ -201,139 +202,149 @@ export default function StoreConfigDashboard() {
   }
 
   return (
-    <div className="w-full mx-auto">
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="name">nombre de la tienda</Label>
-            <Input
-              id="name"
-              name="name"
-              value={config.name}
-              onChange={handleChange}
-              placeholder="Mi tienda"
-              className="w-full"
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="subdomain">subdominio</Label>
-            <Input
-              id="subdomain"
-              name="subdomain"
-              value={config.subdomain}
-              onChange={handleChange}
-              placeholder="mitienda"
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="slogan">eslogan</Label>
-            <Input
-              id="slogan"
-              name="slogan"
-              value={config.slogan}
-              onChange={handleChange}
-              placeholder="¡Las mejores ofertas en un solo lugar!"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="description">descripción</Label>
-            <Textarea
-              id="description"
-              name="description"
-              value={config.description}
-              onChange={handleChange}
-              placeholder="Describe tu tienda en pocas palabras..."
-              rows={3}
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid sm:grid-cols-2 mx-auto items-center">
+      <div>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="primaryColor">color primario</Label>
-              <div className="flex items-center space-x-2">
-                <Input
-                  id="primaryColor"
-                  name="primaryColor"
-                  type="color"
-                  value={config.colors[0]}
-                  onChange={handleChange}
-                  className="w-12 h-12 p-1"
-                />
-                <Input
-                  value={config.colors[0]}
-                  onChange={handleChange}
-                  name="primaryColor"
-                  className="flex-grow"
-                />
+              <Label htmlFor="name">nombre de la tienda</Label>
+              <Input
+                id="name"
+                name="name"
+                value={config.name}
+                onChange={handleChange}
+                placeholder="Mi tienda"
+                className="w-full"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="subdomain">subdominio</Label>
+              <Input
+                id="subdomain"
+                name="subdomain"
+                value={config.subdomain}
+                onChange={handleChange}
+                placeholder="mitienda"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="slogan">eslogan</Label>
+              <Input
+                id="slogan"
+                name="slogan"
+                value={config.slogan}
+                onChange={handleChange}
+                placeholder="¡Las mejores ofertas en un solo lugar!"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="description">descripción</Label>
+              <Textarea
+                id="description"
+                name="description"
+                value={config.description}
+                onChange={handleChange}
+                placeholder="Describe tu tienda en pocas palabras..."
+                rows={3}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="primaryColor">color primario</Label>
+                <div className="flex items-center space-x-2">
+                  <Input
+                    id="primaryColor"
+                    name="primaryColor"
+                    type="color"
+                    value={config.colors[0]}
+                    onChange={handleChange}
+                    className="w-12 h-12 p-1"
+                  />
+                  <Input
+                    value={config.colors[0]}
+                    onChange={handleChange}
+                    name="primaryColor"
+                    className="flex-grow"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="secondaryColor">color secundario</Label>
+                <div className="flex items-center space-x-2">
+                  <Input
+                    id="secondaryColor"
+                    name="secondaryColor"
+                    type="color"
+                    value={config.colors[1]}
+                    onChange={handleChange}
+                    className="w-12 h-12 p-1"
+                  />
+                  <Input
+                    value={config.colors[1]}
+                    onChange={handleChange}
+                    name="secondaryColor"
+                    className="flex-grow"
+                  />
+                </div>
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="secondaryColor">color secundario</Label>
-              <div className="flex items-center space-x-2">
-                <Input
-                  id="secondaryColor"
-                  name="secondaryColor"
-                  type="color"
-                  value={config.colors[1]}
-                  onChange={handleChange}
-                  className="w-12 h-12 p-1"
-                />
-                <Input
-                  value={config.colors[1]}
-                  onChange={handleChange}
-                  name="secondaryColor"
-                  className="flex-grow"
-                />
-              </div>
+              <Label htmlFor="logo">logo url</Label>
+              <UploadButton
+                className="mt-4 ut-button:bg-red-500 ut-button:ut-readying:bg-red-500/50"
+                endpoint="imageUploader"
+                onClientUploadComplete={(url) => {
+                  setConfig((prev) => ({ ...prev, logo: url[0].url }));
+                  toast.success("logo subido exitosamente");
+                }}
+              />
+              <Input
+                id="logo"
+                name="logo"
+                type="url"
+                value={config.logo}
+                onChange={handleChange}
+                placeholder="https://mitienda.com/logo.png"
+                disabled
+              />
             </div>
-          </div>
+          </form>
+        </CardContent>
 
-          <div className="space-y-2">
-            <Label htmlFor="logo">logo url</Label>
-            <UploadButton
-              className="mt-4 ut-button:bg-red-500 ut-button:ut-readying:bg-red-500/50"
-              endpoint="imageUploader"
-              onClientUploadComplete={(url) => {
-                setConfig((prev) => ({ ...prev, logo: url[0].url }));
-                toast.success("logo subido exitosamente");
-              }}
-            />
-            <Input
-              id="logo"
-              name="logo"
-              type="url"
-              value={config.logo}
-              onChange={handleChange}
-              placeholder="https://mitienda.com/logo.png"
-              disabled
-            />
-          </div>
-        </form>
-      </CardContent>
-
-      <CardFooter>
-        <Button
-          type="submit"
-          disabled={isSaving || status !== "authenticated"}
-          onClick={handleSubmit}
-          className="w-full"
-        >
-          {isSaving ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Guardando...
-            </>
-          ) : (
-            "guardar cambios"
-          )}
-        </Button>
-      </CardFooter>
+        <CardFooter>
+          <Button
+            type="submit"
+            disabled={isSaving || status !== "authenticated"}
+            onClick={handleSubmit}
+            className="w-full"
+          >
+            {isSaving ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Guardando...
+              </>
+            ) : (
+              "guardar cambios"
+            )}
+          </Button>
+        </CardFooter>
+      </div>
+      <MobileMockup
+        name={config.name}
+        subdomain={config.subdomain}
+        logo={config.logo}
+        slogan={config.slogan}
+        primaryColor={config.colors[0]}
+        secondaryColor={config.colors[1]}
+      />
     </div>
   );
 }
