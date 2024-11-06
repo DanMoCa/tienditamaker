@@ -147,6 +147,15 @@ export default function GestionPedidos() {
     }/${createdAt.getFullYear()}`;
   };
 
+  if (!pedidos.length) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[200px] space-y-4">
+        <Package className="w-12 h-12 text-primary" />
+        <p className="text-gray-500">No hay pedidos</p>
+      </div>
+    );
+  }
+
   return (
     <div className="container">
       <div className="space-y-4">
