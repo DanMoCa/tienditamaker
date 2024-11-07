@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Loader2, Pencil, ShoppingBag } from "lucide-react";
+import { Loader2, Pencil, ShoppingBag, Trash2Icon } from "lucide-react";
 import Image from "next/image";
 import { deleteProduct, getProducts } from "@/utils/actions/product/product";
 import { Button } from "@/components/ui/button";
@@ -105,36 +105,37 @@ function ProductCard({
               ${product.price!}
             </Badge>
           </div>
-          <ProductDialog
-            storeId={storeId}
-            productToEdit={{
-              id: product.id,
-              name: product.name,
-              description: product.description,
-              price: product.price,
-              images: product.images,
-              providerProductId: product.providerProductId,
-            }}
-            mode="edit"
-            onSuccess={handleUpdate}
-          >
-            <Button variant="outline">
-              <Pencil className="w-4 h-4 mr-2" />
-              editar
-            </Button>
-          </ProductDialog>
+          <div className="flex gap-2">
+            <ProductDialog
+              storeId={storeId}
+              productToEdit={{
+                id: product.id,
+                name: product.name,
+                description: product.description,
+                price: product.price,
+                images: product.images,
+                providerProductId: product.providerProductId,
+              }}
+              mode="edit"
+              onSuccess={handleUpdate}
+            >
+              <Button variant="outline">
+                <Pencil className="w-4 h-4" />
+              </Button>
+            </ProductDialog>
 
-          {/* Button delete */}
-          <Button
-            variant="destructive"
-            onClick={async () => {
-              await deleteProduct(product.id).then(() => {
-                fetchProducts();
-              });
-            }}
-          >
-            eliminar
-          </Button>
+            {/* Button delete */}
+            <Button
+              variant="destructive"
+              onClick={async () => {
+                await deleteProduct(product.id).then(() => {
+                  fetchProducts();
+                });
+              }}
+            >
+              <Trash2Icon className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
