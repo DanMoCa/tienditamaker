@@ -4,6 +4,7 @@ import {
   ShoppingCart,
   Settings,
   Lock,
+  ShoppingBasket,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -14,6 +15,8 @@ const sidebarItems = [
   { icon: Package, label: "productos", href: "/dashboard/products" },
   { icon: ShoppingCart, label: "pedidos", href: "/dashboard/orders" },
   { icon: Settings, label: "configuracion", href: "/dashboard/config" },
+  // Proveedor
+  // { icon: ShoppingBasket, label: "proveedor", href: "/dashboard/provider" },
   // { icon: Lock, label: "admin", href: "/dashboard/admin" },
 ];
 
