@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { getProducts } from "@/utils/actions/provider/provider";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
 
 interface ProductData {
   id: string;
@@ -71,20 +70,17 @@ function ProductCard({ product }: { product: ProductData }) {
           </Button>
         </div>
       </CardContent>
-      {/* <CardFooter>
-        <Button className="w-full">Agregar al carrito</Button>
-      </CardFooter> */}
     </Card>
   );
 }
 
 export default function Products() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
+  const id = 1;
+
   console.log(id);
 
-  const providerId = id ? parseInt(id) : 0;
+  // const providerId = id ? parseInt(id) : 0;
+  const providerId = 9;
 
   const [products, setProducts] = useState<ProductData[]>([]);
   const [isLoading, setIsLoading] = useState(true);

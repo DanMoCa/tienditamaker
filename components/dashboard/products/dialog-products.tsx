@@ -51,7 +51,10 @@ const formSchema = z.object({
   images: z
     .array(z.string().url("La URL de la imagen no es válida"))
     .min(1, "Se requiere al menos una imagen"),
-  customizations: z.record(z.string()).optional(),
+  // Customizations es un JSON con las personalizaciones del producto
+  customizations: z
+    .array(z.string().url("La URL de la imagen no es válida"))
+    .min(1, "Se requiere al menos una imagen"),
 });
 
 type ProductDialogProps = {
@@ -85,7 +88,7 @@ export default function ProductDialog({
       description: "",
       price: 0,
       images: [],
-      customizations: {},
+      customizations: [],
     },
   });
 
@@ -98,7 +101,7 @@ export default function ProductDialog({
         description: productToEdit.description,
         price: parseFloat(productToEdit.price),
         images: productToEdit.images,
-        customizations: productToEdit.customizations || {},
+        customizations: productToEdit.customizations,
       });
       setSelectedProviderProduct(productToEdit);
     } else if (!isOpen) {
@@ -151,6 +154,7 @@ export default function ProductDialog({
         description: data.description,
         price: data.price.toString(),
         images: data.images,
+        customizations: data.customizations,
         storeId: storeId,
         providerProductId: parseInt(data.providerProductId),
       };
@@ -180,7 +184,7 @@ export default function ProductDialog({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] overflow-auto max-h-[80vh]">
         <DialogHeader>
           <DialogTitle>
             {mode === "edit" ? "editar producto" : "agregar nuevo producto"}
@@ -302,60 +306,129 @@ export default function ProductDialog({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="images"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>imágenes del producto</FormLabel>
-                  <div className="space-y-2">
-                    <UploadButton
-                      endpoint="imageUploader"
-                      onClientUploadComplete={(files) => {
-                        if (files?.length) {
-                          const newUrls = files.map((file) => file.url);
-                          const currentUrls = field.value || [];
-                          form.setValue("images", [...currentUrls, ...newUrls]);
-                          toast.success("Imágenes subidas correctamente");
-                        }
-                      }}
-                      onUploadError={(error) => {
-                        toast.error(
-                          `Error al subir las imágenes: ${error.message}`
-                        );
-                      }}
-                      className="mt-4 ut-button:bg-[#a3eef5] ut-button:ut-readying:bg-[#a3eef5]/50 ut-button:text-gray-900"
-                    />
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="images"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>imágenes del producto</FormLabel>
                     <div className="space-y-2">
-                      {field.value?.map((url, index) => (
-                        <div key={index} className="relative">
-                          <Input
-                            value={url}
-                            readOnly
-                            disabled
-                            className="pr-10"
-                          />
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="absolute right-2 top-1/2 -translate-y-1/2"
-                            onClick={() => {
-                              const newUrls = [...field.value];
-                              newUrls.splice(index, 1);
-                              form.setValue("images", newUrls);
-                            }}
+                      <UploadButton
+                        endpoint="imageUploader"
+                        onClientUploadComplete={(files) => {
+                          if (files?.length) {
+                            const newUrls = files.map((file) => file.url);
+                            const currentUrls = field.value || [];
+                            form.setValue("images", [
+                              ...currentUrls,
+                              ...newUrls,
+                            ]);
+                            toast.success("Imágenes subidas correctamente");
+                          }
+                        }}
+                        onUploadError={(error) => {
+                          toast.error(
+                            `Error al subir las imágenes: ${error.message}`
+                          );
+                        }}
+                        className="mt-2 w-full ut-button:bg-[#a3eef5] ut-button:ut-readying:bg-[#a3eef5]/50 ut-button:text-gray-900"
+                      />
+                      <div className="space-y-2 max-h-32 overflow-y-auto">
+                        {field.value?.map((url, index) => (
+                          <div
+                            key={index}
+                            className="relative flex items-center"
                           >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ))}
+                            <Input
+                              value={url}
+                              readOnly
+                              disabled
+                              className="pr-10 text-xs"
+                            />
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              className="absolute right-2"
+                              onClick={() => {
+                                const newUrls = [...field.value];
+                                newUrls.splice(index, 1);
+                                form.setValue("images", newUrls);
+                              }}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="customizations"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>logos/personalizaciones</FormLabel>
+                    <div className="space-y-2">
+                      <UploadButton
+                        endpoint="imageUploader"
+                        onClientUploadComplete={(files) => {
+                          if (files?.length) {
+                            const newUrls = files.map((file) => file.url);
+                            const currentUrls = field.value || [];
+                            form.setValue("customizations", [
+                              ...currentUrls,
+                              ...newUrls,
+                            ]);
+                            toast.success("Imágenes subidas correctamente");
+                          }
+                        }}
+                        onUploadError={(error) => {
+                          toast.error(
+                            `Error al subir las imágenes: ${error.message}`
+                          );
+                        }}
+                        className="mt-2 w-full ut-button:bg-[#a3eef5] ut-button:ut-readying:bg-[#a3eef5]/50 ut-button:text-gray-900"
+                      />
+                      <div className="space-y-2 max-h-32 overflow-y-auto">
+                        {field.value?.map((url, index) => (
+                          <div
+                            key={index}
+                            className="relative flex items-center"
+                          >
+                            <Input
+                              value={url}
+                              readOnly
+                              disabled
+                              className="pr-10 text-xs"
+                            />
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              className="absolute right-2"
+                              onClick={() => {
+                                const newUrls = [...field.value];
+                                newUrls.splice(index, 1);
+                                form.setValue("customizations", newUrls);
+                              }}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <DialogFooter>
               <Button type="submit">

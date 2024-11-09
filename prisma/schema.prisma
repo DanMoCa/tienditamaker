@@ -45,7 +45,7 @@ model Product {
   store            Store          @relation(fields: [storeId], references: [id])
   providerProductId Int
   providerProduct   ProviderProduct @relation(fields: [providerProductId], references: [id])
-  customizations   Json?          // Para almacenar personalizaciones específicas de la tienda
+  customizations   String[]          // Para almacenar personalizaciones específicas de la tienda
   createdAt        DateTime       @default(now())
   updatedAt        DateTime?       @updatedAt
 }
