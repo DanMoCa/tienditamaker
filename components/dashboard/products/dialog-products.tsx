@@ -297,6 +297,10 @@ export default function ProductDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>precio del proveedor</FormLabel>
+                  <FormLabel className="text-sm text-gray-500">
+                    {" "}
+                    (MXN) envío e impuestos incluidos
+                  </FormLabel>
                   <FormControl>
                     <Input
                       disabled
