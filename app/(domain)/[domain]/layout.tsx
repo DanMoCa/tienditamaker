@@ -7,6 +7,7 @@ import { readStoreDomain } from "@/utils/actions/store/read-store-domain";
 import Navbar from "./_components/navbar";
 import ShoppingCartModal from "./_components/shopping-modal";
 import CartProvider from "./_components/providers";
+import DiscountBanner from "./_components/banner";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -70,6 +71,7 @@ export default async function SiteLayout({
     <html lang="es">
       <body>
         <CartProvider>
+          <DiscountBanner />
           <Navbar siteName={siteName} colors={siteColors} />
           <ShoppingCartModal storeId={siteStoreId} />
           <main className="container mx-auto px-4">{children}</main>
