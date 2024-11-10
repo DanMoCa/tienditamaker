@@ -112,7 +112,8 @@ function ProductCard({
                 id: product.id,
                 name: product.name,
                 description: product.description,
-                price: product.price,
+                price: product.providerProduct?.price,
+                customPrice: product.price,
                 images: product.images,
                 providerProductId: product.providerProductId,
               }}

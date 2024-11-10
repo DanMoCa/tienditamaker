@@ -48,6 +48,7 @@ const formSchema = z.object({
   name: z.string().min(1, "nombre es requerido"),
   description: z.string().min(1, "descripción es requerida"),
   price: z.number().min(0, "El precio del producto es requerido"),
+  customPrice: z.number().min(0, "El precio personalizado es requerido"),
   images: z
     .array(z.string().url("La URL de la imagen no es válida"))
     .min(1, "Se requiere al menos una imagen"),
@@ -87,6 +88,7 @@ export default function ProductDialog({
       name: "",
       description: "",
       price: 0,
+      customPrice: 0,
       images: [],
       customizations: [],
     },
@@ -100,6 +102,7 @@ export default function ProductDialog({
         name: productToEdit.name,
         description: productToEdit.description,
         price: parseFloat(productToEdit.price),
+        customPrice: parseFloat(productToEdit.customPrice),
         images: productToEdit.images,
         customizations: productToEdit.customizations,
       });
@@ -144,6 +147,7 @@ export default function ProductDialog({
       form.setValue("name", product.name);
       form.setValue("description", product.description);
       form.setValue("price", product.price);
+      form.setValue("customPrice", product.customPrice);
     }
   };
 
@@ -152,7 +156,7 @@ export default function ProductDialog({
       const productData = {
         name: data.name,
         description: data.description,
-        price: data.price.toString(),
+        price: data.customPrice.toString(),
         images: data.images,
         customizations: data.customizations,
         storeId: storeId,
@@ -292,7 +296,43 @@ export default function ProductDialog({
               name="price"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>precio del proveedor</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled
+                      type="number"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(parseFloat(e.target.value))
+                      }
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="customPrice"
+              render={({ field }) => (
+                <FormItem>
                   <FormLabel>precio personalizado</FormLabel>
+                  <FormLabel className="text-sm text-gray-500">
+                    {" "}
+                    (MXN)
+                  </FormLabel>
+                  <div className="flex flex-col">
+                    <FormLabel className="text-xs text-gray-500">
+                      {" "}
+                      te sugerimos agregar un 15 - 30 % al precio del proveedor
+                    </FormLabel>
+                    <FormLabel className="text-xs text-gray-500">
+                      sugerido{" "}
+                      <span className="text-white">
+                        ${selectedProviderProduct?.price * 1.15}
+                      </span>
+                    </FormLabel>
+                  </div>
                   <FormControl>
                     <Input
                       type="number"
