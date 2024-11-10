@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Star, Truck } from "lucide-react";
 import ImageGallery from "../../_components/image-gallery";
 import AddToBag from "../../_components/add-to-bag";
-import CheckoutNow from "../../_components/checkout-now";
 import { useSearchParams } from "next/navigation";
 import { notFound } from "next/navigation";
 import { getProductById } from "@/utils/actions/store/store-config";
@@ -26,6 +25,8 @@ export default function ProductPageSlug({
   const [product, setProduct] = useState<Product>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = useState<string>("");
+  const [sizeError, setSizeError] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -34,7 +35,6 @@ export default function ProductPageSlug({
         const id = searchParams.get("id");
         let productData;
 
-        // Intentar primero obtener por ID si está disponible
         if (id) {
           productData = await getProductById(id);
           console.log({ productData });
@@ -56,6 +56,13 @@ export default function ProductPageSlug({
     };
     fetchProduct();
   }, [params.slug, searchParams]);
+
+  // Resetear el error de talla cuando se selecciona una
+  useEffect(() => {
+    if (selectedSize) {
+      setSizeError(false);
+    }
+  }, [selectedSize]);
 
   if (loading) {
     return (
@@ -91,7 +98,60 @@ export default function ProductPageSlug({
               </span>
             </div>
             <div className="mb-4">
-              <div className="flex items-end gap-2">
+              {/* Tallas */}
+              <div className="mb-2">
+                <span className="text-sm text-gray-500">Tallas</span>
+              </div>
+              <div className="flex gap-2 flex-col">
+                <div className="flex gap-2">
+                  <Button
+                    className={`rounded-full ${
+                      selectedSize === "S" ? "bg-blue-500 text-white" : ""
+                    }`}
+                    onClick={() => {
+                      setSelectedSize("S");
+                    }}
+                  >
+                    S
+                  </Button>
+                  <Button
+                    className={`rounded-full ${
+                      selectedSize === "M" ? "bg-blue-500 text-white" : ""
+                    }`}
+                    onClick={() => {
+                      setSelectedSize("M");
+                    }}
+                  >
+                    M
+                  </Button>
+                  <Button
+                    className={`rounded-full ${
+                      selectedSize === "L" ? "bg-blue-500 text-white" : ""
+                    }`}
+                    onClick={() => {
+                      setSelectedSize("L");
+                    }}
+                  >
+                    L
+                  </Button>
+                  <Button
+                    className={`rounded-full ${
+                      selectedSize === "XL" ? "bg-blue-500 text-white" : ""
+                    }`}
+                    onClick={() => {
+                      setSelectedSize("XL");
+                    }}
+                  >
+                    XL
+                  </Button>
+                </div>
+                {sizeError && (
+                  <p className="text-red-500 text-sm">
+                    Por favor, selecciona una talla
+                  </p>
+                )}
+              </div>
+              <div className="flex items-end gap-2 mt-4">
                 <span className="text-xl font-bold text-gray-800 md:text-2xl">
                   ${product.price}
                 </span>
@@ -116,16 +176,9 @@ export default function ProductPageSlug({
                 price={product.price}
                 key={product.id}
                 price_id={product.id}
+                size={selectedSize}
+                onSizeError={() => setSizeError(true)}
               />
-              {/* <CheckoutNow
-                currency="MXN"
-                description={product.description}
-                image={product.images[0]}
-                name={product.name}
-                price={product.price}
-                key={product.id}
-                price_id={product.id}
-              /> */}
             </div>
             <p className="mt-12 text-base text-gray-500 tracking-wide">
               {product.description}

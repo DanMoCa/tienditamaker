@@ -25,6 +25,7 @@ const CartItemSchema = z.object({
   price: z.number().positive(),
   quantity: z.number().int().positive(),
   image: z.string().url().optional(),
+  size: z.string().optional(),
 });
 
 const CheckoutRequestSchema = z.object({
@@ -82,7 +83,7 @@ function createLineItems(cartItems: CartItem[]) {
     // Definimos el product_data primero para asegurar su tipo
     const productData: Stripe.Checkout.SessionCreateParams.LineItem.PriceData.ProductData =
       {
-        name: item.name,
+        name: item.name + (item.size ? ` - ${item.size}` : ""),
         description: item.description,
         images: item.image ? [item.image] : [],
       };
@@ -112,6 +113,7 @@ function createMetadata(
         product: item.name,
         quantity: item.quantity,
         price: item.price,
+        size: item.size,
         subtotal: item.price * item.quantity,
       }))
     ),

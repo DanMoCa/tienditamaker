@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { useShoppingCart } from "use-shopping-cart";
 
@@ -10,6 +9,8 @@ export interface ProductCart {
   currency: string;
   image: any;
   price_id: string;
+  size: string;
+  onSizeError?: () => void;
 }
 
 export default function AddToBag({
@@ -19,26 +20,40 @@ export default function AddToBag({
   name,
   price,
   price_id,
+  size,
+  onSizeError,
 }: ProductCart) {
   const { addItem, handleCartClick } = useShoppingCart();
 
-  const product = {
-    name: name,
-    description: description,
-    price: price,
-    currency: currency,
-    image: image,
-    price_id: price_id,
+  const handleAddToBag = () => {
+    if (!size) {
+      onSizeError?.();
+      return;
+    }
+
+    const product = {
+      name: name,
+      description: description,
+      price: price,
+      currency: currency,
+      image: image,
+      id: `${price_id}_${size}`, // ID único que incluye la talla
+      price_id: price_id,
+      size: size,
+    };
+
+    addItem(product);
+    handleCartClick();
   };
+
   return (
     <Button
       variant="default"
-      onClick={() => {
-        addItem(product);
-        handleCartClick();
-      }}
+      onClick={handleAddToBag}
+      disabled={!size}
+      className={!size ? "opacity-50 cursor-not-allowed" : ""}
     >
-      añadir al carrito
+      {!size ? "selecciona una talla" : "añadir al carrito"}
     </Button>
   );
 }

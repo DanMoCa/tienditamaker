@@ -39,6 +39,7 @@ export default function ShoppingCartModal({ storeId }: { storeId: number }) {
         description: item.description,
         price: item.price,
         quantity: item.quantity,
+        size: item.size,
         image: typeof item.image === "string" ? item.image : null,
       }));
 
@@ -116,6 +117,9 @@ export default function ShoppingCartModal({ storeId }: { storeId: number }) {
                           </div>
                           <p className="mt-1 text-sm text-gray-500 line-clamp-2">
                             {entry.description}
+                          </p>
+                          <p className="mt-1 text-sm text-gray-500">
+                            Talla: {entry.size}
                           </p>
                         </div>
 

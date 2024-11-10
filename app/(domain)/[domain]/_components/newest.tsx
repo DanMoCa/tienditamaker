@@ -25,7 +25,10 @@ export default async function Newest({ id }: { id: number }) {
             productos nuevos
           </h2>
 
-          <Link className="text-primary flex items-center gap-x-1" href="/all">
+          <Link
+            className="text-primary flex items-center gap-x-1"
+            href="/products"
+          >
             ver todos{" "}
             <span>
               <ArrowRight />
