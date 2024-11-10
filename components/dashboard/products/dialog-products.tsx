@@ -329,7 +329,7 @@ export default function ProductDialog({
                     <FormLabel className="text-xs text-gray-500">
                       sugerido{" "}
                       <span className="text-white">
-                        ${selectedProviderProduct?.price * 1.15}
+                        ${(selectedProviderProduct?.price * 1.15).toFixed()}
                       </span>
                     </FormLabel>
                   </div>
