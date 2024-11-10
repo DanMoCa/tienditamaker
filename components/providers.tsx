@@ -20,7 +20,7 @@ export default function Sell() {
           </div> */}
           <div className="w-full text-center">
             <h2 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-6 lg:mb-0">
-              haces envíos a méxico y quieres expandir tu negocio?{" "}
+              ¿haces envíos a méxico y quieres expandir tu negocio?{" "}
               <span className="text-[#a3eef5]">conviértete</span> en proveedor
             </h2>
             <Link

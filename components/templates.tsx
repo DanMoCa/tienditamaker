@@ -18,7 +18,7 @@ export default function Templates() {
     {
       title: "llena la información de tu tienda",
       content:
-        "rellena el formulario con tu nombre, colores, logo y todo tu contenido perfecto",
+        "rellena el formulario con tu nombre, colores, logo y todo tu contenido",
     },
     {
       title: "elige tu plantilla ideal",

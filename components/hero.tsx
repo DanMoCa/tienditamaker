@@ -48,12 +48,12 @@ export default function Hero() {
       />
       <div className="absolute inset-0 flex flex-col justify-center px-4 sm:px-6 md:px-12 lg:px-24">
         <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold mb-4 leading-tight">
-          construye tu tienda
+          ¡vende sin preocuparte
           <br />
-          en minutos
+          por el inventario!
         </h1>
         <p className="text-lg sm:text-xl md:text-2xl mb-8 max-w-2xl">
-          crea, administra y escala tu tienda en tienditamaker.
+          construye, gestiona y haz crecer tu tienda en tienditamaker
         </p>
         <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
           {user ? (

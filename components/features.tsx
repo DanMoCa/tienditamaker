@@ -12,7 +12,9 @@ export default function Features() {
           rápido
         </h2>
         <h3 className="text-white text-xl sm:text-2xl font-bold">
-          elige productos 100% mexicanos y vende en tu tienda online
+          elige productos 100% mexicanos,{" "}
+          <span className="text-[#a3eef5]">crea y vende</span> en tu propia
+          tienda online
         </h3>
         <FeaturesCards />
       </div>
