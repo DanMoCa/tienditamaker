@@ -48,7 +48,7 @@ export default function Dashboard() {
       {isFirstVisit && (
         <StoreInfoDialog onClose={() => setIsFirstVisit(false)} isOpen={true} />
       )}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8 blur-sm">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
@@ -105,7 +105,7 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      <Tabs defaultValue="ventas" className="space-y-4">
+      <Tabs defaultValue="ventas" className="space-y-4 blur-sm">
         <TabsList>
           <TabsTrigger value="ventas">Ventas Mensuales</TabsTrigger>
           <TabsTrigger value="productos">Productos Más Vendidos</TabsTrigger>
