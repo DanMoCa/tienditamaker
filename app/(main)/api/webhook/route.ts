@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
       const { data, error } = await resend.emails.send({
         from: "tienditamaker<noreply@tienditamaker.com>",
         to: [email],
-        subject: "gracias por tu compra",
+        subject: "gracias por tu compra en tienditamaker",
         react: EmailTemplate({ firstName: updatedUser.name }),
       });
       console.log("📧 Email sent:", data); // Debug log
