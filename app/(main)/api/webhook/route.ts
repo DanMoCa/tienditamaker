@@ -8,7 +8,8 @@ const prisma = new PrismaClient();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY!);
+// const resend = new Resend("re_ZktfLnuN_QC6Svi1D8jMzZopJp6kngENG");
 
 export async function POST(req: NextRequest) {
   try {
@@ -47,9 +48,9 @@ export async function POST(req: NextRequest) {
 
       // Determinar el tipo de usuario basado en el monto
       let userType: "free" | "initial" | "lifetime";
-      if (amount === 59900) {
+      if (amount === 89900) {
         userType = "initial";
-      } else if (amount === 249900) {
+      } else if (amount === 349900) {
         userType = "lifetime";
       } else {
         console.error("❌ Invalid amount:", amount); // Debug log
@@ -65,6 +66,19 @@ export async function POST(req: NextRequest) {
         where: { email },
         data: { userType: userType },
       });
+
+      const { data, error } = await resend.emails.send({
+        from: "tienditamaker<noreply@tienditamaker.com>",
+        to: [email],
+        subject: "gracias por tu compra",
+        react: EmailTemplate({ firstName: updatedUser.name }),
+      });
+      console.log("📧 Email sent:", data); // Debug log
+
+      if (error) {
+        console.error("❌ Email sending failed:", error); // Debug log
+        return Response.json({ error }, { status: 500 });
+      }
 
       if (!updatedUser) {
         console.error("❌ User not found for email:", email); // Debug log
@@ -92,13 +106,6 @@ export async function POST(req: NextRequest) {
       }
 
       console.log(`✅ Tienda creada`); // Debug log
-
-      const { data, error } = await resend.emails.send({
-        from: "jorge de tienditamaker<jemg2510@gmail.com>",
-        to: [email],
-        subject: "gracias por tu compra",
-        react: EmailTemplate({ firstName: "John" }),
-      });
 
       return NextResponse.json({
         status: "success",

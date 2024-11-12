@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { saveDataToDatabase } from "@/utils/actions/store/shipping";
 import { z } from "zod"; // Para validación de datos
+import { EmailTemplate } from "@/components/email-template";
+import { Resend } from "resend";
 
 // Validación del environment
 const requiredEnvVars = {
@@ -18,6 +20,7 @@ Object.entries(requiredEnvVars).forEach(([key, value]) => {
 
 // Inicializar Stripe con tipo strict
 const stripe = new Stripe(requiredEnvVars.STRIPE_SECRET_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY!);
 
 // Schema actualizado para incluir la dirección completa
 const AddressSchema = z.object({
@@ -128,6 +131,15 @@ async function handleCheckoutCompleted(event: Stripe.Event) {
     console.info("Shipping data saved successfully:", {
       storeId: shippingData.storeId,
     });
+    // Enviar correo electrónico después del pago
+    const { data, error } = await resend.emails.send({
+      from: "jorge de tienditamaker<jemg2510@gmail.com>",
+      to: [shippingData.customerData.email], // Asegúrate de que el email esté disponible
+      subject: "gracias por tu compra",
+      react: EmailTemplate({ firstName: shippingData.customerData.name }),
+    });
+    console.log("📧 Email sent:", data);
+
     return result;
   } catch (error) {
     console.error("Failed to save shipping data:", error);
