@@ -27,7 +27,7 @@ export default function Component({
 
   const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
 
-  const planPrice = plan == "de por vida" ? 2499 : 599;
+  const planPrice = plan == "de por vida" ? 3499 : 899;
   const [dialogoAbierto, setDialogoAbierto] = useState(false);
   const planRef = useRef(plan);
   const planPriceRef = useRef(planPrice);

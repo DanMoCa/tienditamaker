@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { PrismaClient } from "@prisma/client";
+import { Resend } from "resend";
+import { EmailTemplate } from "@/components/email-template";
 
 const prisma = new PrismaClient();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
   try {
@@ -89,6 +92,13 @@ export async function POST(req: NextRequest) {
       }
 
       console.log(`✅ Tienda creada`); // Debug log
+
+      const { data, error } = await resend.emails.send({
+        from: "jorge de tienditamaker<jemg2510@gmail.com>",
+        to: [email],
+        subject: "gracias por tu compra",
+        react: EmailTemplate({ firstName: "John" }),
+      });
 
       return NextResponse.json({
         status: "success",
