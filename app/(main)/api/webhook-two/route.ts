@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { saveDataToDatabase } from "@/utils/actions/store/shipping";
 import { z } from "zod"; // Para validación de datos
-import { EmailTemplate } from "@/components/email-template";
 import { Resend } from "resend";
+import { EmailTemplateTwo } from "@/components/ui/email-template-two";
 
 // Validación del environment
 const requiredEnvVars = {
@@ -136,7 +136,7 @@ async function handleCheckoutCompleted(event: Stripe.Event) {
       from: "jorge de tienditamaker<jemg2510@gmail.com>",
       to: [shippingData.customerData.email], // Asegúrate de que el email esté disponible
       subject: "gracias por tu compra",
-      react: EmailTemplate({ firstName: shippingData.customerData.name }),
+      react: EmailTemplateTwo({ firstName: shippingData.customerData.name }),
     });
     console.log("📧 Email sent:", data);
 

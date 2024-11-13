@@ -54,11 +54,11 @@ const lifetimePlan = {
   link:
     process.env.NODE_ENV === "development"
       ? "https://buy.stripe.com/test_eVa5lMdrD5n3cgM002"
-      : "",
+      : "https://buy.stripe.com/fZeaFPb0Jd25eaI28a",
   priceId:
     process.env.NODE_ENV === "development"
       ? "price_1QKVD02MeDMvFqevIKQchNzH"
-      : "",
+      : "price_1QKWbB2MeDMvFqevoBvffgol",
 };
 
 export default function Component() {
@@ -84,11 +84,11 @@ export default function Component() {
         link:
           process.env.NODE_ENV === "development"
             ? "https://buy.stripe.com/test_dR6bKa9bndTzdkQ9AB"
-            : "",
+            : "https://buy.stripe.com/eVa01b6Ktd255Ec001",
         priceId:
           process.env.NODE_ENV === "development"
             ? "price_1QKVC72MeDMvFqevGFkph9VL"
-            : "",
+            : "price_1QKWb92MeDMvFqevqUnoBitS",
       };
     }
     return {
@@ -98,11 +98,11 @@ export default function Component() {
       link:
         process.env.NODE_ENV === "development"
           ? "https://buy.stripe.com/test_fZe6pQdrD4iZfsYaEE"
-          : "",
+          : "https://buy.stripe.com/6oE15f0m56DHaYw144",
       priceId:
         process.env.NODE_ENV === "development"
           ? "price_1QHeKP2MeDMvFqev0DLYqL10"
-          : "",
+          : "price_1QKWb72MeDMvFqevwgiJO5IK",
     };
   };
 
