@@ -13,17 +13,29 @@ export async function POST(req: NextRequest) {
     if (!email) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
-
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount,
-      currency: "mxn",
-      automatic_payment_methods: { enabled: true },
-      metadata: {
-        email: email,
-      },
-    });
-
-    return NextResponse.json({ clientSecret: paymentIntent.client_secret });
+    //  Esto es para crear un intento de pago con Stripe de suscripción por 89
+    if (amount === 8900) {
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: "mxn",
+        setup_future_usage: "off_session",
+        automatic_payment_methods: { enabled: true },
+        metadata: {
+          email: email,
+        },
+      });
+      return NextResponse.json({ clientSecret: paymentIntent.client_secret });
+    } else {
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: "mxn",
+        automatic_payment_methods: { enabled: true },
+        metadata: {
+          email: email,
+        },
+      });
+      return NextResponse.json({ clientSecret: paymentIntent.client_secret });
+    }
   } catch (error) {
     console.error(error);
 

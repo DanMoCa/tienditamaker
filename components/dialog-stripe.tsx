@@ -5,7 +5,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import convertToSubCurrency from "@/lib/converToSubcurrency";
@@ -16,84 +16,114 @@ import LoginToPay from "./login-to-pay";
 export default function Component({
   children,
   plan,
+  isAnnual,
 }: {
   children: React.ReactNode;
   plan: string;
+  isAnnual: boolean;
 }) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const [dialogoAbierto, setDialogoAbierto] = useState(false);
+
   if (!process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY) {
     throw new Error("Missing Stripe public key");
   }
 
   const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
 
-  const planPrice = plan == "de por vida" ? 3499 : 899;
-  const [dialogoAbierto, setDialogoAbierto] = useState(false);
-  const planRef = useRef(plan);
-  const planPriceRef = useRef(planPrice);
+  // Use useMemo to compute plan details when dependencies change
+  const planDetails = useMemo(() => {
+    if (plan === "de por vida") {
+      return {
+        price: 2499,
+        mode: "payment" as const,
+        title: "bienvenido al plan de por vida",
+      };
+    } else if (isAnnual) {
+      return {
+        price: 899,
+        mode: "payment" as const,
+        title: "bienvenido al plan anual",
+      };
+    } else {
+      return {
+        price: 89,
+        mode: "subscription" as const,
+        title: "bienvenido al plan mensual",
+      };
+    }
+  }, [plan, isAnnual]);
 
-  const { status } = useSession();
-
-  const handleTriggerClick = (e: React.MouseEvent) => {
-    const redirectPath = localStorage.getItem("redirectAfterLogin");
-    if (redirectPath) {
-      e.preventDefault(); // Prevenir la apertura por trigger si hay redirect pendiente
+  const handleTriggerClick = () => {
+    if (!session) {
+      localStorage.setItem("redirectAfterLogin", window.location.pathname);
+      localStorage.setItem("plan", plan);
     }
   };
 
+  // Handle post-login dialog opening
   useEffect(() => {
-    // Solo abrimos el diálogo si:
-    // 1. El usuario está autenticado
-    // 2. Existe redirectAfterLogin
-    // 3. El diálogo NO está ya abierto
-    if (status === "authenticated" && !dialogoAbierto) {
+    if (status === "authenticated") {
       const redirectPath = localStorage.getItem("redirectAfterLogin");
-      const planType = localStorage.getItem("plan");
       if (redirectPath) {
-        if (planType === "de por vida") {
-          planRef.current = "de por vida";
-          planPriceRef.current = 2499;
-          setDialogoAbierto(true);
-        }
+        setDialogoAbierto(true);
         localStorage.removeItem("redirectAfterLogin");
         localStorage.removeItem("plan");
       }
     }
-  }, [status, dialogoAbierto]);
+  }, [status]);
 
   return (
-    <div className="flex justify-between items-center mb-6">
-      <Dialog open={dialogoAbierto} onOpenChange={setDialogoAbierto}>
-        <DialogTrigger asChild onClick={handleTriggerClick}>
-          {children}
-        </DialogTrigger>
-        <DialogContent className="">
-          {!session ? (
-            <LoginToPay plan={plan} />
-          ) : (
-            <div className="space-y-6">
-              <DialogHeader>
-                <DialogTitle>bienvenido al plan {planRef.current}</DialogTitle>
-              </DialogHeader>
+    <Dialog open={dialogoAbierto} onOpenChange={setDialogoAbierto}>
+      <DialogTrigger asChild onClick={handleTriggerClick}>
+        {children}
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md">
+        {!session ? (
+          <LoginToPay plan={plan} />
+        ) : (
+          <div className="space-y-6">
+            <DialogHeader>
+              <DialogTitle>{planDetails.title}</DialogTitle>
+            </DialogHeader>
+            {/* Condicional si es de 89 entonces element con setupfutureusage, sino sin eso */}
+            {planDetails.price === 89 ? (
               <Elements
                 stripe={stripePromise}
                 options={{
-                  mode: "payment",
+                  mode: planDetails.mode,
+                  setup_future_usage: "off_session",
                   currency: "mxn",
                   locale: "es",
-                  amount: convertToSubCurrency(planPriceRef.current),
+                  amount: convertToSubCurrency(planDetails.price),
                   appearance: {
                     theme: "night",
                     labels: "floating",
                   },
                 }}
               >
-                <CheckoutPage amount={planPriceRef.current} />
+                <CheckoutPage amount={planDetails.price} />
               </Elements>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-    </div>
+            ) : (
+              <Elements
+                stripe={stripePromise}
+                options={{
+                  mode: planDetails.mode,
+                  currency: "mxn",
+                  locale: "es",
+                  amount: convertToSubCurrency(planDetails.price),
+                  appearance: {
+                    theme: "night",
+                    labels: "floating",
+                  },
+                }}
+              >
+                <CheckoutPage amount={planDetails.price} />
+              </Elements>
+            )}
+          </div>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -35,7 +35,7 @@ const monthlyPlan = {
 const lifetimePlan = {
   name: "de por vida",
   description: "para los que buscan un compromiso a largo plazo",
-  price: "$3,499",
+  price: "$2,499",
   billing: "pago único",
   features: [
     "acceso ilimitado a todos los proveedores",
@@ -109,6 +109,7 @@ export default function Component() {
               <div className="mb-4">
                 <span className="text-4xl font-extrabold">
                   {basicPlanPricing.price}
+                  <span className="text-xs">MXN</span>
                 </span>
                 <span className="text-muted-foreground">
                   {" "}
@@ -130,7 +131,7 @@ export default function Component() {
               </ul>
             </CardContent>
             <CardFooter>
-              <DialogStripe plan={monthlyPlan.name}>
+              <DialogStripe plan={monthlyPlan.name} isAnnual={isAnnual}>
                 <Button className="w-full" variant="outline">
                   {monthlyPlan.cta}
                 </Button>
@@ -147,6 +148,7 @@ export default function Component() {
               <div className="mb-4">
                 <span className="text-4xl font-extrabold text-[#a3eef5]">
                   {lifetimePlan.price}
+                  <span className="text-xs">MXN</span>
                 </span>
                 <span className="text-muted-foreground">
                   {" "}
@@ -163,7 +165,7 @@ export default function Component() {
               </ul>
             </CardContent>
             <CardFooter>
-              <DialogStripe plan={lifetimePlan.name}>
+              <DialogStripe plan={lifetimePlan.name} isAnnual={isAnnual}>
                 <Button className="w-full bg-[#a3eef5] hover:bg-[#a3eef5]/80 text-black">
                   {lifetimePlan.cta}
                 </Button>

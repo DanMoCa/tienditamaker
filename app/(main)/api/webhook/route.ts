@@ -48,9 +48,11 @@ export async function POST(req: NextRequest) {
 
       // Determinar el tipo de usuario basado en el monto
       let userType: "free" | "initial" | "lifetime";
-      if (amount === 89900) {
+      if (amount === 8900) {
         userType = "initial";
-      } else if (amount === 349900) {
+      } else if (amount === 89900) {
+        userType = "initial";
+      } else if (amount === 249900) {
         userType = "lifetime";
       } else {
         console.error("❌ Invalid amount:", amount); // Debug log
