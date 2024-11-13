@@ -3,13 +3,11 @@ import Stripe from "stripe";
 import { PrismaClient } from "@prisma/client";
 import { Resend } from "resend";
 import { EmailTemplate } from "@/components/email-template";
-import { findCheckoutSession } from "@/lib/stripe";
 
 const prisma = new PrismaClient();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-// const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
-const endpointSecret = "whsec_ztMgJqaieKejjs90tWdHPoKjYuiescYQ";
+const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 const resend = new Resend(process.env.RESEND_API_KEY!);
 
 export async function POST(req: NextRequest) {
