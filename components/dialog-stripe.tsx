@@ -6,7 +6,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useEffect, useState, useRef, useMemo } from "react";
-import { Elements } from "@stripe/react-stripe-js";
+import { Elements, PaymentElement } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import convertToSubCurrency from "@/lib/converToSubcurrency";
 import { CheckoutPage } from "./checkout";
@@ -24,6 +24,7 @@ export default function Component({
 }) {
   const { data: session, status } = useSession();
   const [dialogoAbierto, setDialogoAbierto] = useState(false);
+  const [clientSecret, setClientSecret] = useState("");
 
   if (!process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY) {
     throw new Error("Missing Stripe public key");
@@ -35,24 +36,47 @@ export default function Component({
   const planDetails = useMemo(() => {
     if (plan === "de por vida") {
       return {
-        price: 2499,
+        price: "price_lifetime_id", // ID del precio en Stripe
         mode: "payment" as const,
         title: "bienvenido al plan de por vida",
       };
     } else if (isAnnual) {
       return {
-        price: 899,
-        mode: "payment" as const,
+        price: "price_annual_id", // ID del precio en Stripe
+        mode: "subscription" as const,
         title: "bienvenido al plan anual",
       };
     } else {
       return {
-        price: 89,
+        price: "price_monthly_id", // ID del precio en Stripe
         mode: "subscription" as const,
         title: "bienvenido al plan mensual",
       };
     }
   }, [plan, isAnnual]);
+
+  // Obtener el clientSecret cuando se abre el diálogo
+  useEffect(() => {
+    if (dialogoAbierto && session?.user?.email) {
+      const createSubscription = async () => {
+        const response = await fetch("/api/create-subscription", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            priceId: planDetails.price,
+            email: session.user?.email,
+          }),
+        });
+
+        const data = await response.json();
+        setClientSecret(data.clientSecret);
+      };
+
+      createSubscription();
+    }
+  }, [dialogoAbierto, session, planDetails.price]);
 
   const handleTriggerClick = () => {
     if (!session) {
@@ -86,39 +110,21 @@ export default function Component({
             <DialogHeader>
               <DialogTitle>{planDetails.title}</DialogTitle>
             </DialogHeader>
-            {/* Condicional si es de 89 entonces element con setupfutureusage, sino sin eso */}
-            {planDetails.price === 89 ? (
-              <Elements
-                stripe={stripePromise}
-                options={{
-                  mode: planDetails.mode,
-                  setup_future_usage: "off_session",
-                  currency: "mxn",
-                  locale: "es",
-                  amount: convertToSubCurrency(planDetails.price),
-                  appearance: {
-                    theme: "night",
-                    labels: "floating",
-                  },
-                }}
-              >
-                <CheckoutPage amount={planDetails.price} />
-              </Elements>
-            ) : (
+            {clientSecret && (
               <Elements
                 stripe={stripePromise}
                 options={{
                   mode: planDetails.mode,
                   currency: "mxn",
                   locale: "es",
-                  amount: convertToSubCurrency(planDetails.price),
+                  amount: convertToSubCurrency(parseInt(planDetails.price)),
                   appearance: {
                     theme: "night",
                     labels: "floating",
                   },
                 }}
               >
-                <CheckoutPage amount={planDetails.price} />
+                <CheckoutPage amount={parseInt(planDetails.price)} />
               </Elements>
             )}
           </div>

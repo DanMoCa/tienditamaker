@@ -3,13 +3,14 @@ import Stripe from "stripe";
 import { PrismaClient } from "@prisma/client";
 import { Resend } from "resend";
 import { EmailTemplate } from "@/components/email-template";
+import { findCheckoutSession } from "@/lib/stripe";
 
 const prisma = new PrismaClient();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+// const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+const endpointSecret = "whsec_ztMgJqaieKejjs90tWdHPoKjYuiescYQ";
 const resend = new Resend(process.env.RESEND_API_KEY!);
-// const resend = new Resend("re_ZktfLnuN_QC6Svi1D8jMzZopJp6kngENG");
 
 export async function POST(req: NextRequest) {
   try {
@@ -32,47 +33,73 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Manejar el evento de pago exitoso
-    if (event.type === "payment_intent.succeeded") {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent;
-      const amount = paymentIntent.amount;
+    // Manejar el evento de checkout completado
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object as Stripe.Checkout.Session;
+      console.log("💳 Session:", session); // Debug log
+      console.log("💳 Checkout Session:", session.id); // Debug log
 
-      // Obtener el email del metadata
-      const email = paymentIntent.metadata?.email;
+      const email = session.customer_details?.email;
+      const subscriptionId = session.subscription as string;
 
-      console.log("📧 Email from metadata:", email); // Debug log
+      console.log("📧 Email from session:", email); // Debug log
+      console.log("🔄 Subscription ID:", subscriptionId); // Debug log
 
       if (!email) {
-        throw new Error("No user email found in payment intent metadata");
+        throw new Error("No user email found in checkout session");
       }
 
-      // Determinar el tipo de usuario basado en el monto
-      let userType: "free" | "initial" | "lifetime";
-      if (amount === 8900) {
-        userType = "initial";
-      } else if (amount === 89900) {
-        userType = "initial";
-      } else if (amount === 249900) {
-        userType = "lifetime";
+      // Obtener detalles de la suscripción
+      let priceId;
+      if (session.subscription) {
+        console.log("🔄 Subscription ID:", session.subscription); // Debug log
+        const subscription = await stripe.subscriptions.retrieve(
+          session.subscription as string
+        );
+        priceId = subscription.items.data[0].price.id;
       } else {
-        console.error("❌ Invalid amount:", amount); // Debug log
-        throw new Error("Invalid payment amount");
+        // Para pagos únicos (lifetime), obtener el price ID directamente de la sesión
+        priceId = session.line_items?.data[0]?.price!.id;
+        if (!priceId) {
+          // Fallback: intentar obtener de los metadatos o de otra fuente
+          const lineItems = await stripe.checkout.sessions.listLineItems(
+            session.id
+          );
+          priceId = lineItems.data[0]?.price?.id;
+        }
+      }
+
+      // Determinar el tipo de usuario basado en el price ID
+      let userType: "free" | "initial" | "lifetime";
+      switch (priceId) {
+        case process.env.STRIPE_MONTHLY_PRICE_ID:
+        case process.env.STRIPE_ANNUAL_PRICE_ID:
+          userType = "initial";
+          break;
+        case process.env.STRIPE_LIFETIME_PRICE_ID:
+          userType = "lifetime";
+          break;
+        default:
+          userType = "free";
       }
 
       console.log(
-        `💰 Processing payment for ${email} with amount ${amount} to type ${userType}`
+        `💰 Processing subscription for ${email} with price ${priceId} to type ${userType}`
       ); // Debug log
 
       // Actualizar el usuario en la base de datos
       const updatedUser = await prisma.user.update({
         where: { email },
-        data: { userType: userType },
+        data: {
+          userType: userType,
+        },
       });
 
+      // Enviar email de confirmación
       const { data, error } = await resend.emails.send({
         from: "tienditamaker<noreply@tienditamaker.com>",
         to: [email],
-        subject: "gracias por tu compra en tienditamaker",
+        subject: "gracias por tu suscripción en tienditamaker",
         react: EmailTemplate({ firstName: updatedUser.name }),
       });
       console.log("📧 Email sent:", data); // Debug log
@@ -89,6 +116,7 @@ export async function POST(req: NextRequest) {
 
       console.log(`✅ Successfully updated user ${email} to ${userType}`); // Debug log
 
+      // Crear tienda para el usuario
       const newStore = await prisma.store.create({
         data: {
           name: `tiendita de ${updatedUser.name}`,
@@ -111,11 +139,27 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json({
         status: "success",
-        message:
-          `User ${updatedUser.email} updated to ${userType} plan` +
-          ` and new store created`,
+        message: `User ${updatedUser.email} updated to ${userType} plan and new store created`,
       });
     }
+
+    // Manejar evento de suscripción cancelada
+    // if (event.type === "customer.subscription.deleted") {
+    //   const subscription = event.data.object as Stripe.Subscription;
+    //   const email = subscription.metadata.email;
+
+    //   if (email) {
+    //     await prisma.user.update({
+    //       where: { email },
+    //       data: {
+    //         userType: "free",
+    //       },
+    //     });
+    //     console.log(
+    //       `🔄 User ${email} subscription cancelled, reverted to free plan`
+    //     );
+    //   }
+    // }
 
     return NextResponse.json({
       status: "success",

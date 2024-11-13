@@ -1,7 +1,6 @@
 "use client";
 
 import { Check } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,10 +12,10 @@ import {
 } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import DialogStripe from "@/components/dialog-stripe";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 const monthlyPlan = {
   name: "inicial",
@@ -30,6 +29,14 @@ const monthlyPlan = {
     "integraciones con costos adicionales",
   ],
   cta: "empieza ya",
+  link:
+    process.env.NODE_ENV === "development"
+      ? "https://buy.stripe.com/test_fZe6pQdrD4iZfsYaEE"
+      : "",
+  priceId:
+    process.env.NODE_ENV === "development"
+      ? "price_1QHeKP2MeDMvFqev0DLYqL10"
+      : "",
 };
 
 const lifetimePlan = {
@@ -44,6 +51,14 @@ const lifetimePlan = {
     "descuentos exclusivos para otros servicios relacionados (marketing, envíos, etc.)",
   ],
   cta: "¡obtenlo ya!",
+  link:
+    process.env.NODE_ENV === "development"
+      ? "https://buy.stripe.com/test_eVa5lMdrD5n3cgM002"
+      : "",
+  priceId:
+    process.env.NODE_ENV === "development"
+      ? "price_1QKVD02MeDMvFqevIKQchNzH"
+      : "",
 };
 
 export default function Component() {
@@ -66,12 +81,28 @@ export default function Component() {
         price: "$899",
         billing: "al año",
         savings: "ahorra 2 meses",
+        link:
+          process.env.NODE_ENV === "development"
+            ? "https://buy.stripe.com/test_dR6bKa9bndTzdkQ9AB"
+            : "",
+        priceId:
+          process.env.NODE_ENV === "development"
+            ? "price_1QKVC72MeDMvFqevGFkph9VL"
+            : "",
       };
     }
     return {
       price: monthlyPlan.price,
       billing: monthlyPlan.billing,
       savings: null,
+      link:
+        process.env.NODE_ENV === "development"
+          ? "https://buy.stripe.com/test_fZe6pQdrD4iZfsYaEE"
+          : "",
+      priceId:
+        process.env.NODE_ENV === "development"
+          ? "price_1QHeKP2MeDMvFqev0DLYqL10"
+          : "",
     };
   };
 
@@ -131,11 +162,11 @@ export default function Component() {
               </ul>
             </CardContent>
             <CardFooter>
-              <DialogStripe plan={monthlyPlan.name} isAnnual={isAnnual}>
+              <a href={basicPlanPricing.link} target="_blank">
                 <Button className="w-full" variant="outline">
                   {monthlyPlan.cta}
                 </Button>
-              </DialogStripe>
+              </a>
             </CardFooter>
           </Card>
 
@@ -165,11 +196,11 @@ export default function Component() {
               </ul>
             </CardContent>
             <CardFooter>
-              <DialogStripe plan={lifetimePlan.name} isAnnual={isAnnual}>
+              <a href={lifetimePlan.link} target="_blank">
                 <Button className="w-full bg-[#a3eef5] hover:bg-[#a3eef5]/80 text-black">
                   {lifetimePlan.cta}
                 </Button>
-              </DialogStripe>
+              </a>
             </CardFooter>
           </Card>
         </div>
