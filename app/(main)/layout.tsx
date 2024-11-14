@@ -3,6 +3,7 @@ import "./globals.css";
 import { Manrope } from "next/font/google";
 import SessionWrapper from "@/components/session-wrapper";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import Header from "@/components/header";
 
 const manrope = Manrope({
@@ -56,6 +57,7 @@ export default function RootLayout({
           <Header />
           {children}
         </SessionWrapper>
+        <SpeedInsights />
         <Analytics />
       </body>
     </html>
