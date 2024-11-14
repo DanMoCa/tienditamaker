@@ -1,22 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronDown, LogOut, Menu, User } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { signOut, useSession } from "next-auth/react";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
-import { DropdownMenuContent, DropdownMenuItem } from "./ui/dropdown-menu";
-import { motion } from "framer-motion";
+import { useSession } from "next-auth/react";
 
 export default function Hero() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<string | null>(null);
 
   const { data: session } = useSession();
@@ -66,7 +57,7 @@ export default function Hero() {
               </Button>
             </Link>
           ) : (
-            <Link href="/api/auth/signin">
+            <Link href="/api/auth/login">
               <Button
                 variant="secondary"
                 className="text-black text-lg sm:text-xl p-4 sm:p-6 bg-[#a3eef5] font-extrabold hover:bg-[#a3eef5]/80 w-full sm:w-auto"
