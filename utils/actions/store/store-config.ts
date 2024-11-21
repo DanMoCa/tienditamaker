@@ -45,6 +45,26 @@ export async function updateStoreConfig(userId: any, config: any) {
   );
 
   try {
+    // Primero, verificar si el subdominio ya existe para otra tienda
+    if (config.subdomain) {
+      const { data: existingStore, error: subdomainError } = await supabase
+        .from("Store")
+        .select("id")
+        .eq("subdomain", config.subdomain)
+        .neq("userId", userId);
+
+      if (subdomainError) return subdomainError;
+
+      // Si ya existe un subdominio para otro usuario, retornar un error
+      if (existingStore && existingStore.length > 0) {
+        return {
+          code: "SUBDOMAIN_EXISTS",
+          message: "El subdominio ya está en uso por otra tienda",
+        };
+      }
+    }
+
+    // Si no hay conflicto de subdominio, proceder con la actualización
     const { error } = await supabase
       .from("Store")
       .upsert({ userId, ...config });

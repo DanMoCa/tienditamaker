@@ -193,7 +193,14 @@ export default function StoreInfoDialog({
         const userId = await fetchUserId(session.user.email);
         if (!userId) throw new Error("No se pudo obtener el ID del usuario");
 
-        await updateStoreConfig(userId, config);
+        const result = await updateStoreConfig(userId, config);
+
+        if (result?.code === "SUBDOMAIN_EXISTS") {
+          toast.error("El subdominio ya está en uso. Por favor, elige otro.");
+          setIsSaving(false);
+          return;
+        }
+
         toast.success("Tienda creada exitosamente");
         onClose();
       } catch (error) {
@@ -207,7 +214,8 @@ export default function StoreInfoDialog({
   );
 
   const handlePreview = (template: string) => {
-    toast.info(`Vista previa de la plantilla ${template}`);
+    window.open("https://jorge.tienditamaker.com", "_blank");
+    // toast.info(`Vista previa de la plantilla ${template}`);
   };
 
   return (
